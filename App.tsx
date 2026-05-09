@@ -178,7 +178,7 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
       {news && (
         <div className="bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-600/10 dark:to-purple-600/10 border-2 border-blue-200 dark:border-blue-900 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 space-y-4 md:space-y-6 animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-3 md:gap-4">
-            <Zap className="text-blue-600 animate-pulse" size={24} md:size={32} />
+            <Zap className="text-blue-600 animate-pulse w-6 h-6 md:w-8 md:h-8" />
             <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tighter">Nouveautés 2025 (IA)</h2>
           </div>
           <div className="prose dark:prose-invert max-w-none text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line font-medium">
@@ -431,7 +431,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
           disabled={isComparing || selectedIds.length < 2}
           className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-16 py-4 md:py-5 rounded-2xl md:rounded-[2rem] font-black shadow-2xl disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-3 md:gap-5 text-sm md:text-lg uppercase tracking-widest"
         >
-          {isComparing ? <div className="animate-spin rounded-full h-5 w-5 md:h-7 md:w-7 border-4 border-white border-t-transparent" /> : <ArrowRightLeft size={20} md:size={28} />}
+          {isComparing ? <div className="animate-spin rounded-full h-5 w-5 md:h-7 md:w-7 border-4 border-white border-t-transparent" /> : <ArrowRightLeft className="w-5 h-5 md:w-7 md:h-7" />}
           {isComparing ? 'Analyse...' : t.compareBtn}
         </button>
       </div>
@@ -498,7 +498,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
 
           {analysis && (
             <div className="bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/20 dark:to-purple-600/20 p-6 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border-2 md:border-4 border-blue-200 dark:border-blue-900 flex flex-col md:flex-row gap-6 md:gap-10 items-center shadow-xl">
-              <div className="p-4 md:p-6 bg-blue-600 text-white rounded-2xl md:rounded-[2rem] shadow-xl shrink-0 animate-pulse"><Lightbulb size={32} md:size={48} /></div>
+              <div className="p-4 md:p-6 bg-blue-600 text-white rounded-2xl md:rounded-[2rem] shadow-xl shrink-0 animate-pulse"><Lightbulb className="w-8 h-8 md:w-12 md:h-12" /></div>
               <div>
                 <h3 className="text-[10px] md:text-sm font-black text-blue-600 uppercase tracking-widest md:tracking-[0.4em] mb-2 md:mb-4 text-center md:text-left">Analyse Comparative IA</h3>
                 <p className="text-lg md:text-3xl font-bold leading-tight text-blue-900 dark:text-blue-50 italic tracking-tight text-center md:text-left">{analysis}</p>
@@ -528,7 +528,7 @@ const FilamentSelectorPage = ({ t }: { t: TranslationStrings }) => {
             <option value="">-- Sélectionnez --</option>
             {allRequestedPrinters.map(p => <option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}
           </select>
-          <ChevronDown className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 pointer-events-none text-blue-600" size={24} md:size={32} />
+          <ChevronDown className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 pointer-events-none text-blue-600 w-6 h-6 md:w-8 md:h-8" />
         </div>
       </div>
 
@@ -591,7 +591,7 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
             disabled={loading}
             className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-16 py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black flex items-center justify-center gap-3 md:gap-5 shadow-2xl transition-all active:scale-95 disabled:opacity-50 text-base md:text-xl"
           >
-            {loading ? <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-4 border-white border-t-transparent" /> : <BrainCircuit size={24} md:size={32} />}
+            {loading ? <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-4 border-white border-t-transparent" /> : <BrainCircuit className="w-6 h-6 md:w-8 md:h-8" />}
             ANALYSER
           </button>
         </div>
@@ -638,13 +638,13 @@ export default function App() {
   };
 
   const navItems = [
-    { id: 'home', icon: <Monitor size={20} md:size={24} />, label: t.home },
-    { id: 'printers', icon: <PrinterIcon size={20} md:size={24} />, label: t.printers },
-    { id: 'filaments', icon: <Layers size={20} md:size={24} />, label: t.filaments },
-    { id: 'brands', icon: <Info size={20} md:size={24} />, label: t.brands },
-    { id: 'compare', icon: <ArrowRightLeft size={20} md:size={24} />, label: t.compare },
-    { id: 'choice', icon: <HelpCircle size={20} md:size={24} />, label: t.filamentChoice },
-    { id: 'recommend', icon: <Lightbulb size={20} md:size={24} />, label: t.recommendation },
+    { id: 'home', icon: <Monitor className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.home },
+    { id: 'printers', icon: <PrinterIcon className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.printers },
+    { id: 'filaments', icon: <Layers className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.filaments },
+    { id: 'brands', icon: <Info className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.brands },
+    { id: 'compare', icon: <ArrowRightLeft className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.compare },
+    { id: 'choice', icon: <HelpCircle className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.filamentChoice },
+    { id: 'recommend', icon: <Lightbulb className="w-5 h-5 lg:w-6 lg:h-6" />, label: t.recommendation },
   ];
 
   return (
