@@ -67,6 +67,45 @@ const StarRating = ({ rating, interactive = false, onRate }: { rating: number, i
 const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, txt: string) => void }) => {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [adminCode, setAdminCode] = useState('');
+  const [storedReviews, setStoredReviews] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('site_admin_reviews');
+      if (saved) setStoredReviews(JSON.parse(saved));
+    } catch {}
+  }, [showAdmin]);
+
+  const handleSubmitReview = () => {
+    if (rating === 0) {
+      alert('Veuillez sélectionner une note de 1 à 5 étoiles.');
+      return;
+    }
+    const newReview = {
+      id: Date.now(),
+      rating,
+      text: feedback,
+      date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+    };
+    
+    // Save locally for admin viewing
+    const updated = [newReview, ...storedReviews];
+    setStoredReviews(updated);
+    try {
+      localStorage.setItem('site_admin_reviews', JSON.stringify(updated));
+    } catch {}
+
+    onRate(rating, feedback);
+    setSubmitted(true);
+
+    // Also trigger mailto option for user
+    const mailSubject = encodeURIComponent("Nouvel avis sur 3D Expert Compare");
+    const mailBody = encodeURIComponent(`Note: ${rating}/5 étoiles\n\nCommentaire:\n${feedback || 'Aucun commentaire'}`);
+    window.open(`mailto:lmcffra90@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
+  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 md:space-y-12 py-6 md:py-10 px-4">
@@ -84,29 +123,81 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600">
             <BrainCircuit size={48} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">AI Powered</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">IA & Moteur de Recherche</h2>
           <p className="text-gray-500 font-medium">{t.aiAttribution}</p>
         </div>
 
         <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800 space-y-6">
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">{t.rateApp}</h2>
-          <div className="flex justify-center">
-            <StarRating rating={rating} interactive onRate={setRating} />
-          </div>
-          <textarea
-            className="w-full p-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all"
-            rows={3}
-            placeholder="Laissez votre avis ici..."
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-          />
-          <button 
-            onClick={() => { onRate(rating, feedback); setRating(0); setFeedback(''); alert('Merci !'); }}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 rounded-xl transition-all active:scale-95"
-          >
-            Envoyer mon avis
-          </button>
+          
+          {submitted ? (
+            <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-2xl text-center space-y-3 border border-green-200 dark:border-green-800 animate-in fade-in">
+              <span className="text-3xl">🎉</span>
+              <p className="font-black text-green-700 dark:text-green-300">Avis transmis à l'administrateur !</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Votre note ({rating}/5) et vos remarques sont enregistrées en privé pour le propriétaire du site (lmcffra90@gmail.com).</p>
+              <button 
+                onClick={() => { setSubmitted(false); setRating(0); setFeedback(''); }}
+                className="text-xs text-blue-600 font-bold underline pt-2"
+              >
+                Laisser un autre avis
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="flex justify-center">
+                <StarRating rating={rating} interactive onRate={setRating} />
+              </div>
+              <textarea
+                className="w-full p-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm font-medium"
+                rows={3}
+                placeholder="Laissez votre avis ou suggestion ici..."
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+              />
+              <button 
+                onClick={handleSubmitReview}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20"
+              >
+                Envoyer mon avis à l'administrateur
+              </button>
+            </>
+          )}
         </div>
+      </div>
+
+      {/* Admin Panel Link */}
+      <div className="pt-6 text-center border-t border-gray-100 dark:border-zinc-800">
+        <button 
+          onClick={() => setShowAdmin(!showAdmin)}
+          className="text-xs font-bold text-gray-400 hover:text-purple-600 transition-colors uppercase tracking-widest"
+        >
+          {showAdmin ? 'Masquer l\'Espace Administrateur' : '🔑 Espace Administrateur (Voir les avis reçus)'}
+        </button>
+
+        {showAdmin && (
+          <div className="mt-4 p-6 bg-gray-50 dark:bg-zinc-900 rounded-3xl border border-gray-200 dark:border-zinc-800 text-left space-y-4 animate-in fade-in">
+            <div className="flex justify-between items-center border-b pb-3 border-gray-200 dark:border-zinc-800">
+              <h3 className="font-black text-gray-900 dark:text-white text-lg">Avis Reçus ({storedReviews.length})</h3>
+              <span className="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold px-3 py-1 rounded-full">Réservé à l'administrateur</span>
+            </div>
+
+            {storedReviews.length === 0 ? (
+              <p className="text-sm text-gray-500 italic py-4 text-center">Aucun avis reçu pour le moment.</p>
+            ) : (
+              <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
+                {storedReviews.map(r => (
+                  <div key={r.id} className="p-4 bg-white dark:bg-zinc-800 rounded-xl border border-gray-100 dark:border-zinc-700 space-y-2">
+                    <div className="flex justify-between items-center">
+                      <StarRating rating={r.rating} />
+                      <span className="text-[10px] text-gray-400 font-bold">{r.date}</span>
+                    </div>
+                    <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">{r.text || <span className="italic opacity-50">(Pas de commentaire écrit)</span>}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -115,7 +206,12 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
 const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => {
   const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(10000);
+  const [maxPrice, setMaxPrice] = useState(12000);
+  const [brandFilter, setBrandFilter] = useState('Toutes');
+  const [enclosureFilter, setEnclosureFilter] = useState('Tous'); // Tous, Fermée, Ouverte
+  const [multicolorFilter, setMulticolorFilter] = useState('Tous'); // Tous, Multicolore, Monocouleur
+  const [structureFilter, setStructureFilter] = useState('Toutes'); // Toutes, CoreXY, Cartésienne XYZ, CoreXZ, Delta, IDEX
+  const [viewTab, setViewTab] = useState<'current' | 'discontinued'>('current'); // Active vs Discontinued
   const [selectedPrinter, setSelectedPrinter] = useState<Printer | null>(null);
   const [news, setNews] = useState<{ text: string, links: any[] } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
@@ -127,13 +223,38 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
     setIsSyncing(false);
   };
 
+  const availableBrands = useMemo(() => {
+    const brands = Array.from(new Set(allRequestedPrinters.map(p => p.brand)));
+    return ['Toutes', ...brands];
+  }, []);
+
   const filteredPrinters = useMemo(() => {
-    return allRequestedPrinters.filter(p => 
-      (p.name.toLowerCase().includes(search.toLowerCase()) || p.brand.toLowerCase().includes(search.toLowerCase())) &&
-      p.price >= minPrice &&
-      p.price <= maxPrice
-    );
-  }, [search, minPrice, maxPrice]);
+    return allRequestedPrinters.filter(p => {
+      // Filter by Discontinued vs Active
+      if (viewTab === 'current' && p.discontinued) return false;
+      if (viewTab === 'discontinued' && !p.discontinued) return false;
+
+      // Brand Filter
+      if (brandFilter !== 'Toutes' && p.brand !== brandFilter) return false;
+
+      // Enclosure Filter
+      if (enclosureFilter === 'Fermée' && !p.enclosed) return false;
+      if (enclosureFilter === 'Ouverte' && p.enclosed) return false;
+
+      // Multicolor Filter
+      if (multicolorFilter === 'Multicolore' && !p.multicolor.supported) return false;
+      if (multicolorFilter === 'Monocouleur' && p.multicolor.supported) return false;
+
+      // Structure Filter
+      if (structureFilter !== 'Toutes' && p.structure !== structureFilter) return false;
+
+      // Search & Price
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.brand.toLowerCase().includes(search.toLowerCase()) || p.newTech.toLowerCase().includes(search.toLowerCase());
+      const matchesPrice = p.price >= minPrice && p.price <= maxPrice;
+
+      return matchesSearch && matchesPrice;
+    });
+  }, [search, minPrice, maxPrice, brandFilter, enclosureFilter, multicolorFilter, structureFilter, viewTab]);
 
   const groupedByBrand = useMemo(() => {
     return filteredPrinters.reduce((acc, p) => {
@@ -145,41 +266,129 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
 
   return (
     <div className="space-y-6 md:space-y-8 p-4 max-w-7xl mx-auto">
-      <div className="flex flex-col lg:flex-row gap-4 bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 sticky top-20 lg:top-4 z-10 transition-all">
-        <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-          <input 
-            className="w-full pl-11 pr-4 py-2.5 md:py-3 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
-            placeholder={t.searchPlaceholder}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-wrap gap-3 md:gap-4 items-center">
-          <div className="flex flex-col flex-1 sm:flex-none">
-             <span className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1">Prix Min</span>
-             <input type="number" className="w-full sm:w-24 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-sm" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
+      
+      {/* Top Half-Page View Switcher: Current Printers vs Discontinued */}
+      <div className="flex bg-gray-200 dark:bg-zinc-800 p-1.5 rounded-2xl w-full max-w-md mx-auto shadow-inner">
+        <button 
+          onClick={() => setViewTab('current')}
+          className={`flex-1 py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${viewTab === 'current' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+        >
+          Imprimantes Actuelles ({allRequestedPrinters.filter(p => !p.discontinued).length})
+        </button>
+        <button 
+          onClick={() => setViewTab('discontinued')}
+          className={`flex-1 py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${viewTab === 'discontinued' ? 'bg-amber-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
+        >
+          Anciens Modèles ({allRequestedPrinters.filter(p => p.discontinued).length})
+        </button>
+      </div>
+
+      {/* Filter Bar */}
+      <div className="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-zinc-800 space-y-4">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input 
+              className="w-full pl-11 pr-4 py-2.5 md:py-3 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base font-medium"
+              placeholder={t.searchPlaceholder}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
-          <div className="flex flex-col flex-1 sm:flex-none">
-             <span className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1">Prix Max</span>
-             <input type="number" className="w-full sm:w-24 px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-sm" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
-          </div>
+
           <button 
             onClick={handleSync}
             disabled={isSyncing}
-            className={`flex items-center justify-center gap-2 md:gap-3 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest transition-all flex-1 sm:flex-none ${isSyncing ? 'bg-gray-100 text-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-blue-500/20 active:scale-95'}`}
+            className={`flex items-center justify-center gap-2 md:gap-3 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${isSyncing ? 'bg-gray-100 text-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-blue-500/20 active:scale-95'}`}
           >
             <RefreshCw size={16} className={isSyncing ? 'animate-spin' : ''} />
-            {isSyncing ? 'Scan...' : 'Vérifier Nouveautés'}
+            {isSyncing ? 'Recherche...' : 'Vérifier Nouveautés'}
           </button>
+        </div>
+
+        {/* Detailed Multi-Filter Controls */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 border-t border-gray-100 dark:border-zinc-800">
+          
+          {/* Brand Filter */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Marque</span>
+            <select 
+              value={brandFilter} 
+              onChange={e => setBrandFilter(e.target.value)}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
+            >
+              {availableBrands.map(b => <option key={b} value={b}>{b}</option>)}
+            </select>
+          </div>
+
+          {/* Enclosure Filter */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Boîtier</span>
+            <select 
+              value={enclosureFilter} 
+              onChange={e => setEnclosureFilter(e.target.value)}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
+            >
+              <option value="Tous">Tous</option>
+              <option value="Fermée">Fermée (Caisson)</option>
+              <option value="Ouverte">Structure Ouverte</option>
+            </select>
+          </div>
+
+          {/* Multicolor Filter */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Couleurs</span>
+            <select 
+              value={multicolorFilter} 
+              onChange={e => setMulticolorFilter(e.target.value)}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
+            >
+              <option value="Tous">Tous</option>
+              <option value="Multicolore">Multicolore Supporté</option>
+              <option value="Monocouleur">Monocouleur</option>
+            </select>
+          </div>
+
+          {/* Structure Filter */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Structure Axe</span>
+            <select 
+              value={structureFilter} 
+              onChange={e => setStructureFilter(e.target.value)}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
+            >
+              <option value="Toutes">Toutes</option>
+              <option value="CoreXY">CoreXY</option>
+              <option value="Cartésienne XYZ">Cartésienne XYZ</option>
+              <option value="CoreXZ">CoreXZ</option>
+              <option value="Delta">Delta</option>
+              <option value="IDEX">IDEX</option>
+            </select>
+          </div>
+
+          {/* Min Price */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Prix Min</span>
+            <input type="number" className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
+          </div>
+
+          {/* Max Price */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Prix Max</span>
+            <input type="number" className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
+          </div>
+
         </div>
       </div>
 
       {news && (
         <div className="bg-gradient-to-r from-blue-600/5 to-purple-600/5 dark:from-blue-600/10 dark:to-purple-600/10 border-2 border-blue-200 dark:border-blue-900 rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 space-y-4 md:space-y-6 animate-in slide-in-from-top-4 duration-500">
-          <div className="flex items-center gap-3 md:gap-4">
-            <Zap className="text-blue-600 animate-pulse w-6 h-6 md:w-8 md:h-8" />
-            <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tighter">Nouveautés 2025 (IA)</h2>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3 md:gap-4">
+              <Zap className="text-blue-600 animate-pulse w-6 h-6 md:w-8 md:h-8" />
+              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tighter">Nouveautés Matériel & Prix 2025/2026</h2>
+            </div>
+            <button onClick={() => setNews(null)} className="text-gray-400 hover:text-gray-600 font-bold text-xl">✕</button>
           </div>
           <div className="prose dark:prose-invert max-w-none text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line font-medium">
             {news.text}
@@ -206,41 +415,77 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
         </div>
       )}
 
+      {/* Printer List View */}
+      {viewTab === 'discontinued' && (
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl flex items-center gap-3 text-amber-800 dark:text-amber-200 text-sm font-medium">
+          <Info size={20} className="shrink-0" />
+          <span>Cette section regroupe les anciens modèles qui ne sont plus commercialisés officiellement mais restent référencés à titre comparatif et historique.</span>
+        </div>
+      )}
+
       <div className="space-y-8 md:space-y-12 pb-20">
-        {Object.entries(groupedByBrand).map(([brand, items]) => (
-          <div key={brand} className="space-y-4 md:space-y-6">
-            <h2 className="text-2xl md:text-4xl font-black flex items-center gap-3 md:gap-4 text-gray-900 dark:text-white tracking-tighter">
-              <span className="w-2 h-8 md:w-2.5 md:h-12 bg-blue-600 rounded-full" />
-              {brand}
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
-              {items.map(p => (
-                <div 
-                  key={p.id} 
-                  className="bg-white dark:bg-zinc-900 rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-zinc-800 overflow-hidden shadow-sm hover:shadow-2xl transition-all cursor-pointer group hover:-translate-y-1 md:hover:-translate-y-2"
-                  onClick={() => setSelectedPrinter(p)}
-                >
-                  <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100 dark:bg-zinc-800">
-                    <ImageWithFallback src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-blue-600 text-white text-[10px] md:text-xs font-black px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl shadow-lg">
-                      {p.price} €
-                    </div>
-                  </div>
-                  <div className="p-4 md:p-6 space-y-2 md:space-y-3">
-                    <h3 className="font-black text-lg md:text-xl text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">{p.name}</h3>
-                    <p className="text-[10px] md:text-xs text-gray-500 line-clamp-2 italic">{p.newTech}</p>
-                    <div className="flex flex-wrap gap-1.5 md:gap-2 pt-1 md:pt-2">
-                      {p.multicolor.supported && (
-                        <span className="text-[8px] md:text-[9px] bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">Multi</span>
-                      )}
-                      <span className="text-[8px] md:text-[9px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">{p.buildVolume}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {Object.keys(groupedByBrand).length === 0 ? (
+          <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-gray-100 dark:border-zinc-800 space-y-3">
+            <PrinterIcon className="mx-auto text-gray-300" size={48} />
+            <p className="text-gray-500 font-bold">Aucune imprimante ne correspond à vos filtres actuels.</p>
+            <button 
+              onClick={() => { setSearch(''); setBrandFilter('Toutes'); setEnclosureFilter('Tous'); setMulticolorFilter('Tous'); setStructureFilter('Toutes'); setMinPrice(0); setMaxPrice(12000); }}
+              className="text-xs text-blue-600 font-black uppercase tracking-wider underline pt-2"
+            >
+              Réinitialiser tous les filtres
+            </button>
           </div>
-        ))}
+        ) : (
+          Object.entries(groupedByBrand).map(([brand, items]) => (
+            <div key={brand} className="space-y-4 md:space-y-6">
+              <h2 className="text-2xl md:text-4xl font-black flex items-center gap-3 md:gap-4 text-gray-900 dark:text-white tracking-tighter">
+                <span className={`w-2 h-8 md:w-2.5 md:h-12 rounded-full ${viewTab === 'discontinued' ? 'bg-amber-600' : 'bg-blue-600'}`} />
+                {brand}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
+                {items.map(p => (
+                  <div 
+                    key={p.id} 
+                    className={`bg-white dark:bg-zinc-900 rounded-2xl md:rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-2xl transition-all cursor-pointer group hover:-translate-y-1 md:hover:-translate-y-2 relative ${p.discontinued ? 'border-amber-200 dark:border-amber-900/40' : 'border-gray-100 dark:border-zinc-800'}`}
+                    onClick={() => setSelectedPrinter(p)}
+                  >
+                    <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100 dark:bg-zinc-800">
+                      <ImageWithFallback src={p.image} alt={p.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      
+                      {p.discontinued ? (
+                        <div className="absolute top-3 left-3 bg-amber-600 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider shadow">
+                          Modèle Discontinué
+                        </div>
+                      ) : (
+                        <div className="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-md text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider border border-white/10">
+                          {p.enclosed ? 'Boîtier Fermé' : 'Structure Ouverte'}
+                        </div>
+                      )}
+
+                      <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-blue-600 text-white text-[10px] md:text-xs font-black px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl shadow-lg flex flex-col items-end">
+                        <span>{p.price} €</span>
+                        {p.comboPrice && <span className="text-[8px] opacity-90">Combo: {p.comboPrice}€</span>}
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 md:p-6 space-y-2 md:space-y-3">
+                      <h3 className="font-black text-lg md:text-xl text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">{p.name}</h3>
+                      <p className="text-[10px] md:text-xs text-gray-500 line-clamp-2 italic">{p.newTech}</p>
+                      
+                      <div className="flex flex-wrap gap-1.5 md:gap-2 pt-1 md:pt-2">
+                        <span className="text-[8px] md:text-[9px] bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">{p.structure}</span>
+                        {p.multicolor.supported && (
+                          <span className="text-[8px] md:text-[9px] bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">Multi</span>
+                        )}
+                        <span className="text-[8px] md:text-[9px] bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">{p.buildVolume}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {selectedPrinter && (
@@ -248,21 +493,48 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
           <div className="bg-white dark:bg-zinc-900 w-full max-w-5xl h-[85vh] sm:h-auto max-h-[90vh] overflow-y-auto rounded-t-[2.5rem] sm:rounded-[3rem] shadow-2xl border border-gray-200 dark:border-zinc-800 animate-in slide-in-from-bottom sm:zoom-in duration-300">
             <div className="p-6 md:p-10 space-y-6 md:space-y-10 relative">
               <button 
-                className="absolute right-4 top-4 md:right-10 md:top-10 p-3 md:p-4 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-red-500 hover:text-white transition-all text-gray-900 dark:text-white shadow-lg z-10"
+                className="absolute right-4 top-4 md:right-10 md:top-10 p-3 md:p-4 rounded-full bg-gray-100 dark:bg-zinc-800 hover:bg-red-500 hover:text-white transition-all text-gray-900 dark:text-white shadow-lg z-10 font-bold"
                 onClick={() => setSelectedPrinter(null)}
               >
                 ✕
               </button>
               
               <div className="flex flex-col lg:flex-row gap-6 md:gap-12">
-                <div className="w-full lg:w-[400px] h-64 md:h-[400px] bg-gray-100 dark:bg-zinc-800 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-xl md:shadow-2xl">
+                <div className="w-full lg:w-[400px] h-64 md:h-[400px] bg-gray-100 dark:bg-zinc-800 rounded-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-xl md:shadow-2xl relative">
                    <ImageWithFallback src={selectedPrinter.image} alt={selectedPrinter.name} className="w-full h-full object-cover" />
+                   {selectedPrinter.discontinued && (
+                     <div className="absolute bottom-4 left-4 right-4 bg-amber-600 text-white text-center py-2 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg">
+                       Ancien Modèle / Discontinué
+                     </div>
+                   )}
                 </div>
+
                 <div className="flex-1 space-y-4 md:space-y-8">
                   <div>
                     <span className="text-blue-600 font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-xs">{selectedPrinter.brand}</span>
                     <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mt-1 md:mt-2 leading-tight md:leading-none">{selectedPrinter.name}</h2>
-                    <p className="text-2xl md:text-4xl text-green-600 font-black mt-2 md:mt-4">{selectedPrinter.price} €</p>
+                    
+                    <div className="flex flex-wrap items-baseline gap-4 mt-2 md:mt-4">
+                      <p className="text-2xl md:text-4xl text-green-600 font-black">{selectedPrinter.price} € <span className="text-xs text-gray-400 font-normal">(Base)</span></p>
+                      {selectedPrinter.comboPrice && (
+                        <p className="text-xl md:text-2xl text-purple-600 font-black">{selectedPrinter.comboPrice} € <span className="text-xs text-gray-400 font-normal">(Combo)</span></p>
+                      )}
+                    </div>
+
+                    {/* Printer Variants if any */}
+                    {selectedPrinter.variants && selectedPrinter.variants.length > 0 && (
+                      <div className="mt-4 p-4 bg-gray-50 dark:bg-zinc-800 rounded-2xl border border-gray-200 dark:border-zinc-700 space-y-2">
+                        <p className="text-xs font-black uppercase text-gray-500 tracking-wider">Variantes et Options Disponibles :</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {selectedPrinter.variants.map((v, i) => (
+                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 font-bold">
+                              <span>{v.name}</span>
+                              <span className="text-blue-600">{v.price} €</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -284,12 +556,14 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-6 md:pt-10 border-t border-gray-100 dark:border-zinc-800">
                 <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Volume</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.buildVolume}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Buse</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.nozzleType}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Diamètre</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.nozzleDiameter} mm</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Boîtier</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.enclosed ? 'Fermé (Caisson)' : 'Ouvert'}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Structure</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.structure}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Buse</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.nozzleType} ({selectedPrinter.nozzleDiameter}mm)</p></div>
                 <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Extrusion</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.maxNozzleTemp} °C</p></div>
                 <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Plateau</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.maxBedTemp} °C</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multi</p><p className="font-bold text-xs md:text-lg text-gray-900 dark:text-white">{selectedPrinter.multicolor.supported ? "Oui" : 'Non'}</p></div>
-                <div className="col-span-2 space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Tech</p><p className="font-bold text-xs md:text-lg text-gray-900 dark:text-white">{selectedPrinter.newTech}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multicolore</p><p className="font-bold text-xs md:text-lg text-gray-900 dark:text-white">{selectedPrinter.multicolor.supported ? `Oui (${selectedPrinter.multicolor.system || ''})` : 'Non'}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Nouveauté / Tech</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.newTech}</p></div>
+                
                 <div className="col-span-full pt-4 md:pt-6">
                   <p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest mb-3 md:mb-4">Compatibilité Filaments</p>
                   <div className="flex flex-wrap gap-2 md:gap-3">
