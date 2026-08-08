@@ -2,11 +2,21 @@
 export type Language = 'FR' | 'EN' | 'DE';
 export type Theme = 'light' | 'dark';
 
+export interface PrinterVariant {
+  name: string;
+  price: number;
+}
+
 export interface Printer {
   id: string;
   brand: string;
   name: string;
-  price: number;
+  price: number; // Base price
+  comboPrice?: number; // Optional combo price
+  variants?: PrinterVariant[]; // Optional list of variants/combos
+  enclosed: boolean; // Enclosed (fermée) or open (ouverte)
+  structure: 'CoreXY' | 'Cartésienne XYZ' | 'CoreXZ' | 'Delta' | 'IDEX';
+  discontinued?: boolean; // True for old/out of stock models
   buildVolume: string;
   filaments: string[];
   maxNozzleTemp: number;
