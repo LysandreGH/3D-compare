@@ -212,20 +212,86 @@ export async function fetchLatestPrinterNews(lang: string = 'FR') {
 }
 
 // Service to analyze and summarize differences between multiple items.
+export function buildRichComparisonFallback(items: any[], type: 'printer' | 'brand'): string {
+  if (!items || items.length < 2) {
+    return "Sélectionnez au moins deux éléments pour afficher l'analyse comparative.";
+  }
+
+  if (type === 'brand') {
+    const b1 = items[0];
+    const b2 = items[1];
+    return `La marque **${b1.name}** se caractérise par des filaments ${b1.qualities?.join(', ') || 'de haute qualité'} (note ${b1.rating}/5), tandis que **${b2.name}** propose une gamme axée sur ${b2.qualities?.join(', ') || 'la variété'} (note ${b2.rating}/5). ${b1.ecoFriendly ? `${b1.name} met l'accent sur l'éco-responsabilité avec des bobines recyclées.` : ''} ${b2.ecoFriendly ? `${b2.name} propose également des options éco-responsables.` : ''}`;
+  }
+
+  // Printer comparison
+  const p1: Printer = items[0];
+  const p2: Printer = items[1];
+
+  let text = `**${p1.brand} ${p1.name}** (${p1.price}€${p1.comboPrice ? ` / Combo ${p1.comboPrice}€` : ''}) vs **${p2.brand} ${p2.name}** (${p2.price}€${p2.comboPrice ? ` / Combo ${p2.comboPrice}€` : ''}) :\n\n`;
+
+  // Price & Value
+  const priceDiff = Math.abs(p1.price - p2.price);
+  if (priceDiff > 0) {
+    const cheaper = p1.price < p2.price ? p1 : p2;
+    const pricier = p1.price < p2.price ? p2 : p1;
+    text += `• **Prix & Positionnement** : La **${cheaper.brand} ${cheaper.name}** est plus accessible avec un écart de ${priceDiff}€ par rapport à la **${pricier.brand} ${pricier.name}** (${pricier.price}€).\n`;
+  } else {
+    text += `• **Prix** : Les deux modèles sont positionnés au même tarif de **${p1.price}€**.\n`;
+  }
+
+  // Enclosure / Caisson
+  if (p1.enclosed === p2.enclosed) {
+    text += `• **Boîtier** : Les deux imprimantes disposent d'un **${p1.enclosed ? 'châssis fermé avec caisson thermique' : 'châssis ouvert'}** (${p1.enclosed ? 'idéal pour ABS, ASA, PC et filaments carbone' : 'optimisé pour PLA, PETG et TPU en toute simplicité'}).\n`;
+  } else {
+    const enclosedP = p1.enclosed ? p1 : p2;
+    const openP = p1.enclosed ? p2 : p1;
+    text += `• **Boîtier & Isolation** : La **${enclosedP.name}** se distingue par son **boîtier fermé (caisson)** permettant d'imprimer des matériaux techniques (ABS, ASA, Nylon), alors que la **${openP.name}** conserve une **structure ouverte**.\n`;
+  }
+
+  // Volume & Cinematic
+  text += `• **Volume & Cinématique** : **${p1.name}** offre **${p1.buildVolume}** (${p1.structure}) contre **${p2.buildVolume}** (${p2.structure}) pour la **${p2.name}**.\n`;
+
+  // Extrudeur & Température Max
+  if (p1.maxNozzleTemp !== p2.maxNozzleTemp) {
+    const hotter = p1.maxNozzleTemp > p2.maxNozzleTemp ? p1 : p2;
+    const lower = p1.maxNozzleTemp > p2.maxNozzleTemp ? p2 : p1;
+    text += `• **Buse & Température** : La **${hotter.name}** monte jusqu'à **${hotter.maxNozzleTemp}°C** (${hotter.nozzleType}) contre **${lower.maxNozzleTemp}°C** pour la **${lower.name}**.\n`;
+  } else {
+    text += `• **Buse** : Température maximale de **${p1.maxNozzleTemp}°C** sur les deux machines (${p1.nozzleType} vs ${p2.nozzleType}).\n`;
+  }
+
+  // Multicolore
+  if (p1.multicolor.supported || p2.multicolor.supported) {
+    text += `• **Multicolore** : `;
+    if (p1.multicolor.supported && p2.multicolor.supported) {
+      text += `Les deux machines gèrent le multicolore (${p1.name} via **${p1.multicolor.system || 'AMS'}** et ${p2.name} via **${p2.multicolor.system || 'AMS'}**).\n`;
+    } else {
+      const multiP = p1.multicolor.supported ? p1 : p2;
+      const monoP = p1.multicolor.supported ? p2 : p1;
+      text += `La **${multiP.name}** gère le multicolore (**${multiP.multicolor.system || 'Système multi-bobines'}**), tandis que la **${monoP.name}** est monocouleur nativement.\n`;
+    }
+  }
+
+  // Specific innovations
+  text += `\n💡 **Synthèse & Atouts** :\n`;
+  text += `• **${p1.name}** : ${p1.pros.slice(0, 2).join(', ')} (${p1.newTech}).\n`;
+  text += `• **${p2.name}** : ${p2.pros.slice(0, 2).join(', ')} (${p2.newTech}).`;
+
+  return text;
+}
+
 export async function getComparisonAnalysis(items: any[], type: 'printer' | 'brand', lang: string = 'FR'): Promise<string> {
   const apiKey = getApiKey();
+  
   if (!apiKey) {
-    if (items.length >= 2) {
-      return `Comparatif entre ${items[0]?.name || items[0]?.brand} et ${items[1]?.name || items[1]?.brand} : Analyse basée sur le volume d'impression, le boîtier (fermé vs ouvert), la vitesse et la compatibilité multicolore.`;
-    }
-    return "Sélectionnez au moins deux éléments pour afficher l'analyse comparative.";
+    return buildRichComparisonFallback(items, type);
   }
 
   const ai = new GoogleGenAI({ apiKey });
   
   const prompt = `
     Compare ces ${type}s 3D: ${JSON.stringify(items)}.
-    Rédige une courte analyse comparative synthétique de 2-3 phrases en ${lang} qui met en avant les différences majeures (prix, boîtier fermé/ouvert, vitesse, multicolore, buse).
+    Rédige une analyse comparative synthétique, très claire et détaillée d'environ 3 à 5 phrases en ${lang} qui met en avant les différences majeures (prix, boîtier fermé/ouvert, volume, vitesse, multicolore, buse et température max). Sois précis avec les chiffres et les spécifications techniques.
   `;
 
   try {
@@ -233,9 +299,9 @@ export async function getComparisonAnalysis(items: any[], type: 'printer' | 'bra
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
-    return response.text || "";
+    return response.text || buildRichComparisonFallback(items, type);
   } catch {
-    return `Comparatif basé sur les spécifications techniques officielles des modèles sélectionnés.`;
+    return buildRichComparisonFallback(items, type);
   }
 }
 
