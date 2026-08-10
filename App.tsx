@@ -91,23 +91,39 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
   }, []);
 
   const fetchReviews = async (code: string) => {
+    // Collect any unsynced local reviews stored on this device
+    let localReviews: any[] = [];
+    try {
+      localReviews = JSON.parse(localStorage.getItem('my_local_reviews') || '[]');
+    } catch (e) {
+      console.warn('Failed reading local_reviews:', e);
+    }
+
     try {
       const res = await fetch('/api/admin/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code })
+        body: JSON.stringify({ code, syncReviews: localReviews })
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setStoredReviews(data.reviews || []);
+        const merged = data.reviews || [];
+        setStoredReviews(merged);
         setAdminUnlocked(true);
         setAdminError('');
         sessionStorage.setItem('admin_unlocked_code', code);
       } else {
         setAdminError(data.error || 'Code secret incorrect');
+        if (localReviews.length > 0) setStoredReviews(localReviews);
       }
     } catch (err) {
-      setAdminError('Erreur de connexion au serveur d\'avis.');
+      console.warn('Network error when fetching admin reviews, using local cache:', err);
+      if (localReviews.length > 0) {
+        setStoredReviews(localReviews);
+        setAdminUnlocked(true);
+      } else {
+        setAdminError('Erreur de connexion au serveur d\'avis.');
+      }
     }
   };
 
@@ -119,6 +135,14 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
 
   const handleDeleteReview = async (id: string) => {
     const code = sessionStorage.getItem('admin_unlocked_code') || adminCode;
+
+    // Delete locally
+    try {
+      let localReviews = JSON.parse(localStorage.getItem('my_local_reviews') || '[]');
+      localReviews = localReviews.filter((r: any) => r.id !== id);
+      localStorage.setItem('my_local_reviews', JSON.stringify(localReviews));
+    } catch (e) {}
+
     try {
       const res = await fetch('/api/admin/reviews/delete', {
         method: 'POST',
@@ -128,9 +152,11 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
       const data = await res.json();
       if (data.success) {
         setStoredReviews(data.reviews);
+      } else {
+        setStoredReviews(prev => prev.filter(r => r.id !== id));
       }
     } catch (e) {
-      alert('Erreur lors de la suppression');
+      setStoredReviews(prev => prev.filter(r => r.id !== id));
     }
   };
 
@@ -142,9 +168,25 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
     setIsSubmitting(true);
     const formattedDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+    const newReview = {
+      id: 'rev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+      rating,
+      text: feedback,
+      date: formattedDate
+    };
+
+    // Save to local storage first for failsafe retention on mobile/client
     try {
-      // Send to server API endpoint so all devices share the reviews securely
-      await fetch('/api/reviews', {
+      const existing = JSON.parse(localStorage.getItem('my_local_reviews') || '[]');
+      existing.unshift(newReview);
+      localStorage.setItem('my_local_reviews', JSON.stringify(existing));
+    } catch (e) {
+      console.warn('Failed saving review to localStorage:', e);
+    }
+
+    // Try sending to central server API
+    try {
+      const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -153,8 +195,12 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
           date: formattedDate
         })
       });
+      const data = await res.json();
+      if (data.success && data.reviews) {
+        setStoredReviews(data.reviews);
+      }
     } catch (err) {
-      console.warn('API review endpoint failed, using local fallback:', err);
+      console.warn('API review endpoint failed, review kept in local queue:', err);
     }
 
     onRate(rating, feedback);
