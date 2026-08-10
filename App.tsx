@@ -1462,11 +1462,13 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
           )}
 
           {analysis && (
-            <div className="bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/20 dark:to-purple-600/20 p-6 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border-2 md:border-4 border-blue-200 dark:border-blue-900 flex flex-col md:flex-row gap-6 md:gap-10 items-center shadow-xl">
-              <div className="p-4 md:p-6 bg-blue-600 text-white rounded-2xl md:rounded-[2rem] shadow-xl shrink-0 animate-pulse"><Lightbulb className="w-8 h-8 md:w-12 md:h-12" /></div>
-              <div>
-                <h3 className="text-[10px] md:text-sm font-black text-blue-600 uppercase tracking-widest md:tracking-[0.4em] mb-2 md:mb-4 text-center md:text-left">Analyse Comparative IA</h3>
-                <p className="text-lg md:text-3xl font-bold leading-tight text-blue-900 dark:text-blue-50 italic tracking-tight text-center md:text-left">{analysis}</p>
+            <div className="bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/20 dark:to-purple-600/20 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border-2 md:border-4 border-blue-200 dark:border-blue-900 flex flex-col md:flex-row gap-6 md:gap-8 items-start shadow-xl">
+              <div className="p-4 md:p-5 bg-blue-600 text-white rounded-2xl shadow-xl shrink-0 animate-pulse self-center md:self-start"><Lightbulb className="w-8 h-8 md:w-10 md:h-10" /></div>
+              <div className="space-y-2 w-full">
+                <h3 className="text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest md:tracking-[0.3em] text-center md:text-left">Analyse Comparative IA</h3>
+                <div className="whitespace-pre-line text-sm md:text-lg leading-relaxed font-semibold text-blue-950 dark:text-blue-100 tracking-tight text-left">
+                  {analysis}
+                </div>
               </div>
             </div>
           )}
