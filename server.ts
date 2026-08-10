@@ -72,6 +72,34 @@ function saveReviewsToDisk(reviews: any[]) {
 memoryReviews = loadReviewsFromDisk();
 
 // Public endpoint to GET reviews or post a new review from any device
+app.get("/sitemap.xml", (req, res) => {
+  const sitemapPath = path.join(process.cwd(), "public", "sitemap.xml");
+  if (fs.existsSync(sitemapPath)) {
+    res.setHeader("Content-Type", "application/xml");
+    return res.sendFile(sitemapPath);
+  }
+  const rootSitemap = path.join(process.cwd(), "sitemap.xml");
+  if (fs.existsSync(rootSitemap)) {
+    res.setHeader("Content-Type", "application/xml");
+    return res.sendFile(rootSitemap);
+  }
+  res.setHeader("Content-Type", "application/xml");
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://3-d-compare.vercel.app/</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>`);
+});
+
+app.get("/robots.txt", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+  res.send(`User-agent: *\nAllow: /\n\nSitemap: https://3-d-compare.vercel.app/sitemap.xml`);
+});
+
 app.get("/api/reviews", (req, res) => {
   res.json({ success: true, reviews: memoryReviews });
 });
