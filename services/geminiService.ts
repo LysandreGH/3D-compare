@@ -11,10 +11,17 @@ const getApiKey = () => {
   return key || "";
 };
 
-// Service to get personalized printer recommendations using Gemini with strict constraint enforcement.
+// Service to get personalized printer recommendations or detailed printer briefings using Gemini
 export async function getPrinterRecommendation(query: string, lang: string = 'FR'): Promise<string> {
   const queryLower = query.toLowerCase();
   
+  // Check if user is asking about a specific printer by name or brand
+  const matchedPrinter = allRequestedPrinters.find(p => 
+    queryLower.includes(p.name.toLowerCase()) || 
+    queryLower.includes(`${p.brand.toLowerCase()} ${p.name.toLowerCase()}`) ||
+    (p.name.length > 3 && queryLower.includes(p.name.toLowerCase().replace(/combo/g, '').trim()))
+  );
+
   // Deterministic pre-filtering based on explicit user keywords
   let candidatePrinters = allRequestedPrinters.filter(p => !p.discontinued);
 
@@ -46,21 +53,36 @@ export async function getPrinterRecommendation(query: string, lang: string = 'FR
     }
   }
 
-  // Fallback to all non-discontinued if filtering returned zero
+  // Fallback list
   if (candidatePrinters.length === 0) {
     candidatePrinters = allRequestedPrinters.filter(p => !p.discontinued);
   }
 
   const apiKey = getApiKey();
 
-  // If no API key is set, construct a deterministic, structured recommendation from the filtered list
+  // If no API key is set, construct a rich structured response
   if (!apiKey) {
+    if (matchedPrinter) {
+      return `📋 **Fiche d'Information Détaillée — ${matchedPrinter.brand} ${matchedPrinter.name}**\n\n` +
+             `• **Prix** : ${matchedPrinter.price} € ${matchedPrinter.comboPrice ? `(Combo : ${matchedPrinter.comboPrice} €)` : ''}\n` +
+             `• **Boîtier / Caisson** : ${matchedPrinter.enclosed ? 'Boîtier FERMÉ (caisson thermique)' : 'Structure Ouverte'}\n` +
+             `• **Cinématique** : ${matchedPrinter.structure}\n` +
+             `• **Volume d'impression** : ${matchedPrinter.buildVolume}\n` +
+             `• **Multicolore** : ${matchedPrinter.multicolor.supported ? `Oui (${matchedPrinter.multicolor.system || 'AMS/CFS'})` : 'Non (Monocouleur)'}\n` +
+             `• **Extrudeur & Températures** : Buse ${matchedPrinter.nozzleType} (${matchedPrinter.nozzleDiameter}mm) | Max Buse: ${matchedPrinter.maxNozzleTemp}°C | Max Plateau: ${matchedPrinter.maxBedTemp}°C\n` +
+             `• **Filaments pris en charge** : ${matchedPrinter.filaments.join(', ')}\n` +
+             `• **Nouveautés & Tech** : ${matchedPrinter.newTech}\n\n` +
+             `✅ **Points Forts** : ${matchedPrinter.pros.join(', ')}\n` +
+             `⚠️ **Points Faibles** : ${matchedPrinter.cons.join(', ')}\n\n` +
+             `💡 *Conseil du pro* : ${matchedPrinter.enclosed ? 'Machine polyvalente idéale pour PLA, PETG, ABS, ASA et filaments techniques chargés en carbone.' : 'Excellente machine pour débuter en PLA, PETG et TPU en toute simplicité.'}`;
+    }
+
     const topCandidates = candidatePrinters.slice(0, 3);
-    let fallbackText = `Voici les meilleures options sélectionnées selon vos critères (${wantsEnclosed ? 'Boîtier FERMÉ requis, ' : ''}${wantsMulticolor ? 'Multicolore requis, ' : ''}) :\n\n`;
+    let fallbackText = `Voici les meilleures options sélectionnées selon votre demande :\n\n`;
     topCandidates.forEach((p, idx) => {
       fallbackText += `**${idx + 1}. ${p.brand} ${p.name}** - ${p.price}€ ${p.comboPrice ? `(Combo: ${p.comboPrice}€)` : ''}\n`;
-      fallbackText += `• Type: ${p.enclosed ? 'Boîtier FERMÉ' : 'Structure Ouverte'} | ${p.structure} | ${p.multicolor.supported ? `Multicolore (${p.multicolor.system || 'Oui'})` : 'Monocouleur'}\n`;
-      fallbackText += `• Volume: ${p.buildVolume}\n`;
+      fallbackText += `• Type: ${p.enclosed ? 'Boîtier FERMÉ (Caisson)' : 'Structure Ouverte'} | ${p.structure} | ${p.multicolor.supported ? `Multicolore (${p.multicolor.system || 'Oui'})` : 'Monocouleur'}\n`;
+      fallbackText += `• Volume: ${p.buildVolume} | Temp. Max Buse: ${p.maxNozzleTemp}°C\n`;
       fallbackText += `• Points forts: ${p.pros.join(', ')}\n\n`;
     });
     return fallbackText;
@@ -68,31 +90,44 @@ export async function getPrinterRecommendation(query: string, lang: string = 'FR
 
   const ai = new GoogleGenAI({ apiKey });
 
-  const printersData = candidatePrinters.map(p => ({
+  const fullCatalogueData = allRequestedPrinters.map(p => ({
     name: p.name,
     brand: p.brand,
     price: p.price,
     comboPrice: p.comboPrice,
-    enclosed: p.enclosed ? 'Boîtier FERMÉ' : 'Structure Ouverte',
+    enclosed: p.enclosed ? 'Boîtier FERMÉ (Caisson)' : 'Structure Ouverte',
     structure: p.structure,
     multicolor: p.multicolor.supported ? `Oui (${p.multicolor.system || ''})` : 'Non (Monocouleur)',
     volume: p.buildVolume,
+    nozzleType: p.nozzleType,
+    nozzleDiameter: p.nozzleDiameter,
+    maxNozzleTemp: p.maxNozzleTemp,
+    maxBedTemp: p.maxBedTemp,
+    filaments: p.filaments,
     pros: p.pros,
     cons: p.cons,
-    tech: p.newTech
+    tech: p.newTech,
+    discontinued: p.discontinued ? 'Ancien modèle' : 'Modèle actuel'
   }));
 
   const prompt = `
     Tu es un conseiller expert mondial en impression 3D.
-    Voici le catalogue d'imprimantes pré-filtré qui respecte scrupuleusement les contraintes matérielles de l'utilisateur :
-    ${JSON.stringify(printersData)}
+    Voici le catalogue complet de toutes les imprimantes 3D avec leurs données techniques officielles :
+    ${JSON.stringify(fullCatalogueData)}
 
     Demande de l'utilisateur : "${query}"
 
-    RÈGLES STRICTES ET IMPÉRATIVES :
-    1. Si l'utilisateur a demandé une imprimante FERMÉE / Caisson, il est STRICTEMENT INTERDIT de recommander une imprimante ouverte.
-    2. Propose 2 à 3 modèles parmi la liste ci-dessus en expliquant brièvement pour chacun le prix (base ou combo), le boîtier (fermé/ouvert), la structure et pourquoi elle répond exactement à son besoin.
-    3. Rédige en ${lang} avec un ton amical, précis et professionnel.
+    DIRECTIVES DE RÉPONSE STRICTES :
+    1. Si l'utilisateur demande des informations, des détails, des avis ou des caractéristiques sur une imprimante 3D spécifique (ou une marque) :
+       - Donne une PRESENTATION COMPLÈTE ET ULTRA DÉTAILLÉE de la machine demandée.
+       - Détaille : Prix (seul et combo), Caisson (fermé/ouvert), Volume d'impression, Extrudeur & Températures max, Vitesse, Multicolore, Filaments compatibles, Points Forts et Points Faibles.
+       - Donne un avis d'expert impartial (public cible, facilité d'utilisation, type de projets recommandés).
+
+    2. Si l'utilisateur cherche une recommandation (ex: "quelle imprimante acheter pour 500€ avec caisson ?") :
+       - Respecte scrupuleusement ses critères (caisson fermé vs ouvert, multicolore, budget).
+       - Propose les 2 ou 3 meilleures machines correspondantes en justifiant clairement les choix.
+
+    3. Rédige en ${lang} avec un style fluide, aéré, bien structuré (puces, gras, sections claires).
   `;
 
   try {
@@ -100,15 +135,25 @@ export async function getPrinterRecommendation(query: string, lang: string = 'FR
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
-    return response.text || "Désolé, je ne peux pas générer de recommandation pour le moment.";
+    return response.text || "Désolé, je ne peux pas générer d'analyse pour le moment.";
   } catch (error) {
     console.error("AI Error:", error);
-    // Graceful fallback using candidate list
+    if (matchedPrinter) {
+      return `📋 **Fiche Détaillée — ${matchedPrinter.brand} ${matchedPrinter.name}**\n\n` +
+             `• **Prix** : ${matchedPrinter.price} € ${matchedPrinter.comboPrice ? `(Combo : ${matchedPrinter.comboPrice} €)` : ''}\n` +
+             `• **Boîtier / Caisson** : ${matchedPrinter.enclosed ? 'Boîtier FERMÉ' : 'Structure Ouverte'}\n` +
+             `• **Volume** : ${matchedPrinter.buildVolume} | **Structure** : ${matchedPrinter.structure}\n` +
+             `• **Multicolore** : ${matchedPrinter.multicolor.supported ? `Oui (${matchedPrinter.multicolor.system || 'Inclus/Option'})` : 'Non'}\n` +
+             `• **Températures Max** : Buse ${matchedPrinter.maxNozzleTemp}°C | Plateau ${matchedPrinter.maxBedTemp}°C\n` +
+             `• **Filaments** : ${matchedPrinter.filaments.join(', ')}\n\n` +
+             `✅ **Points Forts** : ${matchedPrinter.pros.join(', ')}\n` +
+             `⚠️ **Points Faibles** : ${matchedPrinter.cons.join(', ')}`;
+    }
     const topCandidates = candidatePrinters.slice(0, 3);
     let fallbackText = `Voici les modèles correspondant exactement à votre recherche :\n\n`;
     topCandidates.forEach((p, idx) => {
       fallbackText += `**${idx + 1}. ${p.brand} ${p.name}** - ${p.price}€ ${p.comboPrice ? `(Combo: ${p.comboPrice}€)` : ''}\n`;
-      fallbackText += `• Boîtier: ${p.enclosed ? 'FERMÉ' : 'Ouvert'} | Structure: ${p.structure} | ${p.multicolor.supported ? `Multicolore (${p.multicolor.system || 'Oui'})` : 'Monocouleur'}\n`;
+      fallbackText += `• Boîtier: ${p.enclosed ? 'FERMÉ (Caisson)' : 'Ouvert'} | Structure: ${p.structure} | ${p.multicolor.supported ? `Multicolore (${p.multicolor.system || 'Oui'})` : 'Monocouleur'}\n`;
       fallbackText += `• Points forts: ${p.pros.join(', ')}\n\n`;
     });
     return fallbackText;
