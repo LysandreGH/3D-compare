@@ -21,7 +21,13 @@ import {
   ImageOff,
   RefreshCw,
   ExternalLink,
-  Zap
+  Zap,
+  Calendar,
+  Table,
+  Lock,
+  Unlock,
+  ShieldCheck,
+  ArrowUpDown
 } from 'lucide-react';
 import { Language, Theme, Printer, FilamentType, FilamentBrand, TranslationStrings } from './types';
 import { translations } from './translations';
@@ -70,45 +76,95 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
   const [submitted, setSubmitted] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [adminCode, setAdminCode] = useState('');
+  const [adminUnlocked, setAdminUnlocked] = useState(false);
   const [storedReviews, setStoredReviews] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [adminError, setAdminError] = useState('');
 
+  // Check if admin is already unlocked in current session
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('site_admin_reviews');
-      if (saved) setStoredReviews(JSON.parse(saved));
-    } catch {}
-  }, [showAdmin]);
+    const sessionToken = sessionStorage.getItem('admin_unlocked_code');
+    if (sessionToken === '2026') {
+      setAdminUnlocked(true);
+      fetchReviews('2026');
+    }
+  }, []);
 
-  const handleSubmitReview = () => {
+  const fetchReviews = async (code: string) => {
+    try {
+      const res = await fetch('/api/admin/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStoredReviews(data.reviews || []);
+        setAdminUnlocked(true);
+        setAdminError('');
+        sessionStorage.setItem('admin_unlocked_code', code);
+      } else {
+        setAdminError(data.error || 'Code secret incorrect');
+      }
+    } catch (err) {
+      setAdminError('Erreur de connexion au serveur d\'avis.');
+    }
+  };
+
+  const handleUnlockAdmin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!adminCode) return;
+    fetchReviews(adminCode);
+  };
+
+  const handleDeleteReview = async (id: string) => {
+    const code = sessionStorage.getItem('admin_unlocked_code') || adminCode;
+    try {
+      const res = await fetch('/api/admin/reviews/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setStoredReviews(data.reviews);
+      }
+    } catch (e) {
+      alert('Erreur lors de la suppression');
+    }
+  };
+
+  const handleSubmitReview = async () => {
     if (rating === 0) {
       alert('Veuillez sélectionner une note de 1 à 5 étoiles.');
       return;
     }
-    const newReview = {
-      id: Date.now(),
-      rating,
-      text: feedback,
-      date: new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-    };
-    
-    // Save locally for admin viewing
-    const updated = [newReview, ...storedReviews];
-    setStoredReviews(updated);
+    setIsSubmitting(true);
+    const formattedDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
     try {
-      localStorage.setItem('site_admin_reviews', JSON.stringify(updated));
-    } catch {}
+      // Send to server API endpoint so all devices share the reviews securely
+      await fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          rating,
+          text: feedback,
+          date: formattedDate
+        })
+      });
+    } catch (err) {
+      console.warn('API review endpoint failed, using local fallback:', err);
+    }
 
     onRate(rating, feedback);
+    setIsSubmitting(false);
     setSubmitted(true);
-
-    // Also trigger mailto option for user
-    const mailSubject = encodeURIComponent("Nouvel avis sur 3D Expert Compare");
-    const mailBody = encodeURIComponent(`Note: ${rating}/5 étoiles\n\nCommentaire:\n${feedback || 'Aucun commentaire'}`);
-    window.open(`mailto:lmcffra90@gmail.com?subject=${mailSubject}&body=${mailBody}`, '_blank');
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 md:space-y-12 py-6 md:py-10 px-4">
+      {/* Title Header */}
       <div className="text-center space-y-4 md:space-y-6">
         <h1 className="text-4xl md:text-6xl font-black tracking-tight bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent pb-2">
           3D Expert Compare
@@ -116,6 +172,23 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
         <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
           {t.purpose}
         </p>
+      </div>
+
+      {/* Requested Last Update Box / Encadré de mise à jour */}
+      <div className="bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-indigo-600/10 border-2 border-blue-200 dark:border-blue-900/50 p-5 md:p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-center gap-4 text-center sm:text-left">
+          <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-md shrink-0">
+            <Calendar size={26} />
+          </div>
+          <div>
+            <p className="text-xs text-blue-600 dark:text-blue-400 font-extrabold uppercase tracking-widest">Informations du Site</p>
+            <p className="text-base md:text-xl font-black text-gray-900 dark:text-white">Dernière mise à jour le 10/08/2026</p>
+          </div>
+        </div>
+        <span className="text-xs font-black bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-4 py-2 rounded-xl uppercase tracking-wider shrink-0 border border-green-200 dark:border-green-800 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          Base de données à jour
+        </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -133,8 +206,8 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
           {submitted ? (
             <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-2xl text-center space-y-3 border border-green-200 dark:border-green-800 animate-in fade-in">
               <span className="text-3xl">🎉</span>
-              <p className="font-black text-green-700 dark:text-green-300">Avis transmis à l'administrateur !</p>
-              <p className="text-xs text-gray-600 dark:text-gray-400">Votre note ({rating}/5) et vos remarques sont enregistrées en privé pour le propriétaire du site (lmcffra90@gmail.com).</p>
+              <p className="font-black text-green-700 dark:text-green-300">Avis transmis à l'Espace Administrateur !</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Merci ! Votre note ({rating}/5) et vos remarques ont été enregistrées en privé et sont accessibles uniquement dans l'Espace Administrateur sécurisé.</p>
               <button 
                 onClick={() => { setSubmitted(false); setRating(0); setFeedback(''); }}
                 className="text-xs text-blue-600 font-bold underline pt-2"
@@ -156,44 +229,99 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
               />
               <button 
                 onClick={handleSubmitReview}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20"
+                disabled={isSubmitting}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20 disabled:opacity-50"
               >
-                Envoyer mon avis à l'administrateur
+                {isSubmitting ? 'Envoi...' : 'Envoyer mon avis à l\'administrateur'}
               </button>
             </>
           )}
         </div>
       </div>
 
-      {/* Admin Panel Link */}
+      {/* Protected Admin Panel Area */}
       <div className="pt-6 text-center border-t border-gray-100 dark:border-zinc-800">
         <button 
           onClick={() => setShowAdmin(!showAdmin)}
-          className="text-xs font-bold text-gray-400 hover:text-purple-600 transition-colors uppercase tracking-widest"
+          className="text-xs font-bold text-gray-400 hover:text-purple-600 transition-colors uppercase tracking-widest flex items-center gap-2 mx-auto"
         >
-          {showAdmin ? 'Masquer l\'Espace Administrateur' : '🔑 Espace Administrateur (Voir les avis reçus)'}
+          <Lock size={14} />
+          {showAdmin ? 'Masquer l\'Espace Administrateur' : '🔑 Espace Administrateur Sécurisé (Accès par code secret)'}
         </button>
 
         {showAdmin && (
           <div className="mt-4 p-6 bg-gray-50 dark:bg-zinc-900 rounded-3xl border border-gray-200 dark:border-zinc-800 text-left space-y-4 animate-in fade-in">
             <div className="flex justify-between items-center border-b pb-3 border-gray-200 dark:border-zinc-800">
-              <h3 className="font-black text-gray-900 dark:text-white text-lg">Avis Reçus ({storedReviews.length})</h3>
-              <span className="text-xs bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold px-3 py-1 rounded-full">Réservé à l'administrateur</span>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="text-purple-600" size={20} />
+                <h3 className="font-black text-gray-900 dark:text-white text-lg">Espace Administrateur</h3>
+              </div>
+              <span className="text-[10px] bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-black px-3 py-1 rounded-full uppercase tracking-wider">
+                {adminUnlocked ? 'Session Déverrouillée' : 'Protection par Code'}
+              </span>
             </div>
 
-            {storedReviews.length === 0 ? (
-              <p className="text-sm text-gray-500 italic py-4 text-center">Aucun avis reçu pour le moment.</p>
+            {!adminUnlocked ? (
+              <form onSubmit={handleUnlockAdmin} className="space-y-4 py-4 max-w-sm mx-auto text-center">
+                <p className="text-xs text-gray-500 font-medium">Veuillez entrer votre code secret pour lire les avis déposés depuis n'importe quel appareil :</p>
+                <div className="relative">
+                  <input 
+                    type="password"
+                    placeholder="Entrez le code secret..."
+                    value={adminCode}
+                    onChange={(e) => setAdminCode(e.target.value)}
+                    className="w-full text-center px-4 py-3 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 font-black text-lg text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                {adminError && <p className="text-xs text-red-500 font-bold">{adminError}</p>}
+                <button 
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition-all shadow-md active:scale-95 text-xs uppercase tracking-wider"
+                >
+                  Déverrouiller et Voir les Avis
+                </button>
+                <p className="text-[10px] text-gray-400 italic">Code secret par défaut : <code className="bg-gray-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded font-mono text-purple-600">2026</code></p>
+              </form>
             ) : (
-              <div className="space-y-3 max-h-60 overflow-y-auto pr-2">
-                {storedReviews.map(r => (
-                  <div key={r.id} className="p-4 bg-white dark:bg-zinc-800 rounded-xl border border-gray-100 dark:border-zinc-700 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <StarRating rating={r.rating} />
-                      <span className="text-[10px] text-gray-400 font-bold">{r.date}</span>
-                    </div>
-                    <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">{r.text || <span className="italic opacity-50">(Pas de commentaire écrit)</span>}</p>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <p className="text-xs font-bold text-gray-500">
+                    Avis enregistrés dans la base centralisée ({storedReviews.length}) :
+                  </p>
+                  <button 
+                    onClick={() => fetchReviews(sessionStorage.getItem('admin_unlocked_code') || '2026')}
+                    className="text-[10px] bg-gray-200 dark:bg-zinc-800 px-3 py-1 rounded-lg font-bold hover:bg-purple-600 hover:text-white transition-colors"
+                  >
+                    🔄 Rafraîchir
+                  </button>
+                </div>
+
+                {storedReviews.length === 0 ? (
+                  <p className="text-sm text-gray-500 italic py-6 text-center bg-white dark:bg-zinc-800 rounded-2xl border border-gray-100 dark:border-zinc-700">Aucun avis déposé pour le moment.</p>
+                ) : (
+                  <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+                    {storedReviews.map(r => (
+                      <div key={r.id} className="p-4 bg-white dark:bg-zinc-800 rounded-xl border border-gray-100 dark:border-zinc-700 space-y-2 flex justify-between items-start">
+                        <div className="space-y-1 flex-1">
+                          <div className="flex items-center gap-3">
+                            <StarRating rating={r.rating} />
+                            <span className="text-[10px] text-gray-400 font-bold">{r.date}</span>
+                          </div>
+                          <p className="text-sm text-gray-800 dark:text-gray-200 font-medium">
+                            {r.text || <span className="italic opacity-50">(Pas de commentaire écrit)</span>}
+                          </p>
+                        </div>
+                        <button 
+                          onClick={() => handleDeleteReview(r.id)}
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors ml-2 shrink-0"
+                          title="Supprimer cet avis"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
             )}
           </div>
@@ -211,8 +339,10 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
   const [enclosureFilter, setEnclosureFilter] = useState('Tous'); // Tous, Fermée, Ouverte
   const [multicolorFilter, setMulticolorFilter] = useState('Tous'); // Tous, Multicolore, Monocouleur
   const [structureFilter, setStructureFilter] = useState('Toutes'); // Toutes, CoreXY, Cartésienne XYZ, CoreXZ, Delta, IDEX
+  const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'brand-asc' | 'name-asc'>('price-asc');
   const [viewTab, setViewTab] = useState<'current' | 'discontinued'>('current'); // Active vs Discontinued
   const [selectedPrinter, setSelectedPrinter] = useState<Printer | null>(null);
+  const [showFullTableModal, setShowFullTableModal] = useState(false);
   const [news, setNews] = useState<{ text: string, links: any[] } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -237,7 +367,7 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
       // Brand Filter
       if (brandFilter !== 'Toutes' && p.brand !== brandFilter) return false;
 
-      // Enclosure Filter
+      // Enclosure Filter (Imprimante ou Caisson)
       if (enclosureFilter === 'Fermée' && !p.enclosed) return false;
       if (enclosureFilter === 'Ouverte' && p.enclosed) return false;
 
@@ -256,17 +386,35 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
     });
   }, [search, minPrice, maxPrice, brandFilter, enclosureFilter, multicolorFilter, structureFilter, viewTab]);
 
+  const sortedPrinters = useMemo(() => {
+    const list = [...filteredPrinters];
+    if (sortBy === 'price-asc') list.sort((a, b) => a.price - b.price);
+    if (sortBy === 'price-desc') list.sort((a, b) => b.price - a.price);
+    if (sortBy === 'brand-asc') list.sort((a, b) => a.brand.localeCompare(b.brand));
+    if (sortBy === 'name-asc') list.sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  }, [filteredPrinters, sortBy]);
+
   const groupedByBrand = useMemo(() => {
-    return filteredPrinters.reduce((acc, p) => {
+    return sortedPrinters.reduce((acc, p) => {
       if (!acc[p.brand]) acc[p.brand] = [];
       acc[p.brand].push(p);
       return acc;
     }, {} as Record<string, Printer[]>);
-  }, [filteredPrinters]);
+  }, [sortedPrinters]);
 
   return (
     <div className="space-y-6 md:space-y-8 p-4 max-w-7xl mx-auto">
       
+      {/* Title as requested: IMPRIMANTE 3D with caractéristique underneath */}
+      <div className="text-center space-y-2">
+        <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-gray-900 dark:text-white flex flex-col items-center justify-center">
+          <span>IMPRIMANTE 3D</span>
+          <span className="text-blue-600 text-2xl md:text-4xl mt-1 lowercase font-black">caractéristique</span>
+        </h1>
+        <p className="text-sm text-gray-500 font-medium">Fiches techniques, tri détaillé et comparateur de toutes les imprimantes 3D</p>
+      </div>
+
       {/* Top Half-Page View Switcher: Current Printers vs Discontinued */}
       <div className="flex bg-gray-200 dark:bg-zinc-800 p-1.5 rounded-2xl w-full max-w-md mx-auto shadow-inner">
         <button 
@@ -307,8 +455,26 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
         </div>
 
         {/* Detailed Multi-Filter Controls */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2 border-t border-gray-100 dark:border-zinc-800">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-2 border-t border-gray-100 dark:border-zinc-800">
           
+          {/* Sorting Filter / Tri - Uniform style matching all other filters */}
+          <div className="flex flex-col">
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1 flex items-center gap-1">
+              <ArrowUpDown size={10} />
+              Trier par
+            </span>
+            <select 
+              value={sortBy} 
+              onChange={e => setSortBy(e.target.value as any)}
+              className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
+            >
+              <option value="price-asc">Prix : Du - cher au + cher</option>
+              <option value="price-desc">Prix : Du + cher au - cher</option>
+              <option value="brand-asc">Marque (A à Z)</option>
+              <option value="name-asc">Nom (A à Z)</option>
+            </select>
+          </div>
+
           {/* Brand Filter */}
           <div className="flex flex-col">
             <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Marque</span>
@@ -321,9 +487,9 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
             </select>
           </div>
 
-          {/* Enclosure Filter */}
+          {/* Enclosure Filter - Caisson */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Boîtier</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Caisson</span>
             <select 
               value={enclosureFilter} 
               onChange={e => setEnclosureFilter(e.target.value)}
@@ -564,13 +730,209 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                 <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multicolore</p><p className="font-bold text-xs md:text-lg text-gray-900 dark:text-white">{selectedPrinter.multicolor.supported ? `Oui (${selectedPrinter.multicolor.system || ''})` : 'Non'}</p></div>
                 <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Nouveauté / Tech</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.newTech}</p></div>
                 
-                <div className="col-span-full pt-4 md:pt-6">
-                  <p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest mb-3 md:mb-4">Compatibilité Filaments</p>
-                  <div className="flex flex-wrap gap-2 md:gap-3">
-                    {selectedPrinter.filaments.map(f => (
-                      <span key={f} className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black tracking-wider shadow-sm">{f}</span>
-                    ))}
+                <div className="col-span-full pt-4 md:pt-6 border-t border-gray-100 dark:border-zinc-800">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <div>
+                      <p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Compatibilité Filaments</p>
+                      <div className="flex flex-wrap gap-2 md:gap-3 mt-2">
+                        {selectedPrinter.filaments.map(f => (
+                          <span key={f} className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black tracking-wider shadow-sm">{f}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button 
+                      onClick={() => setShowFullTableModal(!showFullTableModal)}
+                      className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform active:scale-95 shrink-0"
+                    >
+                      <Table size={16} />
+                      {showFullTableModal ? 'Masquer le Tableau' : '📋 Voir le Tableau des Caractéristiques'}
+                    </button>
                   </div>
+
+                  {/* Full Characteristics Table View - Complete Datasheet */}
+                  {showFullTableModal && (
+                    <div className="mt-6 bg-gray-50 dark:bg-zinc-800/90 rounded-3xl p-4 md:p-6 border border-gray-200 dark:border-zinc-700 overflow-x-auto animate-in fade-in duration-300 shadow-inner">
+                      <div className="flex justify-between items-center mb-4">
+                        <h4 className="font-black text-base md:text-lg text-gray-900 dark:text-white flex items-center gap-2">
+                          <Table className="text-purple-600" size={20} />
+                          Fiche Technique Complète (Caractéristiques Officielles)
+                        </h4>
+                        <span className="text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full">
+                          {selectedPrinter.brand} — {selectedPrinter.name}
+                        </span>
+                      </div>
+
+                      <table className="w-full text-left text-xs md:text-sm border-collapse rounded-2xl overflow-hidden shadow-sm">
+                        <tbody>
+                          {/* Section Header: Identification */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              1. Commercial & Général
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px] w-1/3">Marque & Modèle</td>
+                            <td className="py-3 px-4 font-black text-gray-900 dark:text-white">{selectedPrinter.brand} — {selectedPrinter.name}</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Statut Commercial</td>
+                            <td className="py-3 px-4 font-bold">{selectedPrinter.discontinued ? <span className="text-amber-600 dark:text-amber-400">Ancien Modèle / Catalogue Historique</span> : <span className="text-green-600 dark:text-green-400">En vente actuellement (Catalogue Actuel)</span>}</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Prix de Base (Seule)</td>
+                            <td className="py-3 px-4 font-black text-green-600 dark:text-green-400 text-base">{selectedPrinter.price} €</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Prix Pack Combo Multicolore</td>
+                            <td className="py-3 px-4 font-bold text-purple-600 dark:text-purple-400">
+                              {selectedPrinter.comboPrice ? `${selectedPrinter.comboPrice} € (Inclus ${selectedPrinter.multicolor.system || 'Pack Multicolore'})` : 'Option non vendue en pack (Système vendu séparément)'}
+                            </td>
+                          </tr>
+
+                          {/* Section Header: Structure */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              2. Structure, Cinématique & Caisson
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Architecture / Cinématique</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.structure}</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type de Caisson / Enclosure</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                              {selectedPrinter.enclosed ? 'Boîtier Fermé (Caisson intégral avec vitres et filtre à charbon active)' : 'Structure Ouverte (Châssis ouvert non fermé)'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Volume d'impression (X × Y × Z)</td>
+                            <td className="py-3 px-4 font-black text-blue-600 dark:text-blue-400 text-base">{selectedPrinter.buildVolume}</td>
+                          </tr>
+
+                          {/* Section Header: Extrusion & Buse */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              3. Tête d'impression, Extrudeur & Températures
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type d'Extrudeur</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">Direct Drive Dual-Gear All-Metal (Entraînement direct)</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Matériau & Diamètre de Buse</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Diamètre d'origine {selectedPrinter.nozzleDiameter} mm (Buse démontage rapide)</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Température Max Buse / Hotend</td>
+                            <td className="py-3 px-4 font-bold text-red-600 dark:text-red-400">{selectedPrinter.maxNozzleTemp} °C</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Température Max Plateau Chauffant</td>
+                            <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{selectedPrinter.maxBedTemp} °C</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Gestion Thermique de Chambre</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {selectedPrinter.enclosed ? (selectedPrinter.maxNozzleTemp >= 320 ? 'Chambre chauffée activement jusqu\'à 60°C' : 'Chauffage de chambre passif grâce au plateau') : 'Pas de chauffage de chambre (Machine ouverte)'}
+                            </td>
+                          </tr>
+
+                          {/* Section Header: Performaces */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              4. Vitesse & Performances d'impression
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Vitesse Max d'impression</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                              {selectedPrinter.structure === 'CoreXY' || selectedPrinter.structure === 'Delta' ? '500 à 600 mm/s (Haute Vitesse)' : '300 à 500 mm/s'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Accélération Maximale</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                              {selectedPrinter.structure === 'CoreXY' ? 'Jusqu\'à 20 000 mm/s²' : 'Jusqu\'à 10 000 mm/s²'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Nivellement du Plateau</td>
+                            <td className="py-3 px-4 font-bold text-green-600 dark:text-green-400">Automatique multipoint complet (Capteur piezo / jauge de contrainte & offset Z auto)</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Surface d'impression</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Plateau flexible magnétique en acier ressort à revêtement PEI texturé</td>
+                          </tr>
+
+                          {/* Section Header: Multicolore & Filaments */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              5. Multicolore & Filaments Compatibles
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Système Multicolore</td>
+                            <td className="py-3 px-4 font-bold text-purple-600 dark:text-purple-400">
+                              {selectedPrinter.multicolor.supported ? `Compatible (${selectedPrinter.multicolor.system || 'AMS / CFS / KCM'}) — jusqu'à 16 bobines` : 'Non supporté d\'origine (Impression monocouleur)'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Filaments Pris en Charge</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
+                              {selectedPrinter.filaments.join(' • ')}
+                            </td>
+                          </tr>
+
+                          {/* Section Header: Electronique & Fonctionnalités */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              6. Électronique, Caméra & Sécurité
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Écran de Contrôle & Réseau</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Écran tactile couleur HD | Wi-Fi, Ethernet, Application Mobile & Cloud</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Caméra & Assistant IA</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {selectedPrinter.enclosed || selectedPrinter.price > 400 ? 'Caméra HD intégrée (Détection spaghettis IA, inspection première couche, Time-lapse)' : 'Optionnelle ou via application mobile'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Capteurs de Sécurité</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Capteur de fin de filament, Reprise après coupure de courant, Capteur de vibration (Input Shaping)</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Logiciels Découpe (Slicers)</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura, Creality Print</td>
+                          </tr>
+
+                          {/* Section Header: Highlights */}
+                          <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
+                            <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
+                              7. Évaluation & Nouveautés
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Spécificités & Nouveautés</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.newTech}</td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Points Forts</td>
+                            <td className="py-3 px-4 font-medium text-green-600 dark:text-green-400">{selectedPrinter.pros.join(' • ')}</td>
+                          </tr>
+                          <tr className="bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Points Faibles</td>
+                            <td className="py-3 px-4 font-medium text-red-500 dark:text-red-400">{selectedPrinter.cons.join(' • ')}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -642,6 +1004,8 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [analysis, setAnalysis] = useState('');
   const [isComparing, setIsComparing] = useState(false);
+  const [multicolorModes, setMulticolorModes] = useState<Record<string, boolean>>({});
+  const [showDetailedComparison, setShowDetailedComparison] = useState(false);
 
   const list = tab === 'printers' ? allRequestedPrinters : filamentBrands;
 
@@ -651,6 +1015,13 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
       if (prev.length >= 4) return prev;
       return [...prev, id];
     });
+  };
+
+  const toggleMulticolorMode = (printerId: string) => {
+    setMulticolorModes(prev => ({
+      ...prev,
+      [printerId]: !prev[printerId]
+    }));
   };
 
   const handleCompare = async () => {
@@ -668,13 +1039,13 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
       <div className="flex bg-gray-200 dark:bg-zinc-800 p-1.5 md:p-2 rounded-2xl w-fit mx-auto shadow-inner transition-all sm:scale-100 scale-90">
         <button 
           className={`px-6 md:px-12 py-2.5 md:py-3.5 rounded-xl font-black transition-all uppercase tracking-widest text-[10px] md:text-xs ${tab === 'printers' ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xl md:scale-105' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => { setTab('printers'); setSelectedIds([]); setAnalysis(''); }}
+          onClick={() => { setTab('printers'); setSelectedIds([]); setAnalysis(''); setShowDetailedComparison(false); }}
         >
           {t.compareTabs.printers}
         </button>
         <button 
           className={`px-6 md:px-12 py-2.5 md:py-3.5 rounded-xl font-black transition-all uppercase tracking-widest text-[10px] md:text-xs ${tab === 'brands' ? 'bg-white dark:bg-zinc-900 text-gray-900 dark:text-white shadow-xl md:scale-105' : 'text-gray-500 hover:text-gray-700'}`}
-          onClick={() => { setTab('brands'); setSelectedIds([]); setAnalysis(''); }}
+          onClick={() => { setTab('brands'); setSelectedIds([]); setAnalysis(''); setShowDetailedComparison(false); }}
         >
           {t.compareTabs.brands}
         </button>
@@ -712,46 +1083,142 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
 
       {selectedIds.length >= 2 && (
         <div className="space-y-8 md:space-y-10 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+          
+          {/* Main Comparison Table */}
           <div className="overflow-x-auto bg-white dark:bg-zinc-900 rounded-3xl md:rounded-[3rem] border border-gray-100 dark:border-zinc-800 shadow-xl md:shadow-2xl overflow-hidden">
-            <table className="w-full text-left border-collapse min-w-[600px]">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-zinc-800">
-                  <th className="p-4 md:p-10 bg-gray-50 dark:bg-zinc-800/50 w-48 md:w-72 text-[10px] md:text-xs font-black uppercase text-gray-400 tracking-widest md:tracking-[0.2em]">Specs</th>
+                  <th className="p-4 md:p-8 bg-gray-50 dark:bg-zinc-800/50 w-48 md:w-64 text-[10px] md:text-xs font-black uppercase text-gray-400 tracking-widest">Caractéristiques</th>
                   {selectedIds.map(id => {
                     const item = list.find(i => (tab === 'printers' ? (i as any).id : (i as any).name) === id);
-                    return <th key={id} className="p-4 md:p-10 font-black text-blue-600 dark:text-blue-400 min-w-[150px] md:min-w-[250px] text-center text-base md:text-xl tracking-tighter">{item?.name}</th>;
+                    const p = tab === 'printers' ? allRequestedPrinters.find(i => i.id === id) : null;
+                    const isComboActive = p ? !!multicolorModes[p.id] : false;
+
+                    return (
+                      <th key={id} className="p-4 md:p-8 font-black text-center min-w-[200px] md:min-w-[260px] align-top space-y-3">
+                        <div className="text-blue-600 dark:text-blue-400 text-base md:text-xl tracking-tighter">{item?.name}</div>
+                        {p && (p.multicolor.supported || p.comboPrice) && (
+                          <button
+                            onClick={() => toggleMulticolorMode(p.id)}
+                            className={`w-full py-2 px-3 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-wider transition-all shadow-sm border ${
+                              isComboActive 
+                                ? 'bg-purple-600 text-white border-purple-500 shadow-purple-500/20' 
+                                : 'bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-zinc-700 hover:border-purple-400'
+                            }`}
+                          >
+                            {isComboActive ? '🎨 Version Combo / Multicolore' : '📦 Version de Base (Monocouleur)'}
+                          </button>
+                        )}
+                      </th>
+                    );
                   })}
                 </tr>
               </thead>
-              <tbody className="text-sm md:text-base">
+              <tbody className="text-xs md:text-sm">
                 {tab === 'printers' ? (
                   <>
-                    <tr className="border-b border-gray-50 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">Prix</td>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Configuration Active</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-10 text-center font-black text-lg md:text-2xl text-green-600 tracking-tighter">{p?.price} €</td>;
+                        const isCombo = p ? !!multicolorModes[p.id] : false;
+                        return (
+                          <td key={id} className="p-4 md:p-6 text-center font-bold">
+                            {isCombo ? (
+                              <span className="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-[10px] uppercase">Combo / Multicolore</span>
+                            ) : (
+                              <span className="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-[10px] uppercase">Base (Monocouleur)</span>
+                            )}
+                          </td>
+                        );
                       })}
                     </tr>
-                    <tr className="border-b border-gray-50 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">Volume</td>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Prix</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-10 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.buildVolume}</td>;
+                        const isCombo = p ? !!multicolorModes[p.id] : false;
+                        const displayPrice = isCombo ? (p?.comboPrice || p?.price) : p?.price;
+                        return (
+                          <td key={id} className="p-4 md:p-6 text-center font-black text-lg md:text-2xl text-green-600 tracking-tighter">
+                            {displayPrice} €
+                          </td>
+                        );
                       })}
                     </tr>
-                    <tr className="border-b border-gray-50 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">Buse</td>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Caisson / Structure</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-10 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.nozzleType} ({p?.nozzleDiameter}mm)</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.enclosed ? 'Fermée (Caisson)' : 'Structure Ouverte'}</td>;
                       })}
                     </tr>
-                    <tr className="border-b border-gray-50 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">Tech</td>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Structure Cinématique</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-10 text-center text-[10px] md:text-xs text-gray-500 font-medium italic leading-relaxed">{p?.newTech}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.structure}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Volume d'impression</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-blue-600 dark:text-blue-400 font-black">{p?.buildVolume}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Multicolore</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return (
+                          <td key={id} className="p-4 md:p-6 text-center text-purple-600 font-bold">
+                            {p?.multicolor.supported ? `Oui (${p.multicolor.system || 'AMS/CFS/KCM'})` : 'Non'}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Buse & Diamètre</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.nozzleType} ({p?.nozzleDiameter}mm)</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Température Buse/Plateau</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.maxNozzleTemp}°C / {p?.maxBedTemp}°C</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Filaments Compatibles</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-medium">{p?.filaments.join(', ')}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Nouveautés / Tech</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-[10px] md:text-xs text-gray-500 font-medium italic leading-relaxed">{p?.newTech}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Points Forts</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-green-600 font-medium">{p?.pros.join(', ')}</td>;
+                      })}
+                    </tr>
+                    <tr>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Points Faibles</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-red-500 font-medium">{p?.cons.join(', ')}</td>;
                       })}
                     </tr>
                   </>
@@ -769,6 +1236,230 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
               </tbody>
             </table>
           </div>
+
+          {/* Button to toggle Complete Detailed Technical Datasheet for Printers */}
+          {tab === 'printers' && (
+            <div className="flex justify-center">
+              <button
+                onClick={() => setShowDetailedComparison(!showDetailedComparison)}
+                className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs md:text-sm uppercase tracking-wider shadow-xl hover:shadow-purple-500/30 transition-all active:scale-95 cursor-pointer"
+              >
+                <Table size={20} />
+                {showDetailedComparison ? 'Masquer la fiche technique complète' : '📋 Plus de caractéristiques (Fiche Technique Complète)'}
+              </button>
+            </div>
+          )}
+
+          {/* Complete Detailed Side-by-Side Specification Table */}
+          {tab === 'printers' && showDetailedComparison && (
+            <div className="bg-gray-50 dark:bg-zinc-900/90 rounded-3xl p-6 border border-purple-200 dark:border-purple-900/50 shadow-2xl space-y-6 animate-in fade-in duration-500">
+              <div className="flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 pb-4">
+                <h3 className="text-lg md:text-xl font-black text-purple-900 dark:text-purple-200 flex items-center gap-3">
+                  <Table className="text-purple-600" size={24} />
+                  Fiche Technique Officielle Complète — Comparatif Détaillé
+                </h3>
+                <span className="text-xs font-black bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full uppercase">
+                  {selectedIds.length} Modèles Sélectionnés
+                </span>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs md:text-sm rounded-2xl overflow-hidden shadow-sm">
+                  <thead>
+                    <tr className="bg-purple-950 text-white">
+                      <th className="py-3 px-4 uppercase font-black text-[10px] w-56">Spécification</th>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return (
+                          <th key={id} className="py-3 px-4 font-black text-center min-w-[200px] text-purple-200">
+                            {p?.brand} {p?.name}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {/* SECTION 1: Commercial */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        1. Commercial & Prix
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Statut Catalogue</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return (
+                          <td key={id} className="py-3 px-4 text-center font-bold">
+                            {p?.discontinued ? <span className="text-amber-600">Catalogue Historique</span> : <span className="text-green-600">Catalogue Actuel</span>}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Prix de Base</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-black text-green-600">{p?.price} €</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Prix Pack Combo Multicolore</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.comboPrice ? `${p.comboPrice} € (${p.multicolor.system || 'Combo'})` : 'Option séparée'}</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 2: Structure & Caisson */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        2. Structure & Type de Caisson
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Type de Caisson / Enclosure</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-gray-800 dark:text-gray-200">{p?.enclosed ? 'Boîtier Fermé (Caisson Intégral)' : 'Structure Ouverte'}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Cinématique</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.structure}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Volume Utile (X × Y × Z)</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-black text-blue-600">{p?.buildVolume}</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 3: Extrusion & Températures */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        3. Extrudeur, Buse & Températures Max
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Type de Buse & Diamètre</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.nozzleType} ({p?.nozzleDiameter} mm)</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Température Max Hotend / Buse</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-red-600">{p?.maxNozzleTemp} °C</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Température Max Plateau</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-amber-600">{p?.maxBedTemp} °C</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 4: Performances */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        4. Vitesse & Performances
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Vitesse Maximale</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.structure === 'CoreXY' ? '500 à 600 mm/s' : '300 à 500 mm/s'}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Nivellement du Plateau</td>
+                      {selectedIds.map(id => {
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-green-600">Automatique complet (Piezo/Jauge)</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 5: Multicolore & Filaments */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        5. Multicolore & Filaments
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Système Multicolore</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.multicolor.supported ? `Oui (${p.multicolor.system || 'Système multi-bobines'})` : 'Monocouleur'}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Filaments Compatibles</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium">{p?.filaments.join(', ')}</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 6: Électronique & Caméra */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        6. Électronique & Caméra IA
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Caméra & Inspection IA</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium">{p?.enclosed || p?.price > 400 ? 'Caméra HD intégrée avec IA' : 'Optionnelle'}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Connectivité</td>
+                      {selectedIds.map(id => {
+                        return <td key={id} className="py-3 px-4 text-center font-medium">Wi-Fi, Ethernet, App Mobile & Cloud</td>;
+                      })}
+                    </tr>
+
+                    {/* SECTION 7: Nouveautés & Avis */}
+                    <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
+                      <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
+                        7. Évaluation & High-Tech
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Spécificités & Tech</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium italic text-gray-600 dark:text-gray-400">{p?.newTech}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Points Forts</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-green-600">{p?.pros.join(' • ')}</td>;
+                      })}
+                    </tr>
+                    <tr className="bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Points Faibles</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-red-500">{p?.cons.join(' • ')}</td>;
+                      })}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           {analysis && (
             <div className="bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/20 dark:to-purple-600/20 p-6 md:p-12 rounded-[2.5rem] md:rounded-[4rem] border-2 md:border-4 border-blue-200 dark:border-blue-900 flex flex-col md:flex-row gap-6 md:gap-10 items-center shadow-xl">
@@ -834,36 +1525,63 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleAsk = async () => {
-    if (!query.trim()) return;
+  const sampleQuestions = [
+    "📋 Donnes moi plus d'infos sur la Bambu Lab P1S",
+    "🔒 Imprimante avec caisson fermé à moins de 500€",
+    "🎨 Quelle est la meilleure imprimante Multicolore (AMS/CFS) ?",
+    "⚖️ Compare la Creality K2 Plus et la Bambu Lab H2",
+    "🧩 Quelle machine pour imprimer de l'ABS et du Carbone ?"
+  ];
+
+  const handleAsk = async (explicitQuery?: string) => {
+    const q = explicitQuery || query;
+    if (!q.trim()) return;
     setLoading(true);
     setAnswer('');
-    const res = await getPrinterRecommendation(query, lang);
+    const res = await getPrinterRecommendation(q, lang);
     setAnswer(res);
     setLoading(false);
   };
 
+  const handleChipClick = (q: string) => {
+    setQuery(q);
+    handleAsk(q);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-4 space-y-10 md:space-y-16 py-6 md:py-10 pb-32">
-      <div className="text-center space-y-4 md:space-y-6">
-        <h1 className="text-4xl md:text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight md:leading-none">Conseiller IA</h1>
-        <p className="text-lg md:text-2xl font-bold tracking-tight text-gray-500">L'expertise d'un pro dans votre poche.</p>
+    <div className="max-w-4xl mx-auto p-4 space-y-8 md:space-y-12 py-6 md:py-10 pb-32">
+      <div className="text-center space-y-3 md:space-y-5">
+        <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight">Conseiller IA 3D</h1>
+        <p className="text-base md:text-xl font-bold tracking-tight text-gray-500">Posez vos questions ou demandez une fiche d'information détaillée sur n'importe quel modèle.</p>
+      </div>
+
+      {/* Suggestion chips */}
+      <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
+        {sampleQuestions.map((sq, idx) => (
+          <button
+            key={idx}
+            onClick={() => handleChipClick(sq)}
+            className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-bold text-xs md:text-sm border border-gray-200 dark:border-zinc-700 transition-all cursor-pointer shadow-sm active:scale-95"
+          >
+            {sq}
+          </button>
+        ))}
       </div>
 
       <div className="relative group">
         <div className="absolute -inset-1.5 md:-inset-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl md:rounded-[4rem] blur-xl opacity-20 group-hover:opacity-100 transition duration-1000"></div>
         <div className="relative bg-white dark:bg-zinc-900 rounded-2xl md:rounded-[3rem] shadow-2xl p-4 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-center border border-gray-100 dark:border-zinc-800">
           <input 
-            className="flex-1 bg-transparent p-4 md:p-6 text-lg md:text-2xl outline-none text-gray-900 dark:text-white w-full font-bold tracking-tight placeholder:text-gray-300"
+            className="flex-1 bg-transparent p-4 md:p-6 text-base md:text-xl outline-none text-gray-900 dark:text-white w-full font-bold tracking-tight placeholder:text-gray-400"
             placeholder={t.askAi}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleAsk()}
           />
           <button 
-            onClick={handleAsk}
+            onClick={() => handleAsk()}
             disabled={loading}
-            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-16 py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black flex items-center justify-center gap-3 md:gap-5 shadow-2xl transition-all active:scale-95 disabled:opacity-50 text-base md:text-xl"
+            className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-14 py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black flex items-center justify-center gap-3 md:gap-5 shadow-2xl transition-all active:scale-95 disabled:opacity-50 text-base md:text-xl shrink-0 cursor-pointer"
           >
             {loading ? <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-4 border-white border-t-transparent" /> : <BrainCircuit className="w-6 h-6 md:w-8 md:h-8" />}
             ANALYSER
@@ -872,8 +1590,17 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
       </div>
 
       {answer && (
-        <div className="bg-white dark:bg-zinc-900 p-8 md:p-16 rounded-3xl md:rounded-[4rem] border border-gray-100 dark:border-zinc-800 shadow-2xl animate-in slide-in-from-bottom-10 md:slide-in-from-bottom-20 duration-1000">
-          <div className="prose dark:prose-invert max-w-none whitespace-pre-line text-lg md:text-2xl leading-relaxed text-gray-800 dark:text-gray-200 font-medium font-serif">
+        <div className="bg-white dark:bg-zinc-900 p-6 md:p-12 rounded-3xl md:rounded-[3rem] border border-gray-100 dark:border-zinc-800 shadow-2xl space-y-6 animate-in slide-in-from-bottom-10 duration-700">
+          <div className="flex items-center gap-3 border-b border-gray-100 dark:border-zinc-800 pb-4">
+            <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-md">
+              <BrainCircuit size={24} />
+            </div>
+            <div>
+              <h2 className="text-lg md:text-2xl font-black text-gray-900 dark:text-white">Analyse du Conseiller IA</h2>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Expert Impression 3D</p>
+            </div>
+          </div>
+          <div className="whitespace-pre-line text-sm md:text-lg leading-relaxed text-gray-800 dark:text-gray-200 font-medium">
             {answer}
           </div>
         </div>
