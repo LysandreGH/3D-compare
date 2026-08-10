@@ -4,7 +4,7 @@ import { TranslationStrings } from './types';
 export const translations: Record<string, TranslationStrings> = {
   FR: {
     home: "Accueil",
-    printers: "Imprimantes 3D",
+    printers: "IMPRIMANTE 3D caractéristique",
     filaments: "Filaments",
     brands: "Marques",
     compare: "Comparer",
