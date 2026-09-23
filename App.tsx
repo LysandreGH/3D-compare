@@ -27,7 +27,17 @@ import {
   Lock,
   Unlock,
   ShieldCheck,
-  ArrowUpDown
+  ArrowUpDown,
+  Mail,
+  Check,
+  Copy,
+  Sparkles,
+  Flame,
+  Tag,
+  Globe,
+  ArrowRight,
+  X,
+  Filter
 } from 'lucide-react';
 import { Language, Theme, Printer, FilamentType, FilamentBrand, TranslationStrings } from './types';
 import { translations } from './translations';
@@ -70,7 +80,15 @@ const StarRating = ({ rating, interactive = false, onRate }: { rating: number, i
 
 // --- Pages ---
 
-const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, txt: string) => void }) => {
+const HomePage = ({ 
+  t, 
+  onRate,
+  onSelectBrand
+}: { 
+  t: TranslationStrings, 
+  onRate: (r: number, txt: string) => void,
+  onSelectBrand?: (brand: string) => void
+}) => {
   const [rating, setRating] = useState(0);
   const [feedback, setFeedback] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -80,6 +98,8 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
   const [storedReviews, setStoredReviews] = useState<any[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [adminError, setAdminError] = useState('');
+
+  const adminEmail = '3dexpertcomparevercelapp@gmail.com';
 
   // Check if admin is already unlocked in current session
   useEffect(() => {
@@ -160,6 +180,15 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
     }
   };
 
+  const getMailtoUrl = (r: number, fb: string) => {
+    const formattedDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const subject = encodeURIComponent(`Avis 3D Expert Compare - Note : ${r}/5 étoiles`);
+    const body = encodeURIComponent(
+      `Bonjour,\n\nVoici mon avis sur le comparateur 3D Expert Compare :\n\n⭐ Note attribuée : ${r} / 5 étoiles\n💬 Remarques & Suggestions :\n${fb || '(Aucun commentaire écrit)'}\n\nEnvoyé le : ${formattedDate}\n`
+    );
+    return `mailto:${adminEmail}?subject=${subject}&body=${body}`;
+  };
+
   const handleSubmitReview = async () => {
     if (rating === 0) {
       alert('Veuillez sélectionner une note de 1 à 5 étoiles.');
@@ -168,6 +197,19 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
     setIsSubmitting(true);
     const formattedDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
+    // Instantly trigger redirection to the user's mail client
+    const mailtoUrl = getMailtoUrl(rating, feedback);
+    try {
+      const mailLink = document.createElement('a');
+      mailLink.href = mailtoUrl;
+      mailLink.target = '_self';
+      document.body.appendChild(mailLink);
+      mailLink.click();
+      document.body.removeChild(mailLink);
+    } catch (e) {
+      window.location.href = mailtoUrl;
+    }
+
     const newReview = {
       id: 'rev_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
       rating,
@@ -175,7 +217,7 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
       date: formattedDate
     };
 
-    // Save to local storage first for failsafe retention on mobile/client
+    // Save to local storage for backup
     try {
       const existing = JSON.parse(localStorage.getItem('my_local_reviews') || '[]');
       existing.unshift(newReview);
@@ -184,7 +226,7 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
       console.warn('Failed saving review to localStorage:', e);
     }
 
-    // Try sending to central server API
+    // Try background update to server if running
     try {
       const res = await fetch('/api/reviews', {
         method: 'POST',
@@ -200,7 +242,7 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
         setStoredReviews(data.reviews);
       }
     } catch (err) {
-      console.warn('API review endpoint failed, review kept in local queue:', err);
+      // Background sync optional
     }
 
     onRate(rating, feedback);
@@ -220,21 +262,123 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
         </p>
       </div>
 
-      {/* Requested Last Update Box / Encadré de mise à jour */}
-      <div className="bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-indigo-600/10 border-2 border-blue-200 dark:border-blue-900/50 p-5 md:p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-4 text-center sm:text-left">
-          <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-md shrink-0">
-            <Calendar size={26} />
+      {/* Encadré Information du Site avec dates mises à jour : 23/09/2026 */}
+      <div className="bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-indigo-600/10 border-2 border-blue-200 dark:border-blue-900/50 p-5 md:p-7 rounded-3xl shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-blue-200/50 dark:border-blue-900/40 pb-4">
+          <div className="flex items-center gap-3.5">
+            <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-md shrink-0">
+              <Calendar size={24} />
+            </div>
+            <div>
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-extrabold uppercase tracking-widest">Informations du Site</p>
+              <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white">État & Mises à Jour en direct</h2>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-blue-600 dark:text-blue-400 font-extrabold uppercase tracking-widest">Informations du Site</p>
-            <p className="text-base md:text-xl font-black text-gray-900 dark:text-white">Dernière mise à jour le 10/08/2026</p>
+          <span className="text-xs font-black bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-4 py-2 rounded-xl uppercase tracking-wider shrink-0 border border-green-200 dark:border-green-800 flex items-center gap-2 self-start sm:self-auto">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Base de données & Prix vérifiés
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white/90 dark:bg-zinc-900/90 p-4 rounded-2xl border border-blue-100 dark:border-zinc-800 flex items-center gap-3.5 shadow-sm">
+            <div className="p-2.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl shrink-0">
+              <Tag size={20} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Prix des imprimantes 3D</p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">Dernière mise à jour : <span className="text-blue-600 dark:text-blue-400">23/09/2026</span></p>
+            </div>
+          </div>
+
+          <div className="bg-white/90 dark:bg-zinc-900/90 p-4 rounded-2xl border border-blue-100 dark:border-zinc-800 flex items-center gap-3.5 shadow-sm">
+            <div className="p-2.5 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl shrink-0">
+              <Globe size={20} />
+            </div>
+            <div>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Fiches & Contenu du site</p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">Dernière mise à jour : <span className="text-purple-600 dark:text-purple-400">23/09/2026</span></p>
+            </div>
           </div>
         </div>
-        <span className="text-xs font-black bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-4 py-2 rounded-xl uppercase tracking-wider shrink-0 border border-green-200 dark:border-green-800 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-          Base de données à jour
-        </span>
+      </div>
+
+      {/* NOUVEL ENCADRÉ : Événements & Bons Plans du Moment */}
+      <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 border-2 border-amber-300 dark:border-amber-700/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-200/50 dark:border-amber-800/40 pb-4">
+          <div className="flex items-center gap-3.5">
+            <div className="p-3 bg-gradient-to-br from-amber-500 to-pink-500 text-white rounded-2xl shadow-md shrink-0">
+              <Sparkles size={24} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest bg-amber-500 text-white px-2.5 py-0.5 rounded-full">En ce moment</span>
+                <p className="text-xs text-amber-600 dark:text-amber-400 font-extrabold uppercase tracking-widest">Offres & Promos Spéciales</p>
+              </div>
+              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Événements & Réductions Constructeurs</h2>
+            </div>
+          </div>
+          <span className="text-xs font-black bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-3.5 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 self-start sm:self-auto">
+            <Flame size={14} className="text-amber-600 fill-amber-600" />
+            Bons Plans Actuels
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Anycubic Event Card - 11 Ans */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-6 border border-purple-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-purple-400 dark:hover:border-purple-600 transition-all hover:shadow-lg">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-black uppercase tracking-wider bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg">
+                  🎂 ANYCUBIC • FÊTE SES 11 ANS
+                </span>
+                <span className="text-xs font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2.5 py-0.5 rounded-full">
+                  Jusqu'à -40%
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                Célébration des 11 Ans Anycubic 🎉
+              </h3>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                À l'occasion de son <strong>11ème anniversaire</strong>, Anycubic propose de très fortes réductions sur l'ensemble de son catalogue : remises exceptionnelles sur la <strong>Kobra 3 Combo (multicolore)</strong>, les séries résine <strong>Photon Mono M7 Pro</strong> et offres groupées de bobines et résines.
+              </p>
+            </div>
+            <button 
+              onClick={() => onSelectBrand?.('Anycubic')}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+            >
+              <span>Voir les imprimantes Anycubic en promo</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+
+          {/* Elegoo Event Card - Réductions */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-6 border border-blue-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-blue-400 dark:hover:border-blue-600 transition-all hover:shadow-lg">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-black uppercase tracking-wider bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg">
+                  ⚡ ELEGOO • GRANDES RÉDUCTIONS
+                </span>
+                <span className="text-xs font-black text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/40 px-2.5 py-0.5 rounded-full">
+                  Offres Spéciales
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-gray-900 dark:text-white">
+                Vague de Réductions chez Elegoo ⚡
+              </h3>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
+                Importantes baisses de prix et coupons exclusifs chez Elegoo : tarifs réduits sur la toute nouvelle <strong>Centauri Carbon (CoreXY)</strong>, remises directes sur les séries FDM <strong>Neptune 4 / 4 Pro / 4 Max</strong> et les références résine <strong>Saturn 4 Ultra & Mars 5</strong>.
+              </p>
+            </div>
+            <button 
+              onClick={() => onSelectBrand?.('Elegoo')}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+            >
+              <span>Voir les imprimantes Elegoo en promo</span>
+              <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
@@ -247,19 +391,33 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
         </div>
 
         <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800 space-y-6">
-          <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">{t.rateApp}</h2>
+          <div className="text-center space-y-1">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t.rateApp}</h2>
+            <p className="text-xs text-gray-500 font-medium">Vos retours et suggestions sont directement envoyés au créateur du site</p>
+          </div>
           
           {submitted ? (
             <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-2xl text-center space-y-3 border border-green-200 dark:border-green-800 animate-in fade-in">
               <span className="text-3xl">🎉</span>
-              <p className="font-black text-green-700 dark:text-green-300">Avis transmis à l'Espace Administrateur !</p>
-              <p className="text-xs text-gray-600 dark:text-gray-400">Merci ! Votre note ({rating}/5) et vos remarques ont été enregistrées en privé et sont accessibles uniquement dans l'Espace Administrateur sécurisé.</p>
-              <button 
-                onClick={() => { setSubmitted(false); setRating(0); setFeedback(''); }}
-                className="text-xs text-blue-600 font-bold underline pt-2"
-              >
-                Laisser un autre avis
-              </button>
+              <p className="font-black text-green-700 dark:text-green-300">Votre application e-mail s'ouvre !</p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                Votre avis avec une note de <strong>{rating}/5 étoiles</strong> a été préparé pour être envoyé directement au créateur du site.
+              </p>
+              <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
+                <a 
+                  href={getMailtoUrl(rating, feedback)}
+                  className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-md"
+                >
+                  <Mail size={14} />
+                  <span>Ouvrir ma boîte mail pour envoyer</span>
+                </a>
+                <button 
+                  onClick={() => { setSubmitted(false); setRating(0); setFeedback(''); }}
+                  className="text-xs text-gray-600 dark:text-gray-300 font-bold px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 transition-colors cursor-pointer"
+                >
+                  Laisser un autre avis
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -269,16 +427,17 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
               <textarea
                 className="w-full p-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm font-medium"
                 rows={3}
-                placeholder="Laissez votre avis ou suggestion ici..."
+                placeholder="Votre avis, suggestion ou question pour l'administrateur..."
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
               />
               <button 
                 onClick={handleSubmitReview}
                 disabled={isSubmitting}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20 disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm uppercase tracking-wider"
               >
-                {isSubmitting ? 'Envoi...' : 'Envoyer mon avis à l\'administrateur'}
+                <Mail size={16} />
+                <span>{isSubmitting ? 'Préparation...' : 'Envoyer mon avis par e-mail'}</span>
               </button>
             </>
           )}
@@ -377,11 +536,21 @@ const HomePage = ({ t, onRate }: { t: TranslationStrings, onRate: (r: number, tx
   );
 };
 
-const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => {
+const PrintersPage = ({ 
+  t, 
+  lang,
+  initialBrand,
+  onClearInitialBrand
+}: { 
+  t: TranslationStrings, 
+  lang: Language,
+  initialBrand?: string | null,
+  onClearInitialBrand?: () => void
+}) => {
   const [search, setSearch] = useState('');
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(12000);
-  const [brandFilter, setBrandFilter] = useState('Toutes');
+  const [selectedBrands, setSelectedBrands] = useState<string[]>(initialBrand ? [initialBrand] : []);
   const [enclosureFilter, setEnclosureFilter] = useState('Tous'); // Tous, Fermée, Ouverte
   const [multicolorFilter, setMulticolorFilter] = useState('Tous'); // Tous, Multicolore, Monocouleur
   const [structureFilter, setStructureFilter] = useState('Toutes'); // Toutes, CoreXY, Cartésienne XYZ, CoreXZ, Delta, IDEX
@@ -392,6 +561,12 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
   const [news, setNews] = useState<{ text: string, links: any[] } | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
 
+  useEffect(() => {
+    if (initialBrand) {
+      setSelectedBrands([initialBrand]);
+    }
+  }, [initialBrand]);
+
   const handleSync = async () => {
     setIsSyncing(true);
     const result = await fetchLatestPrinterNews(lang);
@@ -400,9 +575,35 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
   };
 
   const availableBrands = useMemo(() => {
-    const brands = Array.from(new Set(allRequestedPrinters.map(p => p.brand)));
-    return ['Toutes', ...brands];
+    return Array.from(new Set(allRequestedPrinters.map(p => p.brand))).sort();
   }, []);
+
+  const brandCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    allRequestedPrinters.forEach(p => {
+      if (viewTab === 'current' && p.discontinued) return;
+      if (viewTab === 'discontinued' && !p.discontinued) return;
+      counts[p.brand] = (counts[p.brand] || 0) + 1;
+    });
+    return counts;
+  }, [viewTab]);
+
+  const handleToggleBrand = (brand: string) => {
+    setSelectedBrands(prev => {
+      if (prev.includes(brand)) {
+        const next = prev.filter(b => b !== brand);
+        if (next.length === 0) onClearInitialBrand?.();
+        return next;
+      } else {
+        return [...prev, brand];
+      }
+    });
+  };
+
+  const handleSelectAllBrands = () => {
+    setSelectedBrands([]);
+    onClearInitialBrand?.();
+  };
 
   const filteredPrinters = useMemo(() => {
     return allRequestedPrinters.filter(p => {
@@ -410,8 +611,8 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
       if (viewTab === 'current' && p.discontinued) return false;
       if (viewTab === 'discontinued' && !p.discontinued) return false;
 
-      // Brand Filter
-      if (brandFilter !== 'Toutes' && p.brand !== brandFilter) return false;
+      // Brand Filter (Multi-marques sélectionnées)
+      if (selectedBrands.length > 0 && !selectedBrands.includes(p.brand)) return false;
 
       // Enclosure Filter (Imprimante ou Caisson)
       if (enclosureFilter === 'Fermée' && !p.enclosed) return false;
@@ -430,7 +631,7 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
 
       return matchesSearch && matchesPrice;
     });
-  }, [search, minPrice, maxPrice, brandFilter, enclosureFilter, multicolorFilter, structureFilter, viewTab]);
+  }, [search, minPrice, maxPrice, selectedBrands, enclosureFilter, multicolorFilter, structureFilter, viewTab]);
 
   const sortedPrinters = useMemo(() => {
     const list = [...filteredPrinters];
@@ -500,8 +701,84 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
           </button>
         </div>
 
+        {/* Brand Multi-Selection Filter Bar - Permet de sélectionner les marques choisies par l'utilisateur */}
+        <div className="space-y-2.5 pt-3 border-t border-gray-100 dark:border-zinc-800">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Filter size={15} className="text-blue-600 dark:text-blue-400" />
+              <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
+                Filtrer par Marque{selectedBrands.length > 1 ? 's' : ''} :
+              </span>
+              {selectedBrands.length > 0 ? (
+                <span className="text-[11px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2.5 py-0.5 rounded-lg border border-blue-200 dark:border-blue-800">
+                  {selectedBrands.length} marque{selectedBrands.length > 1 ? 's' : ''} sélectionnée{selectedBrands.length > 1 ? 's' : ''} ({filteredPrinters.length} modèles)
+                </span>
+              ) : (
+                <span className="text-[11px] font-semibold text-gray-400">
+                  (Toutes les marques affichées)
+                </span>
+              )}
+            </div>
+
+            {selectedBrands.length > 0 && (
+              <button 
+                onClick={handleSelectAllBrands}
+                className="text-[11px] font-bold text-red-500 hover:text-red-700 dark:text-red-400 flex items-center gap-1 cursor-pointer hover:underline transition-colors"
+              >
+                <X size={13} />
+                <span>Effacer le filtre ({selectedBrands.join(', ')})</span>
+              </button>
+            )}
+          </div>
+
+          {/* Interactive Brand Pills */}
+          <div className="flex flex-wrap gap-2 pt-1">
+            <button
+              onClick={handleSelectAllBrands}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                selectedBrands.length === 0
+                  ? 'bg-blue-600 text-white shadow-blue-500/30 ring-2 ring-blue-500 scale-105'
+                  : 'bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              <span>Toutes les marques</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
+                selectedBrands.length === 0 ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-zinc-700 text-gray-600 dark:text-gray-400'
+              }`}>
+                {allRequestedPrinters.filter(p => viewTab === 'current' ? !p.discontinued : p.discontinued).length}
+              </span>
+            </button>
+
+            {availableBrands.map(b => {
+              const isSelected = selectedBrands.includes(b);
+              const count = brandCounts[b] || 0;
+              if (count === 0 && selectedBrands.length === 0) return null;
+              return (
+                <button
+                  key={b}
+                  onClick={() => handleToggleBrand(b)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/30 ring-2 ring-blue-400 dark:ring-blue-500 scale-105'
+                      : 'bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300 border border-gray-200/70 dark:border-zinc-700'
+                  }`}
+                  title={isSelected ? `Désélectionner ${b}` : `Sélectionner ${b}`}
+                >
+                  {isSelected && <Check size={12} className="stroke-[3]" />}
+                  <span>{b}</span>
+                  <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+                    isSelected ? 'bg-white/25 text-white' : 'bg-gray-200 dark:bg-zinc-700 text-gray-600 dark:text-gray-400'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Detailed Multi-Filter Controls */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-2 border-t border-gray-100 dark:border-zinc-800">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 pt-3 border-t border-gray-100 dark:border-zinc-800">
           
           {/* Sorting Filter / Tri - Uniform style matching all other filters */}
           <div className="flex flex-col">
@@ -521,15 +798,29 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
             </select>
           </div>
 
-          {/* Brand Filter */}
+          {/* Brand Filter Dropdown - stays synchronized with multi-select */}
           <div className="flex flex-col">
             <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Marque</span>
             <select 
-              value={brandFilter} 
-              onChange={e => setBrandFilter(e.target.value)}
+              value={selectedBrands.length === 1 ? selectedBrands[0] : (selectedBrands.length === 0 ? 'Toutes' : 'Multiple')} 
+              onChange={e => {
+                const val = e.target.value;
+                if (val === 'Toutes') {
+                  setSelectedBrands([]);
+                  onClearInitialBrand?.();
+                } else if (val !== 'Multiple') {
+                  setSelectedBrands([val]);
+                }
+              }}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              {availableBrands.map(b => <option key={b} value={b}>{b}</option>)}
+              <option value="Toutes">Toutes les marques</option>
+              {selectedBrands.length > 1 && (
+                <option value="Multiple">Sélection multiple ({selectedBrands.length})</option>
+              )}
+              {availableBrands.map(b => (
+                <option key={b} value={b}>{b} ({brandCounts[b] || 0})</option>
+              ))}
             </select>
           </div>
 
@@ -1761,6 +2052,7 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [lang, setLang] = useState<Language>('FR');
   const [theme, setTheme] = useState<Theme>('light');
+  const [selectedBrandFilter, setSelectedBrandFilter] = useState<string | null>(null);
 
   const t = translations[lang];
 
@@ -1850,8 +2142,24 @@ export default function App() {
         </header>
 
         <div className="p-4 md:p-10 lg:p-20 animate-in fade-in duration-1000">
-          {page === 'home' && <HomePage t={t} onRate={(r, f) => console.log('Feedback:', r, f)} />}
-          {page === 'printers' && <PrintersPage t={t} lang={lang} />}
+          {page === 'home' && (
+            <HomePage 
+              t={t} 
+              onRate={(r, f) => console.log('Feedback:', r, f)} 
+              onSelectBrand={(brand) => {
+                setSelectedBrandFilter(brand);
+                setPage('printers');
+              }}
+            />
+          )}
+          {page === 'printers' && (
+            <PrintersPage 
+              t={t} 
+              lang={lang} 
+              initialBrand={selectedBrandFilter}
+              onClearInitialBrand={() => setSelectedBrandFilter(null)}
+            />
+          )}
           {page === 'filaments' && <FilamentsPage t={t} />}
           {page === 'brands' && <FilamentBrandsPage t={t} />}
           {page === 'compare' && <ComparePage t={t} lang={lang} />}
