@@ -31,6 +31,22 @@ export interface Printer {
   pros: string[];
   cons: string[];
   image: string;
+  // Detailed technical specifications from official datasheets
+  maxSpeed?: number;
+  maxAcceleration?: string;
+  maxFlow?: string;
+  chassis?: string;
+  dimensions?: string;
+  weight?: string;
+  screen?: string;
+  chamberHeating?: string;
+  filtration?: string;
+  camera?: string;
+  sensors?: string[];
+  extruderGears?: string;
+  supportedPlates?: string[];
+  laserModule?: string;
+  cuttingModule?: string;
 }
 
 export interface FilamentType {
