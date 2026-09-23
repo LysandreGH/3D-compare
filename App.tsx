@@ -767,14 +767,24 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-6 md:pt-10 border-t border-gray-100 dark:border-zinc-800">
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Volume</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.buildVolume}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Boîtier</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.enclosed ? 'Fermé (Caisson)' : 'Ouvert'}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Structure</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.structure}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Buse</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.nozzleType} ({selectedPrinter.nozzleDiameter}mm)</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Extrusion</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.maxNozzleTemp} °C</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Plateau</p><p className="font-bold text-sm md:text-lg text-gray-900 dark:text-white">{selectedPrinter.maxBedTemp} °C</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multicolore</p><p className="font-bold text-xs md:text-lg text-gray-900 dark:text-white">{selectedPrinter.multicolor.supported ? `Oui (${selectedPrinter.multicolor.system || ''})` : 'Non'}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Nouveauté / Tech</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.newTech}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Volume</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.buildVolume}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Boîtier</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.enclosed ? 'Fermé (Caisson)' : 'Ouvert'}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Structure</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.structure}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Buse & Diamètre</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.nozzleType} ({selectedPrinter.nozzleDiameter}mm)</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">T° Max Buse</p><p className="font-bold text-sm md:text-base text-red-600 dark:text-red-400 leading-tight">{selectedPrinter.maxNozzleTemp} °C</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">T° Max Plateau</p><p className="font-bold text-sm md:text-base text-amber-600 dark:text-amber-400 leading-tight">{selectedPrinter.maxBedTemp} °C</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Vitesse Max</p><p className="font-bold text-sm md:text-base text-blue-600 dark:text-blue-400 leading-tight">{selectedPrinter.maxSpeed ? `${selectedPrinter.maxSpeed} mm/s` : (selectedPrinter.structure === 'CoreXY' ? '500-600 mm/s' : '300-500 mm/s')}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multicolore</p><p className="font-bold text-xs md:text-base text-purple-600 dark:text-purple-400 leading-tight">{selectedPrinter.multicolor.supported ? `Oui (${selectedPrinter.multicolor.system || ''})` : 'Non'}</p></div>
+                {selectedPrinter.dimensions && (
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Dimensions & Poids</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.dimensions} | {selectedPrinter.weight}</p></div>
+                )}
+                {selectedPrinter.chamberHeating && (
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Chambre Chauffée</p><p className="font-bold text-xs md:text-sm text-green-600 dark:text-green-400 leading-tight">{selectedPrinter.chamberHeating}</p></div>
+                )}
+                {selectedPrinter.screen && (
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Écran</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.screen}</p></div>
+                )}
+                <div className="space-y-0.5 md:space-y-1 col-span-2 md:col-span-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Nouveauté / Tech</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.newTech}</p></div>
                 
                 <div className="col-span-full pt-4 md:pt-6 border-t border-gray-100 dark:border-zinc-800">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
@@ -839,7 +849,7 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                           {/* Section Header: Structure */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              2. Structure, Cinématique & Caisson
+                              2. Structure, Cinématique & Dimensions
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
@@ -847,15 +857,33 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.structure}</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type de Caisson / Enclosure</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type de Caisson / Boîtier</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              {selectedPrinter.enclosed ? 'Boîtier Fermé (Caisson intégral avec vitres et filtre à charbon active)' : 'Structure Ouverte (Châssis ouvert non fermé)'}
+                              {selectedPrinter.enclosed ? 'Boîtier Fermé (Caisson intégral fermé adapté aux filaments techniques)' : 'Structure Ouverte (Châssis ouvert)'}
                             </td>
                           </tr>
+                          {selectedPrinter.chassis && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Châssis & Matériaux</td>
+                              <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.chassis}</td>
+                            </tr>
+                          )}
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Volume d'impression (X × Y × Z)</td>
                             <td className="py-3 px-4 font-black text-blue-600 dark:text-blue-400 text-base">{selectedPrinter.buildVolume}</td>
                           </tr>
+                          {selectedPrinter.dimensions && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Dimensions Physiques</td>
+                              <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.dimensions}</td>
+                            </tr>
+                          )}
+                          {selectedPrinter.weight && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Poids Net</td>
+                              <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.weight}</td>
+                            </tr>
+                          )}
 
                           {/* Section Header: Extrusion & Buse */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
@@ -864,12 +892,14 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type d'Extrudeur</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">Direct Drive Dual-Gear All-Metal (Entraînement direct)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type d'Extrudeur & Engrenages</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
+                              Direct Drive All-Metal {selectedPrinter.extruderGears ? `| Engrenages : ${selectedPrinter.extruderGears}` : ''}
+                            </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Matériau & Diamètre de Buse</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Diamètre d'origine {selectedPrinter.nozzleDiameter} mm (Buse démontage rapide)</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Diamètre d'origine {selectedPrinter.nozzleDiameter} mm (Buse démontage rapide, options 0.2 / 0.6 / 0.8 mm)</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Température Max Buse / Hotend</td>
@@ -882,11 +912,23 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Gestion Thermique de Chambre</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.enclosed ? (selectedPrinter.maxNozzleTemp >= 320 ? 'Chambre chauffée activement jusqu\'à 60°C' : 'Chauffage de chambre passif grâce au plateau') : 'Pas de chauffage de chambre (Machine ouverte)'}
+                              {selectedPrinter.chamberHeating ? (
+                                <span className="text-green-600 dark:text-green-400 font-bold">{selectedPrinter.chamberHeating}</span>
+                              ) : selectedPrinter.enclosed ? (
+                                'Chauffage passif régulé par le plateau chauffant'
+                              ) : (
+                                'Pas de caisson chauffé (Machine ouverte)'
+                              )}
                             </td>
                           </tr>
+                          {selectedPrinter.filtration && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Filtration de l'Air</td>
+                              <td className="py-3 px-4 font-bold text-teal-600 dark:text-teal-400">{selectedPrinter.filtration}</td>
+                            </tr>
+                          )}
 
-                          {/* Section Header: Performaces */}
+                          {/* Section Header: Performances */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
                               4. Vitesse & Performances d'impression
@@ -894,35 +936,41 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Vitesse Max d'impression</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              {selectedPrinter.structure === 'CoreXY' || selectedPrinter.structure === 'Delta' ? '500 à 600 mm/s (Haute Vitesse)' : '300 à 500 mm/s'}
+                            <td className="py-3 px-4 font-bold text-blue-600 dark:text-blue-400 text-base">
+                              {selectedPrinter.maxSpeed ? `${selectedPrinter.maxSpeed} mm/s` : (selectedPrinter.structure === 'CoreXY' ? '500 à 600 mm/s' : '500 mm/s')}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Accélération Maximale</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              {selectedPrinter.structure === 'CoreXY' ? 'Jusqu\'à 20 000 mm/s²' : 'Jusqu\'à 10 000 mm/s²'}
+                              {selectedPrinter.maxAcceleration || (selectedPrinter.structure === 'CoreXY' ? '20 000 mm/s²' : '10 000 mm/s²')}
                             </td>
                           </tr>
+                          {selectedPrinter.maxFlow && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Débit Volumétrique Hotend (Flow)</td>
+                              <td className="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">{selectedPrinter.maxFlow}</td>
+                            </tr>
+                          )}
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Nivellement du Plateau</td>
-                            <td className="py-3 px-4 font-bold text-green-600 dark:text-green-400">Automatique multipoint complet (Capteur piezo / jauge de contrainte & offset Z auto)</td>
+                            <td className="py-3 px-4 font-bold text-green-600 dark:text-green-400">Automatique multipoint complet (Capteurs piezo / jauge de contrainte & offset Z auto sans feuille)</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Surface d'impression</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Plateau flexible magnétique en acier ressort à revêtement PEI texturé</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Plateau flexible magnétique en acier ressort à revêtement PEI texturé (Compatible PEI lisse, Haute Température, SuperTack)</td>
                           </tr>
 
                           {/* Section Header: Multicolore & Filaments */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              5. Multicolore & Filaments Compatibles
+                              5. Multicolore, Filaments & Modules Optionnels
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Système Multicolore</td>
                             <td className="py-3 px-4 font-bold text-purple-600 dark:text-purple-400">
-                              {selectedPrinter.multicolor.supported ? `Compatible (${selectedPrinter.multicolor.system || 'AMS / CFS / KCM'}) — jusqu'à 16 bobines` : 'Non supporté d\'origine (Impression monocouleur)'}
+                              {selectedPrinter.multicolor.supported ? `Compatible (${selectedPrinter.multicolor.system || 'AMS'}) — jusqu'à 16 bobines` : 'Non supporté d\'origine (Impression monocouleur)'}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
@@ -931,6 +979,18 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                               {selectedPrinter.filaments.join(' • ')}
                             </td>
                           </tr>
+                          {selectedPrinter.laserModule && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Module Gravure & Découpe Laser</td>
+                              <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{selectedPrinter.laserModule}</td>
+                            </tr>
+                          )}
+                          {selectedPrinter.cuttingModule && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Module Découpe Lame / Traçage Stylo</td>
+                              <td className="py-3 px-4 font-bold text-pink-600 dark:text-pink-400">{selectedPrinter.cuttingModule}</td>
+                            </tr>
+                          )}
 
                           {/* Section Header: Electronique & Fonctionnalités */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
@@ -939,22 +999,30 @@ const PrintersPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) =>
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Écran de Contrôle & Réseau</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Écran tactile couleur HD | Wi-Fi, Ethernet, Application Mobile & Cloud</td>
-                          </tr>
-                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Caméra & Assistant IA</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Écran de Contrôle</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.enclosed || selectedPrinter.price > 400 ? 'Caméra HD intégrée (Détection spaghettis IA, inspection première couche, Time-lapse)' : 'Optionnelle ou via application mobile'}
+                              {selectedPrinter.screen || 'Écran tactile couleur HD'}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Capteurs de Sécurité</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Capteur de fin de filament, Reprise après coupure de courant, Capteur de vibration (Input Shaping)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Caméra & Surveillance</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {selectedPrinter.camera || (selectedPrinter.enclosed || selectedPrinter.price > 400 ? 'Caméra HD intégrée (Détection spaghettis IA, surveillance, Time-lapse)' : 'Optionnelle')}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Capteurs & Sécurité</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {selectedPrinter.sensors ? selectedPrinter.sensors.join(' • ') : 'Capteur fin de filament, Reprise après coupure, Capteur de vibrations'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Connectivité Réseau</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Wi-Fi (2.4 GHz / 5 GHz double bande selon modèle), Bambu-Bus, App Mobile & Bambu Studio Cloud/LAN</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Logiciels Découpe (Slicers)</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Bambu Studio, OrcaSlicer, PrusaSlicer, Cura, Creality Print</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Bambu Studio, OrcaSlicer, PrusaSlicer, SuperSlicer, Cura (G-code standard)</td>
                           </tr>
 
                           {/* Section Header: Highlights */}
@@ -1384,6 +1452,17 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         return <td key={id} className="py-3 px-4 text-center font-black text-blue-600">{p?.buildVolume}</td>;
                       })}
                     </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Châssis & Dimensions</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return (
+                          <td key={id} className="py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300 text-[11px]">
+                            {p?.dimensions ? `${p.dimensions} (${p.weight || ''})` : (p?.chassis || '-')}
+                          </td>
+                        );
+                      })}
+                    </tr>
 
                     {/* SECTION 3: Extrusion & Températures */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
@@ -1412,6 +1491,13 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         return <td key={id} className="py-3 px-4 text-center font-bold text-amber-600">{p?.maxBedTemp} °C</td>;
                       })}
                     </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Gestion Thermique de Chambre</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-gray-800 dark:text-gray-200 text-[11px]">{p?.chamberHeating || (p?.enclosed ? 'Chauffage passif régulé par le plateau' : 'Ouvert')}</td>;
+                      })}
+                    </tr>
 
                     {/* SECTION 4: Performances */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
@@ -1423,13 +1509,25 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                       <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Vitesse Maximale</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.structure === 'CoreXY' ? '500 à 600 mm/s' : '300 à 500 mm/s'}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-blue-600">{p?.maxSpeed ? `${p.maxSpeed} mm/s` : (p?.structure === 'CoreXY' ? '500 à 600 mm/s' : '300 à 500 mm/s')}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Accélération & Débit Flow</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return (
+                          <td key={id} className="py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300 text-[11px]">
+                            {p?.maxAcceleration || (p?.structure === 'CoreXY' ? '20 000 mm/s²' : '10 000 mm/s²')}
+                            {p?.maxFlow ? ` | Flow: ${p.maxFlow}` : ''}
+                          </td>
+                        );
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
                       <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Nivellement du Plateau</td>
                       {selectedIds.map(id => {
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-green-600">Automatique complet (Piezo/Jauge)</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-green-600">Automatique complet (Piezo/Jauge sans feuille)</td>;
                       })}
                     </tr>
 
