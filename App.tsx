@@ -43,6 +43,21 @@ import { Language, Theme, Printer, FilamentType, FilamentBrand, TranslationStrin
 import { translations } from './translations';
 import { allRequestedPrinters, filaments, filamentBrands } from './data';
 import { getPrinterRecommendation, getComparisonAnalysis, fetchLatestPrinterNews } from './services/geminiService';
+import { 
+  translateProCon, 
+  translateSpecValue, 
+  translateBedLeveling, 
+  translatePrintSurface, 
+  translateConnectivity, 
+  translateSlicers, 
+  translateChamberHeating, 
+  translateFiltration,
+  translateSensors, 
+  translateCamera, 
+  translateNewTech,
+  translateScreen,
+  translateSpeed
+} from './translationsData';
 
 // --- Components ---
 
@@ -262,7 +277,7 @@ const HomePage = ({
         </p>
       </div>
 
-      {/* Encadré Information du Site avec dates mises à jour : 23/09/2026 */}
+      {/* Encadré Information du Site */}
       <div className="bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-indigo-600/10 border-2 border-blue-200 dark:border-blue-900/50 p-5 md:p-7 rounded-3xl shadow-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-blue-200/50 dark:border-blue-900/40 pb-4">
           <div className="flex items-center gap-3.5">
@@ -270,13 +285,13 @@ const HomePage = ({
               <Calendar size={24} />
             </div>
             <div>
-              <p className="text-xs text-blue-600 dark:text-blue-400 font-extrabold uppercase tracking-widest">Informations du Site</p>
-              <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white">État & Mises à Jour en direct</h2>
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-extrabold uppercase tracking-widest">{t.homeBoxes?.siteInfoSubtitle || "Informations du Site"}</p>
+              <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white">{t.homeBoxes?.siteInfoTitle || "État & Mises à Jour en direct"}</h2>
             </div>
           </div>
           <span className="text-xs font-black bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 px-4 py-2 rounded-xl uppercase tracking-wider shrink-0 border border-green-200 dark:border-green-800 flex items-center gap-2 self-start sm:self-auto">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-            Base de données & Prix vérifiés
+            {t.homeBoxes?.siteInfoBadge || "Base de données & Prix vérifiés"}
           </span>
         </div>
 
@@ -286,8 +301,8 @@ const HomePage = ({
               <Tag size={20} />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Prix des imprimantes 3D</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">Dernière mise à jour : <span className="text-blue-600 dark:text-blue-400">23/09/2026</span></p>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.priceUpdatedLabel || "Prix des imprimantes 3D"}</p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-blue-600 dark:text-blue-400">26/09/2026</span></p>
             </div>
           </div>
 
@@ -296,14 +311,14 @@ const HomePage = ({
               <Globe size={20} />
             </div>
             <div>
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Fiches & Contenu du site</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">Dernière mise à jour : <span className="text-purple-600 dark:text-purple-400">23/09/2026</span></p>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.contentUpdatedLabel || "Fiches & Contenu du site"}</p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-purple-600 dark:text-purple-400">26/09/2026</span></p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* NOUVEL ENCADRÉ : Événements & Bons Plans du Moment */}
+      {/* ENCADRÉ : Événements & Bons Plans du Moment */}
       <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 border-2 border-amber-300 dark:border-amber-700/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-200/50 dark:border-amber-800/40 pb-4">
           <div className="flex items-center gap-3.5">
@@ -312,15 +327,15 @@ const HomePage = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest bg-amber-500 text-white px-2.5 py-0.5 rounded-full">En ce moment</span>
-                <p className="text-xs text-amber-600 dark:text-amber-400 font-extrabold uppercase tracking-widest">Offres & Promos Spéciales</p>
+                <span className="text-[10px] font-black uppercase tracking-widest bg-amber-500 text-white px-2.5 py-0.5 rounded-full">{t.homeBoxes?.eventsBadge || "En ce moment"}</span>
+                <p className="text-xs text-amber-600 dark:text-amber-400 font-extrabold uppercase tracking-widest">{t.homeBoxes?.eventsTag || "Offres & Promos Spéciales"}</p>
               </div>
-              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Événements & Réductions Constructeurs</h2>
+              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">{t.homeBoxes?.eventsTitle || "Événements & Réductions Constructeurs"}</h2>
             </div>
           </div>
           <span className="text-xs font-black bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-3.5 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 self-start sm:self-auto">
             <Flame size={14} className="text-amber-600 fill-amber-600" />
-            Bons Plans Actuels
+            {t.homeBoxes?.eventsDeals || "Bons Plans Actuels"}
           </span>
         </div>
 
@@ -330,24 +345,24 @@ const HomePage = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[11px] font-black uppercase tracking-wider bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg">
-                  🎂 ANYCUBIC • FÊTE SES 11 ANS
+                  {t.homeBoxes?.anycubicTag || "🎂 ANYCUBIC • FÊTE SES 11 ANS"}
                 </span>
                 <span className="text-xs font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2.5 py-0.5 rounded-full">
-                  Jusqu'à -40%
+                  {t.homeBoxes?.anycubicDiscount || "Jusqu'à -40%"}
                 </span>
               </div>
               <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                Célébration des 11 Ans Anycubic 🎉
+                {t.homeBoxes?.anycubicTitle || "Célébration des 11 Ans Anycubic 🎉"}
               </h3>
               <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                À l'occasion de son <strong>11ème anniversaire</strong>, Anycubic propose de très fortes réductions sur l'ensemble de son catalogue : remises exceptionnelles sur la <strong>Kobra 3 Combo (multicolore)</strong>, les séries résine <strong>Photon Mono M7 Pro</strong> et offres groupées de bobines et résines.
+                {t.homeBoxes?.anycubicDesc}
               </p>
             </div>
             <button 
               onClick={() => onSelectBrand?.('Anycubic')}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
             >
-              <span>Voir les imprimantes Anycubic en promo</span>
+              <span>{t.homeBoxes?.anycubicBtn || "Voir les imprimantes Anycubic en promo"}</span>
               <ArrowRight size={14} />
             </button>
           </div>
@@ -357,24 +372,24 @@ const HomePage = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-[11px] font-black uppercase tracking-wider bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg">
-                  ⚡ ELEGOO • GRANDES RÉDUCTIONS
+                  {t.homeBoxes?.elegooTag || "⚡ ELEGOO • GRANDES RÉDUCTIONS"}
                 </span>
                 <span className="text-xs font-black text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/40 px-2.5 py-0.5 rounded-full">
-                  Offres Spéciales
+                  {t.homeBoxes?.elegooDiscount || "Offres Spéciales"}
                 </span>
               </div>
               <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                Vague de Réductions chez Elegoo ⚡
+                {t.homeBoxes?.elegooTitle || "Vague de Réductions chez Elegoo ⚡"}
               </h3>
               <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                Importantes baisses de prix et coupons exclusifs chez Elegoo : tarifs réduits sur la toute nouvelle <strong>Centauri Carbon (CoreXY)</strong>, remises directes sur les séries FDM <strong>Neptune 4 / 4 Pro / 4 Max</strong> et les références résine <strong>Saturn 4 Ultra & Mars 5</strong>.
+                {t.homeBoxes?.elegooDesc}
               </p>
             </div>
             <button 
               onClick={() => onSelectBrand?.('Elegoo')}
               className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
             >
-              <span>Voir les imprimantes Elegoo en promo</span>
+              <span>{t.homeBoxes?.elegooBtn || "Voir les imprimantes Elegoo en promo"}</span>
               <ArrowRight size={14} />
             </button>
           </div>
@@ -386,22 +401,22 @@ const HomePage = ({
           <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl text-blue-600">
             <BrainCircuit size={48} />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">IA & Moteur de Recherche</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t.homeBoxes?.aiSearchTitle || "IA & Moteur de Recherche"}</h2>
           <p className="text-gray-500 font-medium">{t.aiAttribution}</p>
         </div>
 
         <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800 space-y-6">
           <div className="text-center space-y-1">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t.rateApp}</h2>
-            <p className="text-xs text-gray-500 font-medium">Vos retours et suggestions sont directement envoyés au créateur du site</p>
+            <p className="text-xs text-gray-500 font-medium">{t.homeBoxes?.rateSubtitle || "Vos retours et suggestions sont directement envoyés au créateur du site"}</p>
           </div>
           
           {submitted ? (
             <div className="bg-green-50 dark:bg-green-900/20 p-6 rounded-2xl text-center space-y-3 border border-green-200 dark:border-green-800 animate-in fade-in">
               <span className="text-3xl">🎉</span>
-              <p className="font-black text-green-700 dark:text-green-300">Votre application e-mail s'ouvre !</p>
+              <p className="font-black text-green-700 dark:text-green-300">{t.homeBoxes?.rateSuccessTitle || "Votre application e-mail s'ouvre !"}</p>
               <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                Votre avis avec une note de <strong>{rating}/5 étoiles</strong> a été préparé pour être envoyé directement au créateur du site.
+                {(t.homeBoxes?.rateSuccessDesc || "Votre avis avec une note de {rating}/5 étoiles a été préparé pour être envoyé directement au créateur du site.").replace('{rating}', String(rating))}
               </p>
               <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
                 <a 
@@ -409,13 +424,13 @@ const HomePage = ({
                   className="inline-flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors shadow-md"
                 >
                   <Mail size={14} />
-                  <span>Ouvrir ma boîte mail pour envoyer</span>
+                  <span>{t.homeBoxes?.rateOpenMail || "Ouvrir ma boîte mail pour envoyer"}</span>
                 </a>
                 <button 
                   onClick={() => { setSubmitted(false); setRating(0); setFeedback(''); }}
                   className="text-xs text-gray-600 dark:text-gray-300 font-bold px-4 py-2.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 transition-colors cursor-pointer"
                 >
-                  Laisser un autre avis
+                  {t.homeBoxes?.rateAnother || "Laisser un autre avis"}
                 </button>
               </div>
             </div>
@@ -427,7 +442,7 @@ const HomePage = ({
               <textarea
                 className="w-full p-4 rounded-xl border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500 outline-none transition-all text-sm font-medium"
                 rows={3}
-                placeholder="Votre avis, suggestion ou question pour l'administrateur..."
+                placeholder={t.homeBoxes?.ratePlaceholder || "Votre avis, suggestion ou question pour l'administrateur..."}
                 value={feedback}
                 onChange={(e) => setFeedback(e.target.value)}
               />
@@ -437,7 +452,7 @@ const HomePage = ({
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-black py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-purple-500/20 disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm uppercase tracking-wider"
               >
                 <Mail size={16} />
-                <span>{isSubmitting ? 'Préparation...' : 'Envoyer mon avis par e-mail'}</span>
+                <span>{isSubmitting ? (t.homeBoxes?.rateSubmitting || 'Préparation...') : (t.homeBoxes?.rateSubmit || 'Envoyer mon avis par e-mail')}</span>
               </button>
             </>
           )}
@@ -668,13 +683,13 @@ const PrintersPage = ({
           onClick={() => setViewTab('current')}
           className={`flex-1 py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${viewTab === 'current' ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
         >
-          Imprimantes Actuelles ({allRequestedPrinters.filter(p => !p.discontinued).length})
+          {t.printerTabs?.activeModels || 'Imprimantes Actuelles'} ({allRequestedPrinters.filter(p => !p.discontinued).length})
         </button>
         <button 
           onClick={() => setViewTab('discontinued')}
           className={`flex-1 py-3 px-4 rounded-xl font-black text-xs uppercase tracking-wider transition-all ${viewTab === 'discontinued' ? 'bg-amber-600 text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
         >
-          Anciens Modèles ({allRequestedPrinters.filter(p => p.discontinued).length})
+          {t.printerTabs?.oldModels || 'Anciens Modèles'} ({allRequestedPrinters.filter(p => p.discontinued).length})
         </button>
       </div>
 
@@ -697,7 +712,7 @@ const PrintersPage = ({
             className={`flex items-center justify-center gap-2 md:gap-3 px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${isSyncing ? 'bg-gray-100 text-gray-400' : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-blue-500/20 active:scale-95'}`}
           >
             <RefreshCw size={16} className={isSyncing ? 'animate-spin' : ''} />
-            {isSyncing ? 'Recherche...' : 'Vérifier Nouveautés'}
+            {isSyncing ? (lang === 'FR' ? 'Recherche...' : lang === 'DE' ? 'Wird gesucht...' : 'Searching...') : (lang === 'FR' ? 'Vérifier Nouveautés' : lang === 'DE' ? 'Neuigkeiten prüfen' : 'Check Updates')}
           </button>
         </div>
 
@@ -707,15 +722,15 @@ const PrintersPage = ({
             <div className="flex items-center gap-2">
               <Filter size={15} className="text-blue-600 dark:text-blue-400" />
               <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-                Filtrer par Marque{selectedBrands.length > 1 ? 's' : ''} :
+                {t.filters?.filterByBrand || t.specsTable?.filterByBrand || 'Filtrer par Marque(s)'} :
               </span>
               {selectedBrands.length > 0 ? (
                 <span className="text-[11px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2.5 py-0.5 rounded-lg border border-blue-200 dark:border-blue-800">
-                  {selectedBrands.length} marque{selectedBrands.length > 1 ? 's' : ''} sélectionnée{selectedBrands.length > 1 ? 's' : ''} ({filteredPrinters.length} modèles)
+                  {selectedBrands.length} ({filteredPrinters.length} {lang === 'FR' ? 'modèles' : lang === 'DE' ? 'Modelle' : 'models'})
                 </span>
               ) : (
                 <span className="text-[11px] font-semibold text-gray-400">
-                  (Toutes les marques affichées)
+                  ({t.filters?.allBrands || 'Toutes les marques'})
                 </span>
               )}
             </div>
@@ -726,7 +741,7 @@ const PrintersPage = ({
                 className="text-[11px] font-bold text-red-500 hover:text-red-700 dark:text-red-400 flex items-center gap-1 cursor-pointer hover:underline transition-colors"
               >
                 <X size={13} />
-                <span>Effacer le filtre ({selectedBrands.join(', ')})</span>
+                <span>{t.filters?.clearFilter || t.specsTable?.clearFilter || 'Effacer le filtre'} ({selectedBrands.join(', ')})</span>
               </button>
             )}
           </div>
@@ -741,7 +756,7 @@ const PrintersPage = ({
                   : 'bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-gray-300'
               }`}
             >
-              <span>Toutes les marques</span>
+              <span>{t.filters?.allBrands || t.specsTable?.allBrands || 'Toutes les marques'}</span>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
                 selectedBrands.length === 0 ? 'bg-white/20 text-white' : 'bg-gray-200 dark:bg-zinc-700 text-gray-600 dark:text-gray-400'
               }`}>
@@ -784,23 +799,23 @@ const PrintersPage = ({
           <div className="flex flex-col">
             <span className="text-[9px] font-bold text-gray-400 uppercase mb-1 flex items-center gap-1">
               <ArrowUpDown size={10} />
-              Trier par
+              {t.specsTable?.sortBy || 'Trier par'}
             </span>
             <select 
               value={sortBy} 
               onChange={e => setSortBy(e.target.value as any)}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              <option value="price-asc">Prix : Du - cher au + cher</option>
-              <option value="price-desc">Prix : Du + cher au - cher</option>
-              <option value="brand-asc">Marque (A à Z)</option>
-              <option value="name-asc">Nom (A à Z)</option>
+              <option value="price-asc">{lang === 'FR' ? 'Prix : Du - cher au + cher' : lang === 'DE' ? 'Preis: Aufsteigend' : 'Price: Low to High'}</option>
+              <option value="price-desc">{lang === 'FR' ? 'Prix : Du + cher au - cher' : lang === 'DE' ? 'Preis: Absteigend' : 'Price: High to Low'}</option>
+              <option value="brand-asc">{lang === 'FR' ? 'Marque (A à Z)' : lang === 'DE' ? 'Marke (A bis Z)' : 'Brand (A to Z)'}</option>
+              <option value="name-asc">{lang === 'FR' ? 'Nom (A à Z)' : lang === 'DE' ? 'Name (A bis Z)' : 'Name (A to Z)'}</option>
             </select>
           </div>
 
           {/* Brand Filter Dropdown - stays synchronized with multi-select */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Marque</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{t.filters?.brandLabel || 'Marque'}</span>
             <select 
               value={selectedBrands.length === 1 ? selectedBrands[0] : (selectedBrands.length === 0 ? 'Toutes' : 'Multiple')} 
               onChange={e => {
@@ -814,9 +829,9 @@ const PrintersPage = ({
               }}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              <option value="Toutes">Toutes les marques</option>
+              <option value="Toutes">{t.filters?.allBrands || 'Toutes les marques'}</option>
               {selectedBrands.length > 1 && (
-                <option value="Multiple">Sélection multiple ({selectedBrands.length})</option>
+                <option value="Multiple">{lang === 'FR' ? `Sélection multiple (${selectedBrands.length})` : lang === 'DE' ? `Mehrfachauswahl (${selectedBrands.length})` : `Multiple selection (${selectedBrands.length})`}</option>
               )}
               {availableBrands.map(b => (
                 <option key={b} value={b}>{b} ({brandCounts[b] || 0})</option>
@@ -826,43 +841,43 @@ const PrintersPage = ({
 
           {/* Enclosure Filter - Caisson */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Caisson</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{t.filters?.enclosureLabel || 'Caisson'}</span>
             <select 
               value={enclosureFilter} 
               onChange={e => setEnclosureFilter(e.target.value)}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              <option value="Tous">Tous</option>
-              <option value="Fermée">Fermée (Caisson)</option>
-              <option value="Ouverte">Structure Ouverte</option>
+              <option value="Tous">{t.filters?.all || 'Tous'}</option>
+              <option value="Fermée">{t.filters?.enclosed || 'Fermée (Caisson)'}</option>
+              <option value="Ouverte">{t.filters?.open || 'Structure Ouverte'}</option>
             </select>
           </div>
 
           {/* Multicolor Filter */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Couleurs</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{t.filters?.colorsLabel || 'Couleurs'}</span>
             <select 
               value={multicolorFilter} 
               onChange={e => setMulticolorFilter(e.target.value)}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              <option value="Tous">Tous</option>
-              <option value="Multicolore">Multicolore Supporté</option>
-              <option value="Monocouleur">Monocouleur</option>
+              <option value="Tous">{t.filters?.multicolorAll || 'Tous'}</option>
+              <option value="Multicolore">{t.filters?.multicolorSupported || 'Multicolore Supporté'}</option>
+              <option value="Monocouleur">{t.filters?.monocolor || 'Monocouleur'}</option>
             </select>
           </div>
 
           {/* Structure Filter */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Structure Axe</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{t.filters?.structureLabel || 'Structure Axe'}</span>
             <select 
               value={structureFilter} 
               onChange={e => setStructureFilter(e.target.value)}
               className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold outline-none cursor-pointer"
             >
-              <option value="Toutes">Toutes</option>
+              <option value="Toutes">{t.filters?.structureAll || 'Toutes'}</option>
               <option value="CoreXY">CoreXY</option>
-              <option value="Cartésienne XYZ">Cartésienne XYZ</option>
+              <option value="Cartésienne XYZ">{lang === 'FR' ? 'Cartésienne XYZ' : lang === 'DE' ? 'Kartesisch XYZ' : 'Cartesian XYZ'}</option>
               <option value="CoreXZ">CoreXZ</option>
               <option value="Delta">Delta</option>
               <option value="IDEX">IDEX</option>
@@ -871,13 +886,13 @@ const PrintersPage = ({
 
           {/* Min Price */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Prix Min</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{lang === 'FR' ? 'Prix Min' : lang === 'DE' ? 'Min. Preis' : 'Min Price'}</span>
             <input type="number" className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold" value={minPrice} onChange={e => setMinPrice(Number(e.target.value))} />
           </div>
 
           {/* Max Price */}
           <div className="flex flex-col">
-            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">Prix Max</span>
+            <span className="text-[9px] font-bold text-gray-400 uppercase mb-1">{lang === 'FR' ? 'Prix Max' : lang === 'DE' ? 'Max. Preis' : 'Max Price'}</span>
             <input type="number" className="px-3 py-2 rounded-lg border border-gray-200 dark:border-zinc-700 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-xs font-bold" value={maxPrice} onChange={e => setMaxPrice(Number(e.target.value))} />
           </div>
 
@@ -922,7 +937,7 @@ const PrintersPage = ({
       {viewTab === 'discontinued' && (
         <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl flex items-center gap-3 text-amber-800 dark:text-amber-200 text-sm font-medium">
           <Info size={20} className="shrink-0" />
-          <span>Cette section regroupe les anciens modèles qui ne sont plus commercialisés officiellement mais restent référencés à titre comparatif et historique.</span>
+          <span>{t.filters?.discontinuedNotice || "Cette section regroupe les anciens modèles qui ne sont plus commercialisés officiellement mais restent référencés à titre comparatif et historique."}</span>
         </div>
       )}
 
@@ -930,12 +945,12 @@ const PrintersPage = ({
         {Object.keys(groupedByBrand).length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-3xl border border-gray-100 dark:border-zinc-800 space-y-3">
             <PrinterIcon className="mx-auto text-gray-300" size={48} />
-            <p className="text-gray-500 font-bold">Aucune imprimante ne correspond à vos filtres actuels.</p>
+            <p className="text-gray-500 font-bold">{t.filters?.noPrintersFound || "Aucune imprimante ne correspond à vos filtres actuels."}</p>
             <button 
-              onClick={() => { setSearch(''); setBrandFilter('Toutes'); setEnclosureFilter('Tous'); setMulticolorFilter('Tous'); setStructureFilter('Toutes'); setMinPrice(0); setMaxPrice(12000); }}
+              onClick={() => { setSearch(''); setSelectedBrands([]); setEnclosureFilter('Tous'); setMulticolorFilter('Tous'); setStructureFilter('Toutes'); setMinPrice(0); setMaxPrice(12000); }}
               className="text-xs text-blue-600 font-black uppercase tracking-wider underline pt-2"
             >
-              Réinitialiser tous les filtres
+              {t.filters?.resetFilters || "Réinitialiser tous les filtres"}
             </button>
           </div>
         ) : (
@@ -957,11 +972,11 @@ const PrintersPage = ({
                       
                       {p.discontinued ? (
                         <div className="absolute top-3 left-3 bg-amber-600 text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider shadow">
-                          Modèle Discontinué
+                          {t.specsTable?.legacyCatalog || 'Modèle Discontinué'}
                         </div>
                       ) : (
                         <div className="absolute top-3 left-3 bg-zinc-900/80 backdrop-blur-md text-white text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-wider border border-white/10">
-                          {p.enclosed ? 'Boîtier Fermé' : 'Structure Ouverte'}
+                          {p.enclosed ? (t.specsTable?.enclosed || 'Boîtier Fermé') : (t.specsTable?.open || 'Structure Ouverte')}
                         </div>
                       )}
 
@@ -973,10 +988,10 @@ const PrintersPage = ({
                     
                     <div className="p-4 md:p-6 space-y-2 md:space-y-3">
                       <h3 className="font-black text-lg md:text-xl text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">{p.name}</h3>
-                      <p className="text-[10px] md:text-xs text-gray-500 line-clamp-2 italic">{p.newTech}</p>
+                      <p className="text-[10px] md:text-xs text-gray-500 line-clamp-2 italic">{translateNewTech(p.newTech, lang)}</p>
                       
                       <div className="flex flex-wrap gap-1.5 md:gap-2 pt-1 md:pt-2">
-                        <span className="text-[8px] md:text-[9px] bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">{p.structure}</span>
+                        <span className="text-[8px] md:text-[9px] bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">{translateSpecValue('structure', p.structure, lang)}</span>
                         {p.multicolor.supported && (
                           <span className="text-[8px] md:text-[9px] bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 md:px-2 md:py-1 rounded-md md:rounded-lg font-black tracking-widest uppercase">Multi</span>
                         )}
@@ -1007,7 +1022,7 @@ const PrintersPage = ({
                    <ImageWithFallback src={selectedPrinter.image} alt={selectedPrinter.name} className="w-full h-full object-cover" />
                    {selectedPrinter.discontinued && (
                      <div className="absolute bottom-4 left-4 right-4 bg-amber-600 text-white text-center py-2 rounded-xl text-xs font-black uppercase tracking-widest shadow-lg">
-                       Ancien Modèle / Discontinué
+                       {t.specsTable?.legacyCatalog || 'Ancien Modèle / Discontinué'}
                      </div>
                    )}
                 </div>
@@ -1018,16 +1033,16 @@ const PrintersPage = ({
                     <h2 className="text-3xl md:text-5xl font-black text-gray-900 dark:text-white mt-1 md:mt-2 leading-tight md:leading-none">{selectedPrinter.name}</h2>
                     
                     <div className="flex flex-wrap items-baseline gap-4 mt-2 md:mt-4">
-                      <p className="text-2xl md:text-4xl text-green-600 font-black">{selectedPrinter.price} € <span className="text-xs text-gray-400 font-normal">(Base)</span></p>
+                      <p className="text-2xl md:text-4xl text-green-600 font-black">{selectedPrinter.price} € <span className="text-xs text-gray-400 font-normal">{t.specsTable?.basePrice || '(Base)'}</span></p>
                       {selectedPrinter.comboPrice && (
-                        <p className="text-xl md:text-2xl text-purple-600 font-black">{selectedPrinter.comboPrice} € <span className="text-xs text-gray-400 font-normal">(Combo)</span></p>
+                        <p className="text-xl md:text-2xl text-purple-600 font-black">{selectedPrinter.comboPrice} € <span className="text-xs text-gray-400 font-normal">{t.specsTable?.comboPrice || '(Combo)'}</span></p>
                       )}
                     </div>
 
                     {/* Printer Variants if any */}
                     {selectedPrinter.variants && selectedPrinter.variants.length > 0 && (
                       <div className="mt-4 p-4 bg-gray-50 dark:bg-zinc-800 rounded-2xl border border-gray-200 dark:border-zinc-700 space-y-2">
-                        <p className="text-xs font-black uppercase text-gray-500 tracking-wider">Variantes et Options Disponibles :</p>
+                        <p className="text-xs font-black uppercase text-gray-500 tracking-wider">{t.specsTable?.availableVariants || 'Variantes et Options Disponibles :'}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {selectedPrinter.variants.map((v, i) => (
                             <div key={i} className="flex justify-between items-center text-xs p-2 bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 font-bold">
@@ -1042,15 +1057,15 @@ const PrintersPage = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="bg-green-50 dark:bg-green-900/10 p-4 md:p-6 rounded-2xl md:rounded-3xl border border-green-100 dark:border-green-900/20">
-                      <p className="font-black text-green-700 dark:text-green-400 text-[10px] md:text-sm mb-2 md:mb-4 uppercase tracking-widest">Points Forts</p>
+                      <p className="font-black text-green-700 dark:text-green-400 text-[10px] md:text-sm mb-2 md:mb-4 uppercase tracking-widest">{t.specsTable?.pointsForts || "Points Forts"}</p>
                       <ul className="text-xs md:text-sm space-y-1.5 md:space-y-2 text-gray-700 dark:text-gray-300 font-medium">
-                        {selectedPrinter.pros.map(pr => <li key={pr} className="flex gap-2"><span className="text-green-500 font-bold">✓</span> {pr}</li>)}
+                        {selectedPrinter.pros.map(pr => <li key={pr} className="flex gap-2"><span className="text-green-500 font-bold">✓</span> {translateProCon(pr, lang)}</li>)}
                       </ul>
                     </div>
                     <div className="bg-red-50 dark:bg-red-900/10 p-4 md:p-6 rounded-2xl md:rounded-3xl border border-red-100 dark:border-red-900/20">
-                      <p className="font-black text-red-700 dark:text-red-400 text-[10px] md:text-sm mb-2 md:mb-4 uppercase tracking-widest">Points Faibles</p>
+                      <p className="font-black text-red-700 dark:text-red-400 text-[10px] md:text-sm mb-2 md:mb-4 uppercase tracking-widest">{t.specsTable?.pointsFaibles || "Points Faibles"}</p>
                       <ul className="text-xs md:text-sm space-y-1.5 md:space-y-2 text-gray-700 dark:text-gray-300 font-medium">
-                        {selectedPrinter.cons.map(cn => <li key={cn} className="flex gap-2"><span className="text-red-500 font-bold">✗</span> {cn}</li>)}
+                        {selectedPrinter.cons.map(cn => <li key={cn} className="flex gap-2"><span className="text-red-500 font-bold">✗</span> {translateProCon(cn, lang)}</li>)}
                       </ul>
                     </div>
                   </div>
@@ -1058,29 +1073,29 @@ const PrintersPage = ({
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-6 md:pt-10 border-t border-gray-100 dark:border-zinc-800">
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Volume</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.buildVolume}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Boîtier</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.enclosed ? 'Fermé (Caisson)' : 'Ouvert'}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Structure</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.structure}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Buse & Diamètre</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.nozzleType} ({selectedPrinter.nozzleDiameter}mm)</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">T° Max Buse</p><p className="font-bold text-sm md:text-base text-red-600 dark:text-red-400 leading-tight">{selectedPrinter.maxNozzleTemp} °C</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">T° Max Plateau</p><p className="font-bold text-sm md:text-base text-amber-600 dark:text-amber-400 leading-tight">{selectedPrinter.maxBedTemp} °C</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Vitesse Max</p><p className="font-bold text-sm md:text-base text-blue-600 dark:text-blue-400 leading-tight">{selectedPrinter.maxSpeed ? `${selectedPrinter.maxSpeed} mm/s` : (selectedPrinter.structure === 'CoreXY' ? '500-600 mm/s' : '300-500 mm/s')}</p></div>
-                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Multicolore</p><p className="font-bold text-xs md:text-base text-purple-600 dark:text-purple-400 leading-tight">{selectedPrinter.multicolor.supported ? `Oui (${selectedPrinter.multicolor.system || ''})` : 'Non'}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.buildVolume?.split('(')[0]?.trim() || "Volume"}</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.buildVolume}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.filters?.enclosureLabel || "Boîtier"}</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.enclosed ? (t.specsTable?.enclosed || 'Fermé (Caisson)') : (t.specsTable?.open || 'Ouvert')}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.architecture || "Structure"}</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{translateSpecValue('structure', selectedPrinter.structure, lang)}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.nozzleMaterial || "Buse & Diamètre"}</p><p className="font-bold text-sm md:text-base text-gray-900 dark:text-white leading-tight">{selectedPrinter.nozzleType} ({selectedPrinter.nozzleDiameter}mm)</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.maxNozzleTemp || "T° Max Buse"}</p><p className="font-bold text-sm md:text-base text-red-600 dark:text-red-400 leading-tight">{selectedPrinter.maxNozzleTemp} °C</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.maxBedTemp || "T° Max Plateau"}</p><p className="font-bold text-sm md:text-base text-amber-600 dark:text-amber-400 leading-tight">{selectedPrinter.maxBedTemp} °C</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.maxSpeed || "Vitesse Max"}</p><p className="font-bold text-sm md:text-base text-blue-600 dark:text-blue-400 leading-tight">{translateSpeed(selectedPrinter.maxSpeed, selectedPrinter.structure, lang)}</p></div>
+                <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.multicolorSystem || "Multicolore"}</p><p className="font-bold text-xs md:text-base text-purple-600 dark:text-purple-400 leading-tight">{selectedPrinter.multicolor.supported ? `${t.comparison?.multiColorYes || 'Oui'} (${selectedPrinter.multicolor.system || ''})` : (t.comparison?.singleColor || 'Non')}</p></div>
                 {selectedPrinter.dimensions && (
-                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Dimensions & Poids</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.dimensions} | {selectedPrinter.weight}</p></div>
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.dimensions || 'Dimensions'} & {t.specsTable?.netWeight || 'Poids'}</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.dimensions} | {selectedPrinter.weight}</p></div>
                 )}
                 {selectedPrinter.chamberHeating && (
-                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Chambre Chauffée</p><p className="font-bold text-xs md:text-sm text-green-600 dark:text-green-400 leading-tight">{selectedPrinter.chamberHeating}</p></div>
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.chamberHeat || "Chambre Chauffée"}</p><p className="font-bold text-xs md:text-sm text-green-600 dark:text-green-400 leading-tight">{translateChamberHeating(selectedPrinter.chamberHeating, selectedPrinter.enclosed, lang)}</p></div>
                 )}
                 {selectedPrinter.screen && (
-                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Écran</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.screen}</p></div>
+                  <div className="space-y-0.5 md:space-y-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.controlScreen || "Écran"}</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{translateScreen(selectedPrinter.screen, lang)}</p></div>
                 )}
-                <div className="space-y-0.5 md:space-y-1 col-span-2 md:col-span-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Nouveauté / Tech</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{selectedPrinter.newTech}</p></div>
+                <div className="space-y-0.5 md:space-y-1 col-span-2 md:col-span-1"><p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.innovations || "Nouveauté / Tech"}</p><p className="font-bold text-xs md:text-sm text-gray-900 dark:text-white leading-tight">{translateNewTech(selectedPrinter.newTech, lang)}</p></div>
                 
                 <div className="col-span-full pt-4 md:pt-6 border-t border-gray-100 dark:border-zinc-800">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <div>
-                      <p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">Compatibilité Filaments</p>
+                      <p className="text-gray-400 text-[8px] md:text-[10px] uppercase font-black tracking-widest">{t.specsTable?.supportedFilaments || "Compatibilité Filaments"}</p>
                       <div className="flex flex-wrap gap-2 md:gap-3 mt-2">
                         {selectedPrinter.filaments.map(f => (
                           <span key={f} className="px-3 py-1.5 md:px-4 md:py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-xl md:rounded-2xl text-[10px] md:text-xs font-black tracking-wider shadow-sm">{f}</span>
@@ -1093,7 +1108,7 @@ const PrintersPage = ({
                       className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-2xl font-black text-xs uppercase tracking-wider shadow-lg flex items-center gap-2 transition-transform active:scale-95 shrink-0"
                     >
                       <Table size={16} />
-                      {showFullTableModal ? 'Masquer le Tableau' : '📋 Voir le Tableau des Caractéristiques'}
+                      {showFullTableModal ? (t.specsTable?.hideTableBtn || 'Masquer le Tableau') : (t.specsTable?.viewTableBtn || '📋 Voir le Tableau des Caractéristiques')}
                     </button>
                   </div>
 
@@ -1103,7 +1118,7 @@ const PrintersPage = ({
                       <div className="flex justify-between items-center mb-4">
                         <h4 className="font-black text-base md:text-lg text-gray-900 dark:text-white flex items-center gap-2">
                           <Table className="text-purple-600" size={20} />
-                          Fiche Technique Complète (Caractéristiques Officielles)
+                          {t.specsTable?.fullTableTitle || "Fiche Technique Complète (Caractéristiques Officielles)"}
                         </h4>
                         <span className="text-[10px] font-black uppercase bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-full">
                           {selectedPrinter.brand} — {selectedPrinter.name}
@@ -1115,63 +1130,63 @@ const PrintersPage = ({
                           {/* Section Header: Identification */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              1. Commercial & Général
+                              {t.specsTable?.secCommercial || "1. Commercial & Général"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px] w-1/3">Marque & Modèle</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px] w-1/3">{t.specsTable?.brandModel || "Marque & Modèle"}</td>
                             <td className="py-3 px-4 font-black text-gray-900 dark:text-white">{selectedPrinter.brand} — {selectedPrinter.name}</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Statut Commercial</td>
-                            <td className="py-3 px-4 font-bold">{selectedPrinter.discontinued ? <span className="text-amber-600 dark:text-amber-400">Ancien Modèle / Catalogue Historique</span> : <span className="text-green-600 dark:text-green-400">En vente actuellement (Catalogue Actuel)</span>}</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.commercialStatus || "Statut Commercial"}</td>
+                            <td className="py-3 px-4 font-bold">{selectedPrinter.discontinued ? <span className="text-amber-600 dark:text-amber-400">{t.specsTable?.legacyCatalog || "Ancien Modèle / Catalogue Historique"}</span> : <span className="text-green-600 dark:text-green-400">{t.specsTable?.activeCatalog || "En vente actuellement (Catalogue Actuel)"}</span>}</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Prix de Base (Seule)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.basePriceLabel || "Prix de Base (Seule)"}</td>
                             <td className="py-3 px-4 font-black text-green-600 dark:text-green-400 text-base">{selectedPrinter.price} €</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Prix Pack Combo Multicolore</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.comboPriceLabel || "Prix Pack Combo Multicolore"}</td>
                             <td className="py-3 px-4 font-bold text-purple-600 dark:text-purple-400">
-                              {selectedPrinter.comboPrice ? `${selectedPrinter.comboPrice} € (Inclus ${selectedPrinter.multicolor.system || 'Pack Multicolore'})` : 'Option non vendue en pack (Système vendu séparément)'}
+                              {selectedPrinter.comboPrice ? `${selectedPrinter.comboPrice} € (${selectedPrinter.multicolor.system || 'Pack Multicolore'})` : (lang === 'FR' ? 'Option non vendue en pack (Système vendu séparément)' : lang === 'DE' ? 'Nicht im Paket enthalten (Separat erhältlich)' : 'Not sold as bundle (Sold separately)')}
                             </td>
                           </tr>
 
                           {/* Section Header: Structure */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              2. Structure, Cinématique & Dimensions
+                              {t.specsTable?.secStructure || "2. Structure, Cinématique & Dimensions"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Architecture / Cinématique</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.structure}</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.architecture || "Architecture / Cinématique"}</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{translateSpecValue('structure', selectedPrinter.structure, lang)}</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type de Caisson / Boîtier</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.enclosureType || "Type de Caisson / Boîtier"}</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              {selectedPrinter.enclosed ? 'Boîtier Fermé (Caisson intégral fermé adapté aux filaments techniques)' : 'Structure Ouverte (Châssis ouvert)'}
+                              {translateSpecValue('enclosed', selectedPrinter.enclosed, lang)}
                             </td>
                           </tr>
                           {selectedPrinter.chassis && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Châssis & Matériaux</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.chassis || "Châssis & Matériaux"}</td>
                               <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.chassis}</td>
                             </tr>
                           )}
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Volume d'impression (X × Y × Z)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.buildVolume || "Volume d'impression (X × Y × Z)"}</td>
                             <td className="py-3 px-4 font-black text-blue-600 dark:text-blue-400 text-base">{selectedPrinter.buildVolume}</td>
                           </tr>
                           {selectedPrinter.dimensions && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Dimensions Physiques</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.dimensions || "Dimensions Physiques"}</td>
                               <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.dimensions}</td>
                             </tr>
                           )}
                           {selectedPrinter.weight && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Poids Net</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.netWeight || "Poids Net"}</td>
                               <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.weight}</td>
                             </tr>
                           )}
@@ -1179,106 +1194,104 @@ const PrintersPage = ({
                           {/* Section Header: Extrusion & Buse */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              3. Tête d'impression, Extrudeur & Températures
+                              {t.specsTable?.secToolhead || "3. Tête d'impression, Extrudeur & Températures"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Type d'Extrudeur & Engrenages</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.extruderGears || "Type d'Extrudeur & Engrenages"}</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              Direct Drive All-Metal {selectedPrinter.extruderGears ? `| Engrenages : ${selectedPrinter.extruderGears}` : ''}
+                              {lang === 'FR' ? 'Direct Drive All-Metal' : lang === 'DE' ? 'Direct-Drive Vollmetall' : 'Direct Drive All-Metal'} {selectedPrinter.extruderGears ? `| ${selectedPrinter.extruderGears}` : ''}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Matériau & Diamètre de Buse</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Diamètre d'origine {selectedPrinter.nozzleDiameter} mm (Buse démontage rapide, options 0.2 / 0.6 / 0.8 mm)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.nozzleMaterial || "Matériau & Diamètre de Buse"}</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Ø {selectedPrinter.nozzleDiameter} mm</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Température Max Buse / Hotend</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.maxNozzleTemp || "Température Max Buse / Hotend"}</td>
                             <td className="py-3 px-4 font-bold text-red-600 dark:text-red-400">{selectedPrinter.maxNozzleTemp} °C</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Température Max Plateau Chauffant</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.maxBedTemp || "Température Max Plateau Chauffant"}</td>
                             <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{selectedPrinter.maxBedTemp} °C</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Gestion Thermique de Chambre</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.chamberHeat || "Gestion Thermique de Chambre"}</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.chamberHeating ? (
-                                <span className="text-green-600 dark:text-green-400 font-bold">{selectedPrinter.chamberHeating}</span>
-                              ) : selectedPrinter.enclosed ? (
-                                'Chauffage passif régulé par le plateau chauffant'
-                              ) : (
-                                'Pas de caisson chauffé (Machine ouverte)'
-                              )}
+                              {translateChamberHeating(selectedPrinter.chamberHeating, selectedPrinter.enclosed, lang)}
                             </td>
                           </tr>
                           {selectedPrinter.filtration && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Filtration de l'Air</td>
-                              <td className="py-3 px-4 font-bold text-teal-600 dark:text-teal-400">{selectedPrinter.filtration}</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.airFiltration || "Filtration de l'Air"}</td>
+                              <td className="py-3 px-4 font-bold text-teal-600 dark:text-teal-400">{translateFiltration(selectedPrinter.filtration, lang)}</td>
                             </tr>
                           )}
 
                           {/* Section Header: Performances */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              4. Vitesse & Performances d'impression
+                              {t.specsTable?.secSpeed || "4. Vitesse & Performances d'impression"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Vitesse Max d'impression</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.maxSpeed || "Vitesse Max d'impression"}</td>
                             <td className="py-3 px-4 font-bold text-blue-600 dark:text-blue-400 text-base">
-                              {selectedPrinter.maxSpeed ? `${selectedPrinter.maxSpeed} mm/s` : (selectedPrinter.structure === 'CoreXY' ? '500 à 600 mm/s' : '500 mm/s')}
+                              {translateSpeed(selectedPrinter.maxSpeed, selectedPrinter.structure, lang)}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Accélération Maximale</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.maxAccel || "Accélération Maximale"}</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
                               {selectedPrinter.maxAcceleration || (selectedPrinter.structure === 'CoreXY' ? '20 000 mm/s²' : '10 000 mm/s²')}
                             </td>
                           </tr>
                           {selectedPrinter.maxFlow && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Débit Volumétrique Hotend (Flow)</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.flowRate || "Débit Volumétrique Hotend (Flow)"}</td>
                               <td className="py-3 px-4 font-bold text-indigo-600 dark:text-indigo-400">{selectedPrinter.maxFlow}</td>
                             </tr>
                           )}
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Nivellement du Plateau</td>
-                            <td className="py-3 px-4 font-bold text-green-600 dark:text-green-400">Automatique multipoint complet (Capteurs piezo / jauge de contrainte & offset Z auto sans feuille)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.bedLeveling || "Nivellement du Plateau"}</td>
+                            <td className="py-3 px-4 font-bold text-green-600 dark:text-green-400">
+                              {translateBedLeveling(selectedPrinter.brand, lang)}
+                            </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Surface d'impression</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Plateau flexible magnétique en acier ressort à revêtement PEI texturé (Compatible PEI lisse, Haute Température, SuperTack)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.printSurface || "Surface d'impression"}</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {translatePrintSurface(selectedPrinter.brand, lang)}
+                            </td>
                           </tr>
 
                           {/* Section Header: Multicolore & Filaments */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              5. Multicolore, Filaments & Modules Optionnels
+                              {t.specsTable?.secMulticolor || "5. Multicolore, Filaments & Modules Optionnels"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Système Multicolore</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.multicolorSystem || "Système Multicolore"}</td>
                             <td className="py-3 px-4 font-bold text-purple-600 dark:text-purple-400">
-                              {selectedPrinter.multicolor.supported ? `Compatible (${selectedPrinter.multicolor.system || 'AMS'}) — jusqu'à 16 bobines` : 'Non supporté d\'origine (Impression monocouleur)'}
+                              {selectedPrinter.multicolor.supported ? `${t.comparison?.multiColorYes || 'Oui'} (${selectedPrinter.multicolor.system || 'AMS/CFS/KCM'})` : (t.comparison?.singleColor || 'Non supporté')}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Filaments Pris en Charge</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.supportedFilaments || "Filaments Pris en Charge"}</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
                               {selectedPrinter.filaments.join(' • ')}
                             </td>
                           </tr>
                           {selectedPrinter.laserModule && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Module Gravure & Découpe Laser</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{lang === 'FR' ? 'Module Gravure & Découpe Laser' : lang === 'DE' ? 'Laser-Gravur- & Schneidemodul' : 'Laser Engraving & Cutting Module'}</td>
                               <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{selectedPrinter.laserModule}</td>
                             </tr>
                           )}
                           {selectedPrinter.cuttingModule && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Module Découpe Lame / Traçage Stylo</td>
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{lang === 'FR' ? 'Module Découpe Lame / Traçage Stylo' : lang === 'DE' ? 'Schneidemesser- & Stiftplotter-Modul' : 'Blade Cutting & Pen Plotter Module'}</td>
                               <td className="py-3 px-4 font-bold text-pink-600 dark:text-pink-400">{selectedPrinter.cuttingModule}</td>
                             </tr>
                           )}
@@ -1286,53 +1299,57 @@ const PrintersPage = ({
                           {/* Section Header: Electronique & Fonctionnalités */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              6. Électronique, Caméra & Sécurité
+                              {t.specsTable?.secElectronics || "6. Électronique, Caméra & Sécurité"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Écran de Contrôle</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.controlScreen || "Écran de Contrôle"}</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.screen || 'Écran tactile couleur HD'}
+                              {translateScreen(selectedPrinter.screen, lang)}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Caméra & Surveillance</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.cameraMonitoring || "Caméra & Surveillance"}</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.camera || (selectedPrinter.enclosed || selectedPrinter.price > 400 ? 'Caméra HD intégrée (Détection spaghettis IA, surveillance, Time-lapse)' : 'Optionnelle')}
+                              {translateCamera(selectedPrinter.camera, selectedPrinter.enclosed, selectedPrinter.price, lang)}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Capteurs & Sécurité</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.sensorsSafety || "Capteurs & Sécurité"}</td>
                             <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
-                              {selectedPrinter.sensors ? selectedPrinter.sensors.join(' • ') : 'Capteur fin de filament, Reprise après coupure, Capteur de vibrations'}
+                              {translateSensors(selectedPrinter.sensors, lang)}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Connectivité Réseau</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Wi-Fi (2.4 GHz / 5 GHz double bande selon modèle), Bambu-Bus, App Mobile & Bambu Studio Cloud/LAN</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.connectivity || "Connectivité Réseau"}</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {translateConnectivity(selectedPrinter.brand, lang)}
+                            </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Logiciels Découpe (Slicers)</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">Bambu Studio, OrcaSlicer, PrusaSlicer, SuperSlicer, Cura (G-code standard)</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.slicers || "Logiciels Découpe (Slicers)"}</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">
+                              {translateSlicers(selectedPrinter.brand, lang)}
+                            </td>
                           </tr>
 
                           {/* Section Header: Highlights */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
                             <td colSpan={2} className="py-2.5 px-4 font-black text-xs uppercase tracking-wider">
-                              7. Évaluation & Nouveautés
+                              {t.specsTable?.secHighlights || "7. Évaluation & Nouveautés"}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Spécificités & Nouveautés</td>
-                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.newTech}</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.innovations || "Spécificités & Nouveautés"}</td>
+                            <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{translateNewTech(selectedPrinter.newTech, lang)}</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Points Forts</td>
-                            <td className="py-3 px-4 font-medium text-green-600 dark:text-green-400">{selectedPrinter.pros.join(' • ')}</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.pointsForts || "Points Forts"}</td>
+                            <td className="py-3 px-4 font-medium text-green-600 dark:text-green-400">{selectedPrinter.pros.map(pr => translateProCon(pr, lang)).join(' • ')}</td>
                           </tr>
                           <tr className="bg-white dark:bg-zinc-900">
-                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">Points Faibles</td>
-                            <td className="py-3 px-4 font-medium text-red-500 dark:text-red-400">{selectedPrinter.cons.join(' • ')}</td>
+                            <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.pointsFaibles || "Points Faibles"}</td>
+                            <td className="py-3 px-4 font-medium text-red-500 dark:text-red-400">{selectedPrinter.cons.map(cn => translateProCon(cn, lang)).join(' • ')}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1348,7 +1365,7 @@ const PrintersPage = ({
   );
 };
 
-const FilamentsPage = ({ t }: { t: TranslationStrings }) => {
+const FilamentsPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 p-4 max-w-7xl mx-auto pb-20">
       {filaments.map(f => (
@@ -1360,15 +1377,15 @@ const FilamentsPage = ({ t }: { t: TranslationStrings }) => {
           <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base leading-relaxed min-h-[50px] md:min-h-[60px] font-medium">{f.description}</p>
           <div className="space-y-4 md:space-y-5">
             <div className="bg-green-50 dark:bg-green-900/10 p-4 md:p-6 rounded-2xl md:rounded-3xl border border-green-100 dark:border-green-900/20">
-              <p className="font-black text-green-700 dark:text-green-400 text-[10px] md:text-sm mb-2 md:mb-3 uppercase tracking-widest">Qualités</p>
+              <p className="font-black text-green-700 dark:text-green-400 text-[10px] md:text-sm mb-2 md:mb-3 uppercase tracking-widest">{t.specsTable?.pointsForts || "Points Forts"}</p>
               <ul className="text-xs md:text-sm space-y-1 md:space-y-1.5 text-gray-700 dark:text-gray-300 font-medium">
-                {f.pros.map(p => <li key={p}>• {p}</li>)}
+                {f.pros.map(p => <li key={p}>• {translateProCon(p, lang)}</li>)}
               </ul>
             </div>
             <div className="bg-red-50 dark:bg-red-900/10 p-4 md:p-6 rounded-2xl md:rounded-3xl border border-red-100 dark:border-red-900/20">
-              <p className="font-black text-red-700 dark:text-red-400 text-[10px] md:text-sm mb-2 md:mb-3 uppercase tracking-widest">Défauts</p>
+              <p className="font-black text-red-700 dark:text-red-400 text-[10px] md:text-sm mb-2 md:mb-3 uppercase tracking-widest">{t.specsTable?.pointsFaibles || "Points Faibles"}</p>
               <ul className="text-xs md:text-sm space-y-1 md:space-y-1.5 text-gray-700 dark:text-gray-300 font-medium">
-                {f.cons.map(c => <li key={c}>• {c}</li>)}
+                {f.cons.map(c => <li key={c}>• {translateProCon(c, lang)}</li>)}
               </ul>
             </div>
           </div>
@@ -1378,7 +1395,7 @@ const FilamentsPage = ({ t }: { t: TranslationStrings }) => {
   );
 };
 
-const FilamentBrandsPage = ({ t }: { t: TranslationStrings }) => {
+const FilamentBrandsPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 p-4 max-w-7xl mx-auto pb-20">
       {filamentBrands.map(b => (
@@ -1386,15 +1403,15 @@ const FilamentBrandsPage = ({ t }: { t: TranslationStrings }) => {
           <h2 className="text-2xl font-black text-gray-900 dark:text-white border-b border-gray-100 dark:border-zinc-800 pb-4 tracking-tighter">{b.name}</h2>
           <div className="space-y-5">
             <div>
-              <p className="text-[10px] font-black uppercase text-green-600 tracking-widest mb-2">Points Forts</p>
+              <p className="text-[10px] font-black uppercase text-green-600 tracking-widest mb-2">{t.specsTable?.pointsForts || "Points Forts"}</p>
               {b.pros.map(p => <p key={p} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-3 font-medium">
-                <span className="text-green-500 font-bold">✓</span> {p}
+                <span className="text-green-500 font-bold">✓</span> {translateProCon(p, lang)}
               </p>)}
             </div>
             <div>
-              <p className="text-[10px] font-black uppercase text-red-600 tracking-widest mb-2">Points Faibles</p>
+              <p className="text-[10px] font-black uppercase text-red-600 tracking-widest mb-2">{t.specsTable?.pointsFaibles || "Points Faibles"}</p>
               {b.cons.map(p => <p key={p} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-3 font-medium">
-                <span className="text-red-500 font-bold">✗</span> {p}
+                <span className="text-red-500 font-bold">✗</span> {translateProCon(p, lang)}
               </p>)}
             </div>
           </div>
@@ -1482,7 +1499,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
           className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-16 py-4 md:py-5 rounded-2xl md:rounded-[2rem] font-black shadow-2xl disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-3 md:gap-5 text-sm md:text-lg uppercase tracking-widest"
         >
           {isComparing ? <div className="animate-spin rounded-full h-5 w-5 md:h-7 md:w-7 border-4 border-white border-t-transparent" /> : <ArrowRightLeft className="w-5 h-5 md:w-7 md:h-7" />}
-          {isComparing ? 'Analyse...' : t.compareBtn}
+          {isComparing ? (t.comparison?.analyzing || 'Analyse...') : t.compareBtn}
         </button>
       </div>
 
@@ -1494,7 +1511,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-zinc-800">
-                  <th className="p-4 md:p-8 bg-gray-50 dark:bg-zinc-800/50 w-48 md:w-64 text-[10px] md:text-xs font-black uppercase text-gray-400 tracking-widest">Caractéristiques</th>
+                  <th className="p-4 md:p-8 bg-gray-50 dark:bg-zinc-800/50 w-48 md:w-64 text-[10px] md:text-xs font-black uppercase text-gray-400 tracking-widest">{t.comparison?.characteristicsCol || 'Caractéristiques'}</th>
                   {selectedIds.map(id => {
                     const item = list.find(i => (tab === 'printers' ? (i as any).id : (i as any).name) === id);
                     const p = tab === 'printers' ? allRequestedPrinters.find(i => i.id === id) : null;
@@ -1512,7 +1529,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                                 : 'bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-zinc-700 hover:border-purple-400'
                             }`}
                           >
-                            {isComboActive ? '🎨 Version Combo / Multicolore' : '📦 Version de Base (Monocouleur)'}
+                            {isComboActive ? (t.comparison?.comboVersionBtn || '🎨 Version Combo / Multicolore') : (t.comparison?.baseVersionBtn || '📦 Version de Base (Monocouleur)')}
                           </button>
                         )}
                       </th>
@@ -1524,23 +1541,23 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                 {tab === 'printers' ? (
                   <>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Configuration Active</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.comparison?.activeConfig || 'Configuration Active'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         const isCombo = p ? !!multicolorModes[p.id] : false;
                         return (
                           <td key={id} className="p-4 md:p-6 text-center font-bold">
                             {isCombo ? (
-                              <span className="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-[10px] uppercase">Combo / Multicolore</span>
+                              <span className="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-[10px] uppercase">{t.comparison?.comboTag || 'Combo / Multicolore'}</span>
                             ) : (
-                              <span className="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-[10px] uppercase">Base (Monocouleur)</span>
+                              <span className="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-[10px] uppercase">{t.comparison?.baseTag || 'Base (Monocouleur)'}</span>
                             )}
                           </td>
                         );
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Prix</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.basePriceLabel || 'Prix'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         const isCombo = p ? !!multicolorModes[p.id] : false;
@@ -1553,87 +1570,87 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Caisson / Structure</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.filters?.enclosureLabel || 'Caisson'} / {t.specsTable?.architecture || 'Structure'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.enclosed ? 'Fermée (Caisson)' : 'Structure Ouverte'}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.enclosed ? (t.specsTable?.enclosed || 'Fermée (Caisson)') : (t.specsTable?.open || 'Structure Ouverte')}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Structure Cinématique</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.architecture || 'Structure Cinématique'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.structure}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{translateSpecValue('structure', p?.structure, lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Volume d'impression</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.buildVolume || "Volume d'impression"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="p-4 md:p-6 text-center text-blue-600 dark:text-blue-400 font-black">{p?.buildVolume}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Multicolore</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.multicolorSystem || 'Multicolore'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
                           <td key={id} className="p-4 md:p-6 text-center text-purple-600 font-bold">
-                            {p?.multicolor.supported ? `Oui (${p.multicolor.system || 'AMS/CFS/KCM'})` : 'Non'}
+                            {p?.multicolor.supported ? `${t.comparison?.multiColorYes || 'Oui'} (${p.multicolor.system || 'AMS/CFS/KCM'})` : (t.comparison?.singleColor || 'Non')}
                           </td>
                         );
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Buse & Diamètre</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.nozzleMaterial || 'Buse & Diamètre'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.nozzleType} ({p?.nozzleDiameter}mm)</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Température Buse/Plateau</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{lang === 'FR' ? 'Température Buse/Plateau' : lang === 'DE' ? 'Temperatur Düse/Bett' : 'Nozzle/Bed Temperature'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.maxNozzleTemp}°C / {p?.maxBedTemp}°C</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Filaments Compatibles</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.comparison?.filamentsLabel || t.specsTable?.supportedFilaments || 'Filaments Compatibles'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-medium">{p?.filaments.join(', ')}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Nouveautés / Tech</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.innovations || 'Nouveautés / Tech'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-[10px] md:text-xs text-gray-500 font-medium italic leading-relaxed">{p?.newTech}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-[10px] md:text-xs text-gray-500 font-medium italic leading-relaxed">{translateNewTech(p?.newTech || '', lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Points Forts</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.pointsForts || 'Points Forts'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-green-600 font-medium">{p?.pros.join(', ')}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-green-600 font-medium">{p?.pros.map(pr => translateProCon(pr, lang)).join(', ')}</td>;
                       })}
                     </tr>
                     <tr>
-                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">Points Faibles</td>
+                      <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.pointsFaibles || 'Points Faibles'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-red-500 font-medium">{p?.cons.join(', ')}</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-xs text-red-500 font-medium">{p?.cons.map(cn => translateProCon(cn, lang)).join(', ')}</td>;
                       })}
                     </tr>
                   </>
                 ) : (
                   <>
                     <tr className="border-b border-gray-50 dark:border-zinc-800/50">
-                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">Qualités</td>
+                      <td className="p-4 md:p-10 font-black text-gray-900 dark:text-white uppercase text-[10px] md:text-xs tracking-wider">{t.comparison?.brandQualities || 'Qualités'}</td>
                       {selectedIds.map(id => {
                         const b = filamentBrands.find(i => i.name === id);
-                        return <td key={id} className="p-4 md:p-10 text-xs md:text-sm text-gray-700 dark:text-gray-300 font-bold leading-relaxed">{b?.pros.join(', ')}</td>;
+                        return <td key={id} className="p-4 md:p-10 text-xs md:text-sm text-gray-700 dark:text-gray-300 font-bold leading-relaxed">{b?.pros.map(pr => translateProCon(pr, lang)).join(', ')}</td>;
                       })}
                     </tr>
                   </>
@@ -1650,7 +1667,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                 className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs md:text-sm uppercase tracking-wider shadow-xl hover:shadow-purple-500/30 transition-all active:scale-95 cursor-pointer"
               >
                 <Table size={20} />
-                {showDetailedComparison ? 'Masquer la fiche technique complète' : '📋 Plus de caractéristiques (Fiche Technique Complète)'}
+                {showDetailedComparison ? (t.comparison?.hideDetailedComparisonBtn || 'Masquer la fiche technique complète') : (t.comparison?.detailedComparisonBtn || '📋 Plus de caractéristiques (Fiche Technique Complète)')}
               </button>
             </div>
           )}
@@ -1661,10 +1678,10 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
               <div className="flex items-center justify-between border-b border-gray-200 dark:border-zinc-800 pb-4">
                 <h3 className="text-lg md:text-xl font-black text-purple-900 dark:text-purple-200 flex items-center gap-3">
                   <Table className="text-purple-600" size={24} />
-                  Fiche Technique Officielle Complète — Comparatif Détaillé
+                  {t.comparison?.detailedComparisonTitle || "Fiche Technique Officielle Complète — Comparatif Détaillé"}
                 </h3>
                 <span className="text-xs font-black bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full uppercase">
-                  {selectedIds.length} Modèles Sélectionnés
+                  {selectedIds.length} {t.comparison?.selectedModelsCount || "Modèles Sélectionnés"}
                 </span>
               </div>
 
@@ -1672,7 +1689,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                 <table className="w-full text-left border-collapse text-xs md:text-sm rounded-2xl overflow-hidden shadow-sm">
                   <thead>
                     <tr className="bg-purple-950 text-white">
-                      <th className="py-3 px-4 uppercase font-black text-[10px] w-56">Spécification</th>
+                      <th className="py-3 px-4 uppercase font-black text-[10px] w-56">{t.comparison?.characteristicsCol || "Spécification"}</th>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
@@ -1687,64 +1704,64 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                     {/* SECTION 1: Commercial */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        1. Commercial & Prix
+                        {t.specsTable?.secCommercial || "1. Commercial & Prix"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Statut Catalogue</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.commercialStatus || "Statut Catalogue"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
                           <td key={id} className="py-3 px-4 text-center font-bold">
-                            {p?.discontinued ? <span className="text-amber-600">Catalogue Historique</span> : <span className="text-green-600">Catalogue Actuel</span>}
+                            {p?.discontinued ? <span className="text-amber-600">{t.specsTable?.legacyCatalog || "Catalogue Historique"}</span> : <span className="text-green-600">{t.specsTable?.activeCatalog || "Catalogue Actuel"}</span>}
                           </td>
                         );
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Prix de Base</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.basePriceLabel || "Prix de Base"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-black text-green-600">{p?.price} €</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Prix Pack Combo Multicolore</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.comboPriceLabel || "Prix Pack Combo Multicolore"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.comboPrice ? `${p.comboPrice} € (${p.multicolor.system || 'Combo'})` : 'Option séparée'}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.comboPrice ? `${p.comboPrice} € (${p.multicolor.system || 'Combo'})` : (t.comparison?.singleColor || 'Option séparée')}</td>;
                       })}
                     </tr>
 
                     {/* SECTION 2: Structure & Caisson */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        2. Structure & Type de Caisson
+                        {t.specsTable?.secStructure || "2. Structure & Type de Caisson"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Type de Caisson / Enclosure</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.enclosureType || "Type de Caisson / Enclosure"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-gray-800 dark:text-gray-200">{p?.enclosed ? 'Boîtier Fermé (Caisson Intégral)' : 'Structure Ouverte'}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-gray-800 dark:text-gray-200">{translateSpecValue('enclosed', p?.enclosed, lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Cinématique</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.architecture || "Cinématique"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.structure}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold">{translateSpecValue('structure', p?.structure, lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Volume Utile (X × Y × Z)</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.buildVolume || "Volume Utile (X × Y × Z)"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-black text-blue-600">{p?.buildVolume}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Châssis & Dimensions</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.chassis || "Châssis & Dimensions"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
@@ -1758,53 +1775,60 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                     {/* SECTION 3: Extrusion & Températures */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        3. Extrudeur, Buse & Températures Max
+                        {t.specsTable?.secToolhead || "3. Extrudeur, Buse & Températures Max"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Type de Buse & Diamètre</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.nozzleMaterial || "Type de Buse & Diamètre"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-bold">{p?.nozzleType} ({p?.nozzleDiameter} mm)</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Température Max Hotend / Buse</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.maxNozzleTemp || "Température Max Hotend / Buse"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-bold text-red-600">{p?.maxNozzleTemp} °C</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Température Max Plateau</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.maxBedTemp || "Température Max Plateau"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-bold text-amber-600">{p?.maxBedTemp} °C</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Gestion Thermique de Chambre</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.chamberHeat || "Gestion Thermique de Chambre"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-medium text-gray-800 dark:text-gray-200 text-[11px]">{p?.chamberHeating || (p?.enclosed ? 'Chauffage passif régulé par le plateau' : 'Ouvert')}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-gray-800 dark:text-gray-200 text-[11px]">{translateChamberHeating(p?.chamberHeating, p?.enclosed || false, lang)}</td>;
+                      })}
+                    </tr>
+                    <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.airFiltration || "Filtration de l'Air"}</td>
+                      {selectedIds.map(id => {
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-teal-600 dark:text-teal-400 text-[11px]">{translateFiltration(p?.filtration, lang)}</td>;
                       })}
                     </tr>
 
                     {/* SECTION 4: Performances */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        4. Vitesse & Performances
+                        {t.specsTable?.secSpeed || "4. Vitesse & Performances"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Vitesse Maximale</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.maxSpeed || "Vitesse Maximale"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-blue-600">{p?.maxSpeed ? `${p.maxSpeed} mm/s` : (p?.structure === 'CoreXY' ? '500 à 600 mm/s' : '300 à 500 mm/s')}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-blue-600">{translateSpeed(p?.maxSpeed, p?.structure || '', lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Accélération & Débit Flow</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.maxAccel || "Accélération & Débit Flow"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
@@ -1816,27 +1840,28 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Nivellement du Plateau</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.bedLeveling || "Nivellement du Plateau"}</td>
                       {selectedIds.map(id => {
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-green-600">Automatique complet (Piezo/Jauge sans feuille)</td>;
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-green-600">{translateBedLeveling(p?.brand || '', lang)}</td>;
                       })}
                     </tr>
 
                     {/* SECTION 5: Multicolore & Filaments */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        5. Multicolore & Filaments
+                        {t.specsTable?.secMulticolor || "5. Multicolore & Filaments"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Système Multicolore</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.multicolorSystem || "Système Multicolore"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.multicolor.supported ? `Oui (${p.multicolor.system || 'Système multi-bobines'})` : 'Monocouleur'}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold text-purple-600">{p?.multicolor.supported ? `${t.comparison?.multiColorYes || 'Oui'} (${p.multicolor.system || 'Système multi-bobines'})` : (t.comparison?.singleColor || 'Monocouleur')}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Filaments Compatibles</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.comparison?.filamentsLabel || t.specsTable?.supportedFilaments || "Filaments Compatibles"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return <td key={id} className="py-3 px-4 text-center font-medium">{p?.filaments.join(', ')}</td>;
@@ -1846,48 +1871,49 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                     {/* SECTION 6: Électronique & Caméra */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        6. Électronique & Caméra IA
+                        {t.specsTable?.secElectronics || "6. Électronique & Caméra IA"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Caméra & Inspection IA</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.cameraMonitoring || "Caméra & Inspection IA"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-medium">{p?.enclosed || p?.price > 400 ? 'Caméra HD intégrée avec IA' : 'Optionnelle'}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-medium">{translateCamera(p?.camera, p?.enclosed || false, p?.price || 0, lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Connectivité</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.connectivity || "Connectivité"}</td>
                       {selectedIds.map(id => {
-                        return <td key={id} className="py-3 px-4 text-center font-medium">Wi-Fi, Ethernet, App Mobile & Cloud</td>;
+                        const p = allRequestedPrinters.find(i => i.id === id);
+                        return <td key={id} className="py-3 px-4 text-center font-medium">{translateConnectivity(p?.brand || '', lang)}</td>;
                       })}
                     </tr>
 
                     {/* SECTION 7: Nouveautés & Avis */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
                       <td colSpan={selectedIds.length + 1} className="py-2 px-4 uppercase text-[11px] tracking-wider">
-                        7. Évaluation & High-Tech
+                        {t.specsTable?.secHighlights || "7. Évaluation & High-Tech"}
                       </td>
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Spécificités & Tech</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.innovations || "Spécificités & Tech"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-medium italic text-gray-600 dark:text-gray-400">{p?.newTech}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-medium italic text-gray-600 dark:text-gray-400">{translateNewTech(p?.newTech || '', lang)}</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Points Forts</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.pointsForts || "Points Forts"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-medium text-green-600">{p?.pros.join(' • ')}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-green-600">{p?.pros.map(pr => translateProCon(pr, lang)).join(' • ')}</td>;
                       })}
                     </tr>
                     <tr className="bg-white dark:bg-zinc-900">
-                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">Points Faibles</td>
+                      <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.pointsFaibles || "Points Faibles"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-medium text-red-500">{p?.cons.join(' • ')}</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-medium text-red-500">{p?.cons.map(cn => translateProCon(cn, lang)).join(' • ')}</td>;
                       })}
                     </tr>
                   </tbody>
@@ -1900,7 +1926,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
             <div className="bg-gradient-to-br from-blue-600/10 via-purple-600/10 to-pink-600/10 dark:from-blue-600/20 dark:to-purple-600/20 p-6 md:p-10 rounded-[2rem] md:rounded-[3rem] border-2 md:border-4 border-blue-200 dark:border-blue-900 flex flex-col md:flex-row gap-6 md:gap-8 items-start shadow-xl">
               <div className="p-4 md:p-5 bg-blue-600 text-white rounded-2xl shadow-xl shrink-0 animate-pulse self-center md:self-start"><Lightbulb className="w-8 h-8 md:w-10 md:h-10" /></div>
               <div className="space-y-2 w-full">
-                <h3 className="text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest md:tracking-[0.3em] text-center md:text-left">Analyse Comparative IA</h3>
+                <h3 className="text-[10px] md:text-xs font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest md:tracking-[0.3em] text-center md:text-left">{t.aiAdvisor?.analysisTitle || "Analyse Comparative IA"}</h3>
                 <div className="whitespace-pre-line text-sm md:text-lg leading-relaxed font-semibold text-blue-950 dark:text-blue-100 tracking-tight text-left">
                   {analysis}
                 </div>
@@ -1913,7 +1939,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
   );
 };
 
-const FilamentSelectorPage = ({ t }: { t: TranslationStrings }) => {
+const FilamentSelectorPage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => {
   const [selectedId, setSelectedId] = useState('');
   const printer = useMemo(() => allRequestedPrinters.find(p => p.id === selectedId), [selectedId]);
 
@@ -1927,7 +1953,7 @@ const FilamentSelectorPage = ({ t }: { t: TranslationStrings }) => {
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
           >
-            <option value="">-- Sélectionnez --</option>
+            <option value="">{lang === 'FR' ? '-- Sélectionnez --' : lang === 'DE' ? '-- Auswählen --' : '-- Select --'}</option>
             {allRequestedPrinters.map(p => <option key={p.id} value={p.id}>{p.brand} {p.name}</option>)}
           </select>
           <ChevronDown className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 pointer-events-none text-blue-600 w-6 h-6 md:w-8 md:h-8" />
@@ -1943,10 +1969,10 @@ const FilamentSelectorPage = ({ t }: { t: TranslationStrings }) => {
               <div key={f.name} className={`p-6 md:p-10 rounded-2xl md:rounded-[3rem] border-2 md:border-4 transition-all ${isCompatible ? 'bg-white dark:bg-zinc-900 border-green-200 dark:border-green-900 shadow-xl md:shadow-2xl md:scale-105' : 'bg-gray-100 dark:bg-zinc-800 opacity-40 grayscale blur-[1px]'}`}>
                 <div className="flex justify-between items-center mb-4 md:mb-8">
                   <h3 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{f.name}</h3>
-                  {isCompatible ? <StarRating rating={rating} /> : <span className="text-[8px] md:text-[10px] font-black text-red-600 uppercase tracking-widest border-2 border-red-200 px-2 py-1 rounded-lg">Incompatible</span>}
+                  {isCompatible ? <StarRating rating={rating} /> : <span className="text-[8px] md:text-[10px] font-black text-red-600 uppercase tracking-widest border-2 border-red-200 px-2 py-1 rounded-lg">{lang === 'FR' ? 'Incompatible' : lang === 'DE' ? 'Inkompatibel' : 'Incompatible'}</span>}
                 </div>
                 <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 leading-relaxed font-medium">
-                  {isCompatible ? "Optimisé pour cette machine." : "Limitation technique détectée."}
+                  {isCompatible ? (lang === 'FR' ? "Optimisé pour cette machine." : lang === 'DE' ? "Für dieses Gerät optimiert." : "Optimized for this printer.") : (lang === 'FR' ? "Limitation technique détectée." : lang === 'DE' ? "Technische Einschränkung festgestellt." : "Technical limitation detected.")}
                 </p>
               </div>
             );
@@ -1962,7 +1988,7 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const sampleQuestions = [
+  const sampleQuestions = t.aiAdvisor?.sampleQuestions || [
     "📋 Donnes moi plus d'infos sur la Bambu Lab P1S",
     "🔒 Imprimante avec caisson fermé à moins de 500€",
     "🎨 Quelle est la meilleure imprimante Multicolore (AMS/CFS) ?",
@@ -1988,8 +2014,12 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-8 md:space-y-12 py-6 md:py-10 pb-32">
       <div className="text-center space-y-3 md:space-y-5">
-        <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight">Conseiller IA 3D</h1>
-        <p className="text-base md:text-xl font-bold tracking-tight text-gray-500">Posez vos questions ou demandez une fiche d'information détaillée sur n'importe quel modèle.</p>
+        <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter leading-tight">
+          {t.aiAdvisor?.title || 'Conseiller IA 3D'}
+        </h1>
+        <p className="text-base md:text-xl font-bold tracking-tight text-gray-500">
+          {t.aiAdvisor?.subtitle || "Posez vos questions ou demandez une fiche d'information détaillée sur n'importe quel modèle."}
+        </p>
       </div>
 
       {/* Suggestion chips */}
@@ -2021,7 +2051,7 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
             className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-14 py-4 md:py-6 rounded-xl md:rounded-[2rem] font-black flex items-center justify-center gap-3 md:gap-5 shadow-2xl transition-all active:scale-95 disabled:opacity-50 text-base md:text-xl shrink-0 cursor-pointer"
           >
             {loading ? <div className="animate-spin rounded-full h-6 w-6 md:h-8 md:w-8 border-4 border-white border-t-transparent" /> : <BrainCircuit className="w-6 h-6 md:w-8 md:h-8" />}
-            ANALYSER
+            {loading ? (t.aiThinking || 'Analyse en cours...') : (t.aiAdvisor?.analyzeBtn || 'ANALYSER')}
           </button>
         </div>
       </div>
@@ -2033,8 +2063,12 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
               <BrainCircuit size={24} />
             </div>
             <div>
-              <h2 className="text-lg md:text-2xl font-black text-gray-900 dark:text-white">Analyse du Conseiller IA</h2>
-              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Expert Impression 3D</p>
+              <h2 className="text-lg md:text-2xl font-black text-gray-900 dark:text-white">
+                {t.aiAdvisor?.analysisTitle || 'Analyse du Conseiller IA'}
+              </h2>
+              <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                {t.aiAdvisor?.analysisSubtitle || 'Expert Impression 3D'}
+              </p>
             </div>
           </div>
           <div className="whitespace-pre-line text-sm md:text-lg leading-relaxed text-gray-800 dark:text-gray-200 font-medium">
@@ -2160,10 +2194,10 @@ export default function App() {
               onClearInitialBrand={() => setSelectedBrandFilter(null)}
             />
           )}
-          {page === 'filaments' && <FilamentsPage t={t} />}
-          {page === 'brands' && <FilamentBrandsPage t={t} />}
+          {page === 'filaments' && <FilamentsPage t={t} lang={lang} />}
+          {page === 'brands' && <FilamentBrandsPage t={t} lang={lang} />}
           {page === 'compare' && <ComparePage t={t} lang={lang} />}
-          {page === 'choice' && <FilamentSelectorPage t={t} />}
+          {page === 'choice' && <FilamentSelectorPage t={t} lang={lang} />}
           {page === 'recommend' && <RecommendationPage t={t} lang={lang} />}
         </div>
       </main>
