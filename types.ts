@@ -47,6 +47,9 @@ export interface Printer {
   supportedPlates?: string[];
   laserModule?: string;
   cuttingModule?: string;
+  cncModule?: string;
+  powerSupply?: string;
+  noiseLevel?: string;
 }
 
 export interface FilamentType {
@@ -170,6 +173,8 @@ export interface TranslationStrings {
     buildVolume: string;
     dimensions: string;
     netWeight: string;
+    powerSupply?: string;
+    noiseLevel?: string;
     extruderGears: string;
     nozzleMaterial: string;
     maxNozzleTemp: string;
@@ -183,6 +188,7 @@ export interface TranslationStrings {
     printSurface: string;
     multicolorSystem: string;
     supportedFilaments: string;
+    cncModule?: string;
     controlScreen: string;
     cameraMonitoring: string;
     sensorsSafety: string;
