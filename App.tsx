@@ -56,7 +56,14 @@ import {
   translateCamera, 
   translateNewTech,
   translateScreen,
-  translateSpeed
+  translateSpeed,
+  translateLaserModule,
+  translateCncModule,
+  translatePowerSupply,
+  translateNoiseLevel,
+  translateExtruder,
+  translateNozzleType,
+  translateChassis
 } from './translationsData';
 
 // --- Components ---
@@ -1171,7 +1178,7 @@ const PrintersPage = ({
                           {selectedPrinter.chassis && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                               <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.chassis || "Châssis & Matériaux"}</td>
-                              <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.chassis}</td>
+                              <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{translateChassis(selectedPrinter.chassis, lang)}</td>
                             </tr>
                           )}
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
@@ -1190,6 +1197,18 @@ const PrintersPage = ({
                               <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{selectedPrinter.weight}</td>
                             </tr>
                           )}
+                          {selectedPrinter.powerSupply && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.powerSupply || "Alimentation Électrique / Puissance"}</td>
+                              <td className="py-3 px-4 font-medium text-gray-800 dark:text-gray-200">{translatePowerSupply(selectedPrinter.powerSupply, lang)}</td>
+                            </tr>
+                          )}
+                          {selectedPrinter.noiseLevel && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.noiseLevel || "Niveau Sonore / Décibels"}</td>
+                              <td className="py-3 px-4 font-bold text-emerald-600 dark:text-emerald-400">{translateNoiseLevel(selectedPrinter.noiseLevel, lang)}</td>
+                            </tr>
+                          )}
 
                           {/* Section Header: Extrusion & Buse */}
                           <tr className="bg-purple-100 dark:bg-purple-950/60 text-purple-900 dark:text-purple-200">
@@ -1200,12 +1219,12 @@ const PrintersPage = ({
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.extruderGears || "Type d'Extrudeur & Engrenages"}</td>
                             <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">
-                              {lang === 'FR' ? 'Direct Drive All-Metal' : lang === 'DE' ? 'Direct-Drive Vollmetall' : 'Direct Drive All-Metal'} {selectedPrinter.extruderGears ? `| ${selectedPrinter.extruderGears}` : ''}
+                              {lang === 'FR' ? 'Direct Drive All-Metal' : lang === 'DE' ? 'Direct-Drive Vollmetall' : 'Direct Drive All-Metal'} {selectedPrinter.extruderGears ? `| ${translateExtruder(selectedPrinter.extruderGears, lang)}` : ''}
                             </td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.nozzleMaterial || "Matériau & Diamètre de Buse"}</td>
-                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{selectedPrinter.nozzleType} — Ø {selectedPrinter.nozzleDiameter} mm</td>
+                            <td className="py-3 px-4 font-bold text-gray-900 dark:text-white">{translateNozzleType(selectedPrinter.nozzleType, lang)} — Ø {selectedPrinter.nozzleDiameter} mm</td>
                           </tr>
                           <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                             <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.maxNozzleTemp || "Température Max Buse / Hotend"}</td>
@@ -1286,13 +1305,19 @@ const PrintersPage = ({
                           {selectedPrinter.laserModule && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                               <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{lang === 'FR' ? 'Module Gravure & Découpe Laser' : lang === 'DE' ? 'Laser-Gravur- & Schneidemodul' : 'Laser Engraving & Cutting Module'}</td>
-                              <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{selectedPrinter.laserModule}</td>
+                              <td className="py-3 px-4 font-bold text-amber-600 dark:text-amber-400">{translateLaserModule(selectedPrinter.laserModule, lang)}</td>
                             </tr>
                           )}
                           {selectedPrinter.cuttingModule && (
                             <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
                               <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{lang === 'FR' ? 'Module Découpe Lame / Traçage Stylo' : lang === 'DE' ? 'Schneidemesser- & Stiftplotter-Modul' : 'Blade Cutting & Pen Plotter Module'}</td>
                               <td className="py-3 px-4 font-bold text-pink-600 dark:text-pink-400">{selectedPrinter.cuttingModule}</td>
+                            </tr>
+                          )}
+                          {selectedPrinter.cncModule && (
+                            <tr className="border-b border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+                              <td className="py-3 px-4 font-black text-gray-500 dark:text-gray-400 uppercase text-[10px]">{t.specsTable?.cncModule || (lang === 'FR' ? 'Module Fraisage & Sculpture CNC' : lang === 'DE' ? 'CNC-Fräs- & Graviermodul' : 'CNC Carving & Milling Module')}</td>
+                              <td className="py-3 px-4 font-bold text-orange-600 dark:text-orange-400">{translateCncModule(selectedPrinter.cncModule, lang)}</td>
                             </tr>
                           )}
 
@@ -1605,7 +1630,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                       <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.nozzleMaterial || 'Buse & Diamètre'}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{p?.nozzleType} ({p?.nozzleDiameter}mm)</td>;
+                        return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-bold">{translateNozzleType(p?.nozzleType, lang)} ({p?.nozzleDiameter}mm)</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
@@ -1622,6 +1647,42 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-medium">{p?.filaments.join(', ')}</td>;
                       })}
                     </tr>
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.laserModule) && (
+                      <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                        <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{lang === 'FR' ? 'Module Laser' : lang === 'DE' ? 'Laser-Modul' : 'Laser Module'}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="p-4 md:p-6 text-center text-amber-600 dark:text-amber-400 font-bold">{translateLaserModule(p?.laserModule, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.cncModule) && (
+                      <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                        <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.cncModule || (lang === 'FR' ? 'Module CNC' : lang === 'DE' ? 'CNC-Modul' : 'CNC Module')}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="p-4 md:p-6 text-center text-orange-600 dark:text-orange-400 font-bold">{translateCncModule(p?.cncModule, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.powerSupply) && (
+                      <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                        <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.powerSupply || 'Alimentation'}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="p-4 md:p-6 text-center text-gray-700 dark:text-gray-300 font-medium">{translatePowerSupply(p?.powerSupply, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.noiseLevel) && (
+                      <tr className="border-b border-gray-100 dark:border-zinc-800/50">
+                        <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.noiseLevel || 'Niveau Sonore'}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="p-4 md:p-6 text-center text-emerald-600 dark:text-emerald-400 font-bold">{translateNoiseLevel(p?.noiseLevel, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
                     <tr className="border-b border-gray-100 dark:border-zinc-800/50">
                       <td className="p-4 md:p-6 font-black text-gray-900 dark:text-white uppercase text-[10px] tracking-wider bg-gray-50/50 dark:bg-zinc-800/30">{t.specsTable?.innovations || 'Nouveautés / Tech'}</td>
                       {selectedIds.map(id => {
@@ -1766,11 +1827,29 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         const p = allRequestedPrinters.find(i => i.id === id);
                         return (
                           <td key={id} className="py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300 text-[11px]">
-                            {p?.dimensions ? `${p.dimensions} (${p.weight || ''})` : (p?.chassis || '-')}
+                            {p?.dimensions ? `${p.dimensions} (${p.weight || ''})` : (translateChassis(p?.chassis, lang) || '-')}
                           </td>
                         );
                       })}
                     </tr>
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.powerSupply) && (
+                      <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.powerSupply || "Alimentation Électrique / Puissance"}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300 text-[11px]">{translatePowerSupply(p?.powerSupply, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.noiseLevel) && (
+                      <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.noiseLevel || "Niveau Sonore / Décibels"}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="py-3 px-4 text-center font-bold text-emerald-600 text-[11px]">{translateNoiseLevel(p?.noiseLevel, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
 
                     {/* SECTION 3: Extrusion & Températures */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
@@ -1782,7 +1861,7 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                       <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.nozzleMaterial || "Type de Buse & Diamètre"}</td>
                       {selectedIds.map(id => {
                         const p = allRequestedPrinters.find(i => i.id === id);
-                        return <td key={id} className="py-3 px-4 text-center font-bold">{p?.nozzleType} ({p?.nozzleDiameter} mm)</td>;
+                        return <td key={id} className="py-3 px-4 text-center font-bold">{translateNozzleType(p?.nozzleType, lang)} ({p?.nozzleDiameter} mm)</td>;
                       })}
                     </tr>
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
@@ -1867,6 +1946,24 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         return <td key={id} className="py-3 px-4 text-center font-medium">{p?.filaments.join(', ')}</td>;
                       })}
                     </tr>
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.laserModule) && (
+                      <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{lang === 'FR' ? 'Module Gravure & Découpe Laser' : lang === 'DE' ? 'Laser-Gravur- & Schneidemodul' : 'Laser Engraving & Cutting Module'}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="py-3 px-4 text-center font-bold text-amber-600 text-[11px]">{translateLaserModule(p?.laserModule, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.cncModule) && (
+                      <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.cncModule || (lang === 'FR' ? 'Module Fraisage & Sculpture CNC' : lang === 'DE' ? 'CNC-Fräs- & Graviermodul' : 'CNC Carving & Milling Module')}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return <td key={id} className="py-3 px-4 text-center font-bold text-orange-600 text-[11px]">{translateCncModule(p?.cncModule, lang)}</td>;
+                        })}
+                      </tr>
+                    )}
 
                     {/* SECTION 6: Électronique & Caméra */}
                     <tr className="bg-purple-100 dark:bg-purple-900/40 text-purple-900 dark:text-purple-200 font-black">
