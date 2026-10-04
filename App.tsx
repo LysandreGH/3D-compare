@@ -309,7 +309,7 @@ const HomePage = ({
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.priceUpdatedLabel || "Prix des imprimantes 3D"}</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-blue-600 dark:text-blue-400">26/09/2026</span></p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-blue-600 dark:text-blue-400">04/10/2026</span></p>
             </div>
           </div>
 
@@ -319,17 +319,17 @@ const HomePage = ({
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.contentUpdatedLabel || "Fiches & Contenu du site"}</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-purple-600 dark:text-purple-400">26/09/2026</span></p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-purple-600 dark:text-purple-400">04/10/2026</span></p>
             </div>
           </div>
         </div>
       </div>
 
       {/* ENCADRÉ : Événements & Bons Plans du Moment */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-purple-500/10 border-2 border-amber-300 dark:border-amber-700/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
+      <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border-2 border-amber-300 dark:border-amber-700/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-200/50 dark:border-amber-800/40 pb-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-gradient-to-br from-amber-500 to-pink-500 text-white rounded-2xl shadow-md shrink-0">
+            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-2xl shadow-md shrink-0">
               <Sparkles size={24} />
             </div>
             <div>
@@ -346,57 +346,37 @@ const HomePage = ({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {/* Anycubic Event Card - 11 Ans */}
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-6 border border-purple-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-purple-400 dark:hover:border-purple-600 transition-all hover:shadow-lg">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-black uppercase tracking-wider bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-lg">
-                  {t.homeBoxes?.anycubicTag || "🎂 ANYCUBIC • FÊTE SES 11 ANS"}
+        <div>
+          {/* Creality Autumn Deals Event Card */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-7 border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between space-y-5 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[11px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 px-3 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
+                  {t.homeBoxes?.crealityTag || "🍁 CREALITY • OFFRES D'AUTOMNE"}
                 </span>
-                <span className="text-xs font-black text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2.5 py-0.5 rounded-full">
-                  {t.homeBoxes?.anycubicDiscount || "Jusqu'à -40%"}
-                </span>
-              </div>
-              <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                {t.homeBoxes?.anycubicTitle || "Célébration des 11 Ans Anycubic 🎉"}
-              </h3>
-              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                {t.homeBoxes?.anycubicDesc}
-              </p>
-            </div>
-            <button 
-              onClick={() => onSelectBrand?.('Anycubic')}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
-            >
-              <span>{t.homeBoxes?.anycubicBtn || "Voir les imprimantes Anycubic en promo"}</span>
-              <ArrowRight size={14} />
-            </button>
-          </div>
-
-          {/* Elegoo Event Card - Réductions */}
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-6 border border-blue-200 dark:border-zinc-800 shadow-sm flex flex-col justify-between space-y-4 hover:border-blue-400 dark:hover:border-blue-600 transition-all hover:shadow-lg">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-black uppercase tracking-wider bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-3 py-1 rounded-lg">
-                  {t.homeBoxes?.elegooTag || "⚡ ELEGOO • GRANDES RÉDUCTIONS"}
-                </span>
-                <span className="text-xs font-black text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-950/40 px-2.5 py-0.5 rounded-full">
-                  {t.homeBoxes?.elegooDiscount || "Offres Spéciales"}
+                <span className="text-xs font-black text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800/60">
+                  {t.homeBoxes?.crealityDiscount || "Jusqu'à -50%"}
                 </span>
               </div>
-              <h3 className="text-lg font-black text-gray-900 dark:text-white">
-                {t.homeBoxes?.elegooTitle || "Vague de Réductions chez Elegoo ⚡"}
+              <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                {t.homeBoxes?.crealityTitle || "Offres d'Automne Creality 🍂"}
               </h3>
               <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                {t.homeBoxes?.elegooDesc}
+                {t.homeBoxes?.crealityDesc}
               </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K2 Plus Combo</span>
+                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K2 Pro</span>
+                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K1C</span>
+                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">Ender-3 V3 Series</span>
+                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">Bundles Filaments Hyper PLA</span>
+              </div>
             </div>
             <button 
-              onClick={() => onSelectBrand?.('Elegoo')}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+              onClick={() => onSelectBrand?.('Creality')}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 hover:from-amber-700 hover:via-orange-700 hover:to-red-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
             >
-              <span>{t.homeBoxes?.elegooBtn || "Voir les imprimantes Elegoo en promo"}</span>
+              <span>{t.homeBoxes?.crealityBtn || "Voir les imprimantes Creality en promo"}</span>
               <ArrowRight size={14} />
             </button>
           </div>
