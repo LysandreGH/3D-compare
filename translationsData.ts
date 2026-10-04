@@ -126,6 +126,7 @@ const dictionary: Record<string, { EN: string; DE: string }> = {
   "Excellente communauté open-source": { EN: "Superb open-source community", DE: "Hervorragende Open-Source-Community" },
   "Prix compétitif": { EN: "Competitive pricing", DE: "Wettbewerbsfähiger Preis" },
   "Super rapport qualité/prix à 209€": { EN: "Great value at €209", DE: "Tolles Preis-Leistungs-Verhältnis für 209 €" },
+  "Super rapport qualité/prix à 219€": { EN: "Great value at €219", DE: "Tolles Preis-Leistungs-Verhältnis für 219 €" },
   "Ultra rapide et compacte": { EN: "Ultra-fast and compact", DE: "Ultraschnell und kompakt" },
   "Impression bicolore/support soluble rapide": { EN: "Dual-color/soluble support fast printing", DE: "Schneller Zweifarbdruck / lösliche Stützen" },
   "Zéro déchet de purge": { EN: "Zero purge waste", DE: "Null Spülmüll" },
