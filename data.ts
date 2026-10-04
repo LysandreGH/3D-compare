@@ -879,10 +879,10 @@ export const printers: Printer[] = [
     id: 'a-k3',
     brand: 'Anycubic',
     name: 'Kobra 3 Combo',
-    price: 379,
-    comboPrice: 379,
+    price: 329,
+    comboPrice: 329,
     variants: [
-      { name: 'Kobra 3 Combo (ACE Pro)', price: 379 }
+      { name: 'Kobra 3 Combo (ACE Pro)', price: 329 }
     ],
     enclosed: false,
     structure: 'Cartésienne XYZ',
@@ -1327,10 +1327,10 @@ export const printers: Printer[] = [
     brand: 'Elegoo',
     name: 'Centauri Carbon 2',
     price: 339,
-    comboPrice: 429,
+    comboPrice: 399,
     variants: [
       { name: 'Centauri Carbon 2 (Seule)', price: 339 },
-      { name: 'Centauri Carbon 2 Combo (CANVAS 4 couleurs)', price: 429 }
+      { name: 'Centauri Carbon 2 Combo (CANVAS 4 couleurs)', price: 399 }
     ],
     enclosed: true,
     structure: 'CoreXY',
@@ -1567,10 +1567,10 @@ export const printers: Printer[] = [
     id: 'q-max4',
     brand: 'Qidi Tech',
     name: 'Qidi Max 4',
-    price: 1049,
+    price: 1099,
     comboPrice: 1249,
     variants: [
-      { name: 'Qidi Max 4 (Seule)', price: 1049 },
+      { name: 'Qidi Max 4 (Seule)', price: 1099 },
       { name: 'Qidi Max 4 Combo (QIDI Box 4 couleurs)', price: 1249 }
     ],
     enclosed: true,
@@ -1852,7 +1852,7 @@ export const printers: Printer[] = [
     id: 'f-a5mpro',
     brand: 'Flashforge',
     name: 'Adventurer 5M Pro',
-    price: 449,
+    price: 399,
     enclosed: true,
     structure: 'CoreXY',
     buildVolume: '220x220x220mm',
@@ -1885,7 +1885,7 @@ export const printers: Printer[] = [
     id: 'f-a5m',
     brand: 'Flashforge',
     name: 'Adventurer 5M',
-    price: 279,
+    price: 249,
     enclosed: false,
     structure: 'CoreXY',
     buildVolume: '220x220x220mm',
@@ -2063,7 +2063,7 @@ export const printers: Printer[] = [
     id: 's-sv06ace',
     brand: 'Sovol',
     name: 'SV06 ACE',
-    price: 209,
+    price: 219,
     enclosed: false,
     structure: 'Cartésienne XYZ',
     buildVolume: '220x220x250mm',
@@ -2074,7 +2074,7 @@ export const printers: Printer[] = [
     nozzleDiameter: 0.4,
     multicolor: { supported: false },
     newTech: 'Direct drive haute précision',
-    pros: ['Super rapport qualité/prix à 209€'],
+    pros: ['Super rapport qualité/prix à 219€'],
     cons: ['Ouverte'],
     image: 'https://images.unsplash.com/photo-1631034300431-7e04990928a3?q=80&w=800'
   },
