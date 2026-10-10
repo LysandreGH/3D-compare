@@ -207,6 +207,10 @@ export interface TranslationStrings {
     oldModels: string;
     sortBy: string;
   };
+  printerTabs?: {
+    activeModels: string;
+    oldModels: string;
+  };
   filters?: {
     all: string;
     enclosed: string;
@@ -224,6 +228,9 @@ export interface TranslationStrings {
     noPrintersFound: string;
     resetFilters: string;
     discontinuedNotice: string;
+    filterByBrand?: string;
+    allBrands?: string;
+    clearFilter?: string;
   };
   comparison?: {
     characteristicsCol: string;
