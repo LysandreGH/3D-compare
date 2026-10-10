@@ -309,7 +309,7 @@ const HomePage = ({
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.priceUpdatedLabel || "Prix des imprimantes 3D"}</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-blue-600 dark:text-blue-400">04/10/2026</span></p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-blue-600 dark:text-blue-400">07/10/2026</span></p>
             </div>
           </div>
 
@@ -319,7 +319,7 @@ const HomePage = ({
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">{t.homeBoxes?.contentUpdatedLabel || "Fiches & Contenu du site"}</p>
-              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-purple-600 dark:text-purple-400">04/10/2026</span></p>
+              <p className="font-black text-sm md:text-base text-gray-900 dark:text-white">{t.homeBoxes?.lastUpdatedPrefix || "Dernière mise à jour :"} <span className="text-purple-600 dark:text-purple-400">07/10/2026</span></p>
             </div>
           </div>
         </div>
@@ -969,7 +969,11 @@ const PrintersPage = ({
 
                       <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-blue-600 text-white text-[10px] md:text-xs font-black px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl shadow-lg flex flex-col items-end">
                         <span>{p.price} €</span>
-                        {p.comboPrice && <span className="text-[8px] opacity-90">Combo: {p.comboPrice}€</span>}
+                        {p.comboPrice && (
+                          <span className="text-[8px] opacity-90">
+                            Combo: {typeof p.comboPrice === 'number' && p.comboPrice % 1 !== 0 ? p.comboPrice.toFixed(2).replace('.', ',') : p.comboPrice}€
+                          </span>
+                        )}
                       </div>
                     </div>
                     
@@ -1022,7 +1026,11 @@ const PrintersPage = ({
                     <div className="flex flex-wrap items-baseline gap-4 mt-2 md:mt-4">
                       <p className="text-2xl md:text-4xl text-green-600 font-black">{selectedPrinter.price} € <span className="text-xs text-gray-400 font-normal">{t.specsTable?.basePrice || '(Base)'}</span></p>
                       {selectedPrinter.comboPrice && (
-                        <p className="text-xl md:text-2xl text-purple-600 font-black">{selectedPrinter.comboPrice} € <span className="text-xs text-gray-400 font-normal">{t.specsTable?.comboPrice || '(Combo)'}</span></p>
+                        <p className="text-xl md:text-2xl text-purple-600 font-black">
+                          {typeof selectedPrinter.comboPrice === 'number' && selectedPrinter.comboPrice % 1 !== 0 
+                            ? selectedPrinter.comboPrice.toFixed(2).replace('.', ',') 
+                            : selectedPrinter.comboPrice} € <span className="text-xs text-gray-400 font-normal">{t.specsTable?.comboPrice || '(Combo)'}</span>
+                        </p>
                       )}
                     </div>
 
@@ -1032,9 +1040,13 @@ const PrintersPage = ({
                         <p className="text-xs font-black uppercase text-gray-500 tracking-wider">{t.specsTable?.availableVariants || 'Variantes et Options Disponibles :'}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {selectedPrinter.variants.map((v, i) => (
-                            <div key={i} className="flex justify-between items-center text-xs p-2 bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 font-bold">
+                            <div key={i} className="flex justify-between items-center text-xs p-2.5 bg-white dark:bg-zinc-900 rounded-xl border border-gray-100 dark:border-zinc-800 font-bold">
                               <span>{v.name}</span>
-                              <span className="text-blue-600">{v.price} €</span>
+                              <span className="text-blue-600 font-black">
+                                {typeof v.price === 'number' && v.price % 1 !== 0 
+                                  ? v.price.toFixed(2).replace('.', ',') 
+                                  : v.price} €
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -1844,6 +1856,19 @@ const ComparePage = ({ t, lang }: { t: TranslationStrings, lang: Language }) => 
                         return <td key={id} className="py-3 px-4 text-center font-bold">{translateNozzleType(p?.nozzleType, lang)} ({p?.nozzleDiameter} mm)</td>;
                       })}
                     </tr>
+                    {selectedIds.some(id => allRequestedPrinters.find(i => i.id === id)?.extruderGears) && (
+                      <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                        <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.extruderGears || "Type d'Extrudeur & Engrenages"}</td>
+                        {selectedIds.map(id => {
+                          const p = allRequestedPrinters.find(i => i.id === id);
+                          return (
+                            <td key={id} className="py-3 px-4 text-center font-medium text-gray-700 dark:text-gray-300 text-[11px]">
+                              {p?.extruderGears ? translateExtruder(p.extruderGears, lang) : (p?.structure?.includes('Cantilever') ? 'Bowden' : 'Direct Drive')}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    )}
                     <tr className="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
                       <td className="py-3 px-4 font-black text-gray-500 uppercase text-[10px]">{t.specsTable?.maxNozzleTemp || "Température Max Hotend / Buse"}</td>
                       {selectedIds.map(id => {
