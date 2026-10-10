@@ -45,7 +45,31 @@
       "operatingSystem": "All"
     }
     </script>
+    <!-- Force Tailwind to strictly use class-based dark mode (never OS media queries) -->
+    <script>
+      window.tailwind = {
+        darkMode: 'class',
+        config: {
+          darkMode: 'class',
+        }
+      };
+      try {
+        const savedTheme = localStorage.getItem('3d-expert-theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {}
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      if (window.tailwind) {
+        window.tailwind.config = {
+          darkMode: 'class',
+        };
+      }
+    </script>
   <script type="importmap">
 {
   "imports": {
