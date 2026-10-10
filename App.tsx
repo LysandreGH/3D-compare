@@ -2187,7 +2187,13 @@ const RecommendationPage = ({ t, lang }: { t: TranslationStrings, lang: Language
 export default function App() {
   const [page, setPage] = useState('home');
   const [lang, setLang] = useState<Language>('FR');
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('3d-expert-theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+    }
+    return 'light';
+  });
   const [selectedBrandFilter, setSelectedBrandFilter] = useState<string | null>(null);
 
   const t = translations[lang];
@@ -2203,6 +2209,9 @@ export default function App() {
       html.style.colorScheme = 'light';
       document.body.style.backgroundColor = '#f9fafb';
     }
+    try {
+      localStorage.setItem('3d-expert-theme', theme);
+    } catch (e) {}
   }, [theme]);
 
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -2223,9 +2232,9 @@ export default function App() {
   ];
 
   return (
-    <div className={`min-h-screen font-sans transition-all duration-1000 ${theme === 'dark' ? 'bg-black text-white' : 'bg-white text-zinc-900'}`}>
+    <div className={`min-h-screen font-sans transition-colors duration-300 ${theme === 'dark' ? 'bg-black text-white' : 'bg-gray-50 text-gray-900'}`}>
       {/* Sidebar Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border-t border-gray-100 dark:border-zinc-800 z-40 lg:top-0 lg:bottom-0 lg:right-auto lg:w-[20rem] xl:w-[24rem] lg:border-r lg:border-t-0 p-4 md:p-8 flex lg:flex-col gap-4 md:gap-8 overflow-y-auto no-scrollbar">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-3xl border-t border-gray-200 dark:border-zinc-800 z-40 lg:top-0 lg:bottom-0 lg:right-auto lg:w-[20rem] xl:w-[24rem] lg:border-r lg:border-t-0 p-4 md:p-8 flex lg:flex-col gap-4 md:gap-8 overflow-y-auto no-scrollbar shadow-sm">
         
         {/* Logo and Global Controls (Always on top) */}
         <div className="hidden lg:flex flex-col gap-8 mb-8">
@@ -2238,11 +2247,11 @@ export default function App() {
           </div>
 
           <div className="flex gap-4 px-2">
-            <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-3 p-4 rounded-[1.2rem] bg-gray-100 dark:bg-zinc-800/50 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all font-black group shadow-sm text-gray-900 dark:text-white">
-              {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+            <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-3 p-4 rounded-[1.2rem] bg-gray-100 dark:bg-zinc-800/50 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all font-black group shadow-sm text-gray-900 dark:text-white cursor-pointer">
+              {theme === 'light' ? <Moon size={20} className="text-gray-700 dark:text-gray-300" /> : <Sun size={20} className="text-amber-400" />}
               <span className="text-[10px] uppercase tracking-widest">{theme === 'light' ? 'Nuit' : 'Jour'}</span>
             </button>
-            <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-3 p-4 rounded-[1.2rem] bg-gray-100 dark:bg-zinc-800/50 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all font-black shadow-sm text-gray-900 dark:text-white">
+            <button onClick={toggleLang} className="flex-1 flex items-center justify-center gap-3 p-4 rounded-[1.2rem] bg-gray-100 dark:bg-zinc-800/50 hover:bg-gray-200 dark:hover:bg-zinc-800 transition-all font-black shadow-sm text-gray-900 dark:text-white cursor-pointer">
               <Languages size={20} />
               <span className="text-[10px] uppercase tracking-widest">{lang}</span>
             </button>
@@ -2255,7 +2264,7 @@ export default function App() {
             <button
               key={item.id}
               onClick={() => setPage(item.id)}
-              className={`flex flex-col lg:flex-row items-center gap-2 lg:gap-6 px-4 md:px-8 py-3 md:py-6 rounded-xl md:rounded-[1.5rem] transition-all whitespace-nowrap shrink-0 group ${page === item.id ? 'bg-blue-600 text-white shadow-xl md:shadow-2xl shadow-blue-500/50 lg:translate-x-2' : 'hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-gray-400 hover:text-gray-900'}`}
+              className={`flex flex-col lg:flex-row items-center gap-2 lg:gap-6 px-4 md:px-8 py-3 md:py-6 rounded-xl md:rounded-[1.5rem] transition-all whitespace-nowrap shrink-0 group ${page === item.id ? 'bg-blue-600 text-white shadow-xl md:shadow-2xl shadow-blue-500/50 lg:translate-x-2' : 'hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
             >
               <div className={`${page === item.id ? 'scale-110 lg:scale-125' : 'group-hover:scale-110'} transition-transform duration-500`}>{item.icon}</div>
               <span className="text-[8px] md:text-[10px] lg:text-base font-black uppercase tracking-widest">{item.label}</span>
@@ -2266,14 +2275,14 @@ export default function App() {
 
       {/* Main Content */}
       <main className="pb-24 lg:pb-10 lg:pl-[20rem] xl:pl-[24rem] min-h-screen">
-        <header className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-3xl lg:hidden px-4 md:px-8 py-3 md:py-6 border-b border-gray-100 dark:border-zinc-800 flex justify-between items-center transition-all shadow-sm">
+        <header className="sticky top-0 z-30 bg-white/80 dark:bg-black/80 backdrop-blur-3xl lg:hidden px-4 md:px-8 py-3 md:py-6 border-b border-gray-200 dark:border-zinc-800 flex justify-between items-center transition-all shadow-sm">
           <div className="flex items-center gap-2 md:gap-5">
              <div className="w-8 h-8 md:w-12 md:h-12 bg-blue-600 rounded-lg md:rounded-[1rem] flex items-center justify-center text-white font-black text-xs md:text-lg shadow-xl shadow-blue-500/20">3D</div>
              <div className="font-black text-sm md:text-xl tracking-tighter text-gray-900 dark:text-white uppercase leading-none">Expert<br/><span className="text-[8px] md:text-xs tracking-widest text-blue-600">Compare</span></div>
           </div>
           <div className="flex gap-1.5">
-            <button onClick={toggleTheme} className="p-2.5 md:p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg md:rounded-xl text-gray-900 dark:text-white shadow-sm hover:scale-105 transition-transform">{theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}</button>
-            <button onClick={toggleLang} className="p-2.5 md:p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg md:rounded-xl font-black text-[9px] text-gray-900 dark:text-white shadow-sm uppercase hover:scale-105 transition-transform">{lang}</button>
+            <button onClick={toggleTheme} className="p-2.5 md:p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg md:rounded-xl text-gray-900 dark:text-white shadow-sm hover:scale-105 transition-transform cursor-pointer">{theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}</button>
+            <button onClick={toggleLang} className="p-2.5 md:p-3 bg-gray-100 dark:bg-zinc-800 rounded-lg md:rounded-xl font-black text-[9px] text-gray-900 dark:text-white shadow-sm uppercase hover:scale-105 transition-transform cursor-pointer">{lang}</button>
           </div>
         </header>
 
