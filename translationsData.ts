@@ -541,10 +541,6 @@ const dictionary: Record<string, { EN: string; DE: string }> = {
     EN: "Filament runout sensor",
     DE: "Filament-Endsensor"
   },
-  "Reprise après coupure de courant": {
-    EN: "Power loss recovery",
-    DE: "Wiederaufnahme nach Stromausfall"
-  },
   "Reprise après coupure": {
     EN: "Power loss recovery",
     DE: "Wiederaufnahme nach Stromausfall"
@@ -729,6 +725,442 @@ const dictionary: Record<string, { EN: string; DE: string }> = {
     EN: "Industrial-grade 325 mm CoreXY with 65 °C heated chamber, 350 °C nozzle, hollow hardened steel optical axes",
     DE: "Industrieller 325 mm CoreXY mit 65 °C beheizter Kammer, 350 °C Düse, gehärtete hohle optische Stahlwellen"
   },
+
+  // Prusa Pros, Cons & newTech
+  "Disponible en kit (719 €) ou entièrement assemblée (999 €)": {
+    EN: "Available as assembly kit (€719) or fully assembled (€999)",
+    DE: "Als Bausatz (719 €) oder komplett montiert (999 €) erhältlich"
+  },
+  "Option officielle Enclosure Bundle : 1 033,60 € en kit / 1 299,60 € assemblée": {
+    EN: "Official Enclosure Bundle option: €1,033.60 kit / €1,299.60 assembled",
+    DE: "Offizielle Enclosure Bundle Option: 1.033,60 € als Bausatz / 1.299,60 € montiert"
+  },
+  "Buse Nextruder High-Flow 360° et capteur Loadcell (zéro réglage de Z)": {
+    EN: "Nextruder High-Flow 360° nozzle and Loadcell sensor (zero Z tuning)",
+    DE: "Nextruder High-Flow 360° Düse und Loadcell-Sensor (kein Z-Einstellen)"
+  },
+  "Écosystème Prusa éprouvé, PrusaSlicer et support 24/7": {
+    EN: "Proven Prusa ecosystem, PrusaSlicer and 24/7 support",
+    DE: "Bewährtes Prusa-Ökosystem, PrusaSlicer und 24/7-Support"
+  },
+  "Structure cartésienne ouverte de série (caisson Enclosure en option)": {
+    EN: "Standard open Cartesian frame (optional Enclosure bundle)",
+    DE: "Standardmäßig offener kartesischer Rahmen (optionales Enclosure-Paket)"
+  },
+  "Volume standard de 250×210×220 mm": {
+    EN: "Standard 250×210×220 mm build volume",
+    DE: "Standard-Bauvolumen von 250×210×220 mm"
+  },
+  "Nextruder High-Flow 360° turbine, capteur Loadcell sans calibration manuelle, Input Shaper & Pressure Advance natifs, Wi-Fi 360, Option Enclosure Bundle (1 033,60 € en kit / 1 299,60 € montée)": {
+    EN: "Nextruder High-Flow 360° fan shroud, Loadcell sensor with zero manual calibration, native Input Shaper & Pressure Advance, Wi-Fi 360, optional Enclosure Bundle (€1,033.60 kit / €1,299.60 assembled)",
+    DE: "Nextruder High-Flow 360°-Lüfterdüse, Loadcell-Sensor ohne manuelle Kalibrierung, natives Input Shaper & Pressure Advance, Wi-Fi 360, optionales Enclosure Bundle (1.033,60 € Bausatz / 1.299,60 € montiert)"
+  },
+  "Changement d'outils révolutionnaire INDX 4-Tool ou 8-Tool sans purge ni déchet": {
+    EN: "Revolutionary INDX 4-Tool or 8-Tool toolchanger with zero purge waste",
+    DE: "Revolutionärer INDX 4-Tool oder 8-Tool Werkzeugwechsler ohne Spülmüll"
+  },
+  "Chambre activement régulée jusqu'à 55 °C pour filaments techniques": {
+    EN: "Actively regulated chamber up to 55 °C for technical filaments",
+    DE: "Aktiv geregelte Kammer bis 55 °C für technische Filamente"
+  },
+  "Disponible en kit (dès 1 049 €) ou assemblé (dès 1 349 €)": {
+    EN: "Available as kit (from €1,049) or assembled (from €1,349)",
+    DE: "Als Bausatz (ab 1.049 €) oder montiert (ab 1.349 €) erhältlich"
+  },
+  "Buse Nextruder High-Flow et capteur Loadcell sans calibration": {
+    EN: "Nextruder High-Flow nozzle and Loadcell sensor with zero calibration",
+    DE: "Nextruder High-Flow Düse und Loadcell-Sensor ohne Kalibrierung"
+  },
+  "Modules INDX multi-outils en option payante": {
+    EN: "INDX multi-toolheads are paid add-on options",
+    DE: "INDX Mehrkopf-Module sind kostenpflichtige Optionen"
+  },
+  "Cinématique CoreXY ultra-rigide, Contrôle actif de chambre 55°C, Système INDX Toolchanger (4 à 8 têtes interchangeables sans aucune tour de purge ni déchet)": {
+    EN: "Ultra-rigid CoreXY kinematics, active 55 °C chamber control, INDX Toolchanger system (4 to 8 swappable toolheads with zero purge tower or waste)",
+    DE: "Ultra-steife CoreXY-Kinematik, aktive 55 °C Bauraum-Regelung, INDX Toolchanger-System (4 bis 8 wechselbare Köpfe ohne Spülturm oder Abfall)"
+  },
+  "Grand volume fermé 300×300×330 mm (double de la CORE One)": {
+    EN: "Large 300×300×330 mm enclosed volume (double of CORE One)",
+    DE: "Großer geschlossener Bauraum 300×300×330 mm (doppelt so groß wie CORE One)"
+  },
+  "Changement d'outils INDX 4 têtes (2 529 €) ou 8 têtes (2 779 €) sans gaspillage": {
+    EN: "INDX toolchanger 4-Tool (€2,529) or 8-Tool (€2,779) with zero filament waste",
+    DE: "INDX Werkzeugwechsler 4-Kopf (2.529 €) oder 8-Kopf (2.779 €) ohne Verschwendung"
+  },
+  "Machine industrielle prête pour l'atelier et les composites techniques": {
+    EN: "Industrial-grade machine ready for workshop and technical composites",
+    DE: "Industriemaschine bereit für Werkstatt und technische Verbundwerkstoffe"
+  },
+  "Investissement professionnel": {
+    EN: "Professional investment",
+    DE: "Professionelle Investition"
+  },
+  "Encombrement important en atelier": {
+    EN: "Significant workshop footprint",
+    DE: "Großer Platzbedarf in der Werkstatt"
+  },
+  "Double volume d'impression fermé, Changement d'outils INDX (4 ou 8 têtes) zéro purge, Contrôle thermique de chambre actif": {
+    EN: "Double enclosed print volume, INDX toolchanger (4 or 8 tools) zero purge, active chamber thermal control",
+    DE: "Doppeltes geschlossenes Druckvolumen, INDX Werkzeugwechsler (4 oder 8 Köpfe) null Spülung, aktive thermische Bauraumregelung"
+  },
+  "Véritable Toolchanger sans tour de purge (zéro déchet de filament)": {
+    EN: "True kinematic Toolchanger with zero purge waste",
+    DE: "Echter kinematischer Werkzeugwechsler ohne Spülturm (null Filamentabfall)"
+  },
+  "Disponible en 1 tête (2 299 €), 2 têtes (2 999 €) ou 5 têtes (3 999 €)": {
+    EN: "Available in 1 tool (€2,299), 2 tools (€2,999) or 5 tools (€3,999)",
+    DE: "Erhältlich mit 1 Kopf (2.299 €), 2 Köpfen (2.999 €) oder 5 Köpfen (3.999 €)"
+  },
+  "Plateau segmenté à 16 zones chauffantes indépendantes 360 mm": {
+    EN: "Segmented bed with 16 independent heating zones (360 mm)",
+    DE: "Segmentiertes Druckbett mit 16 unabhängigen Heizzonen (360 mm)"
+  },
+  "Mix de matériaux incompatibles (ex: PLA + TPU + Support PVA) sans contamination": {
+    EN: "Mix incompatible materials (e.g. PLA + TPU + PVA support) without cross-contamination",
+    DE: "Mischung inkompatibler Materialien (z.B. PLA + TPU + PVA-Stützen) ohne Kontamination"
+  },
+  "Encombrement très imposant": {
+    EN: "Very large footprint",
+    DE: "Sehr großer Platzbedarf"
+  },
+  "Caisson fermé en option (non fermé de série)": {
+    EN: "Enclosure is optional (open by default)",
+    DE: "Gehäuse optional (standardmäßig offen)"
+  },
+  "Vrai changeur d'outils cinématique Nextruder (jusqu'à 5 têtes indépendantes sans tour de purge), Plateau segmenté à 16 dalles chauffantes indépendantes 360×360×360 mm": {
+    EN: "True cinematic Nextruder toolchanger (up to 5 independent toolheads without purge tower), 16 independent heating tiles segmented bed 360×360×360 mm",
+    DE: "Echter kinematischer Nextruder-Werkzeugwechsler (bis zu 5 unabhängige Köpfe ohne Spülturm), segmentiertes Druckbett mit 16 Heizkacheln 360×360×360 mm"
+  },
+  "Machine ultra-compacte, silencieuse et redoutablement fiable": {
+    EN: "Ultra-compact, quiet and remarkably reliable machine",
+    DE: "Ultrakompakte, leise und extrem zuverlässige Maschine"
+  },
+  "Sonde SuperPINDA sans dérive thermique pour nivellement parfait": {
+    EN: "SuperPINDA probe with zero temperature drift for perfect leveling",
+    DE: "SuperPINDA-Sonde ohne Temperaturdrift für perfekte Nivellierung"
+  },
+  "Support Prusa et communauté d'exception": {
+    EN: "Exceptional Prusa support and vibrant community",
+    DE: "Hervorragender Prusa-Support und außergewöhnliche Community"
+  },
+  "Volume d'impression compact 180×180×180 mm": {
+    EN: "Compact 180×180×180 mm build volume",
+    DE: "Kompaktes 180×180×180 mm Bauvolumen"
+  },
+  "Structure ouverte déconseillée pour ABS/ASA sans caisson": {
+    EN: "Open frame not recommended for ABS/ASA without an enclosure",
+    DE: "Offener Rahmen für ABS/ASA ohne Gehäuse nicht empfohlen"
+  },
+  "Architecture Cantilever éprouvée, sonde SuperPINDA haute précision, Firmware 32-bit avec Ethernet/Wi-Fi": {
+    EN: "Proven Cantilever architecture, high-precision SuperPINDA probe, 32-bit firmware with Ethernet/Wi-Fi",
+    DE: "Bewährte Cantilever-Architektur, hochpräzise SuperPINDA-Sonde, 32-Bit-Firmware mit Ethernet/Wi-Fi"
+  },
+  "Impression certifiée de polymères aérospatiaux (PEI/Ultem, PEEK, PEKK)": {
+    EN: "Certified printing of aerospace polymers (PEI/Ultem, PEEK, PEKK)",
+    DE: "Zertifizierter Druck von Luft- und Raumfahrtpolymeren (PEI/Ultem, PEEK, PEKK)"
+  },
+  "Chambre active chauffée à 90 °C et buse 500 °C": {
+    EN: "Active heated chamber up to 90 °C and 500 °C nozzle",
+    DE: "Aktiv beheizter Bauraum bis 90 °C und 500 °C Düse"
+  },
+  "Cinématique Delta ultra-rapide et rigide": {
+    EN: "Ultra-fast and rigid Delta kinematics",
+    DE: "Ultraschnelle und steife Delta-Kinematik"
+  },
+  "Tarif industriel professionnel (11 490 €)": {
+    EN: "Professional industrial pricing (€11,490)",
+    DE: "Professioneller Industriepreis (11.490 €)"
+  },
+  "Cinématique Delta industrielle ultra-rapide, Chambre activement chauffée 90 °C, Buse 500 °C, Support certifié PEI/Ultem et PEEK aérospatial": {
+    EN: "Ultra-fast industrial Delta kinematics, actively heated 90 °C chamber, 500 °C nozzle, certified aerospace PEI/Ultem and PEEK support",
+    DE: "Ultraschnelle industrielle Delta-Kinematik, aktiv beheizte 90 °C Kammer, 500 °C Düse, zertifizierte Luft- und Raumfahrt PEI/Ultem und PEEK Unterstützung"
+  },
+
+  // --- Sovol Pros, Cons, and Specs ---
+  "Véritable cinématique Voron 2.4 CoreXY 350mm accessible sous les 500 €": {
+    EN: "Genuine Voron 2.4 CoreXY 350mm kinematics accessible under €500",
+    DE: "Echte Voron 2.4 CoreXY 350mm Kinematik für unter 500 € zugänglich"
+  },
+  "Quad Gantry Leveling (QGL) automatique avec 4 moteurs Z indépendants": {
+    EN: "Automatic Quad Gantry Leveling (QGL) with 4 independent Z stepper motors",
+    DE: "Automatisches Quad Gantry Leveling (QGL) mit 4 unabhängigen Z-Schrittmotoren"
+  },
+  "Klipper préinstallé avec interface Web Fluidd / Mainsail sans restriction propriétaire": {
+    EN: "Pre-installed Klipper with Fluidd / Mainsail web interface without proprietary lock-in",
+    DE: "Vorinstalliertes Klipper mit Fluidd / Mainsail Web-Interface ohne proprietäre Einschränkungen"
+  },
+  "Débit volumétrique massif de 40 mm³/s et vitesses jusqu'à 700 mm/s": {
+    EN: "Massive 40 mm³/s volumetric flow rate and speeds up to 700 mm/s",
+    DE: "Massiver volumetrischer Durchfluss von 40 mm³/s und Geschwindigkeiten bis zu 700 mm/s"
+  },
+  "Énorme communauté open-source et modularité totale de customisation": {
+    EN: "Huge open-source community and total modularity for customization",
+    DE: "Riesige Open-Source-Community und vollständige Modularität zur Anpassung"
+  },
+  "Livrée sans panneaux fermés de base (kit enclosure acrylique en option payante)": {
+    EN: "Shipped open-frame by default (acrylic enclosure kit available as optional add-on)",
+    DE: "Standardmäßig als offener Rahmen geliefert (Acryl-Gehäuse-Kit als optionales Zubehör)"
+  },
+  "Machine imposante nécessitant un grand établi": {
+    EN: "Imposing machine footprint requiring a large workbench",
+    DE: "Imposante Maschinengröße, die eine große Werkbank erfordert"
+  },
+  "Prise en main Klipper demandant un minimum de familiarité technique": {
+    EN: "Klipper learning curve requiring some technical familiarity",
+    DE: "Klipper-Einarbeitung erfordert etwas technische Vertrautheit"
+  },
+  "Volume gigantesque de 450×450×450 mm sur cinématique CoreXY rapide": {
+    EN: "Gigantic 450×450×450 mm volume on fast CoreXY kinematics",
+    DE: "Gigantisches 450×450×450 mm Volumen auf schneller CoreXY-Kinematik"
+  },
+  "Quad Gantry Leveling (QGL) indispensable pour garantir la planéité sur 45 cm": {
+    EN: "Quad Gantry Leveling (QGL) essential to guarantee flatness across 45 cm",
+    DE: "Quad Gantry Leveling (QGL) unverzichtbar zur Ebenheitssicherung über 45 cm"
+  },
+  "Klipper OS natif totalement déverrouillé et contrôlable à distance": {
+    EN: "Native Klipper OS completely unlocked and remotely controllable",
+    DE: "Natives Klipper OS vollständig entsperrt und fernsteuerbar"
+  },
+  "Rapport volume / prix sans aucun équivalent sur le marché": {
+    EN: "Volume-to-price ratio with no equivalent on the market",
+    DE: "Volumen-Preis-Verhältnis ohne Vergleich auf dem Markt"
+  },
+  "Encombrement très important de la machine (pèse plus de 26 kg)": {
+    EN: "Very large machine footprint (weighs over 26 kg)",
+    DE: "Sehr großer Platzbedarf der Maschine (wiegt über 26 kg)"
+  },
+  "Consommation électrique élevée due à la taille du plateau 800W": {
+    EN: "High power consumption due to the 800W heated bed size",
+    DE: "Hoher Stromverbrauch aufgrund der 800W-Heizbettgröße"
+  },
+  "Enceinte fermée non fournie de base": {
+    EN: "Enclosure not included by default",
+    DE: "Geschlossenes Gehäuse standardmäßig nicht enthalten"
+  },
+  "Grand volume de construction 300×300×350 mm sous Klipper": {
+    EN: "Large 300×300×350 mm build volume running Klipper",
+    DE: "Großes 300×300×350 mm Bauvolumen unter Klipper"
+  },
+  "Extrudeuse double engrenage planétaire (rapport 1:7,5) et hotend céramique 300 °C": {
+    EN: "Dual planetary gear extruder (1:7.5 ratio) and 300 °C ceramic hotend",
+    DE: "Duales Planetengetriebe-Extruder (1:7,5 Untersetzung) und 300 °C Keramik-Hotend"
+  },
+  "Caméra intégrée (jusqu'à 1080×720 px) et écran capacitif 4,3 pouces": {
+    EN: "Built-in camera (up to 1080×720 px) and 4.3-inch capacitive touchscreen",
+    DE: "Integrierte Kamera (bis zu 1080×720 px) und 4,3-Zoll kapazitiver Touchscreen"
+  },
+  "Compatible système multicolore ACE (4 filaments)": {
+    EN: "Compatible with ACE multicolor system (4 filaments)",
+    DE: "Kompatibel mit ACE-Mehrfarbsystem (4 Filamente)"
+  },
+  "Aucun rétablissement après une panne de courant": {
+    EN: "No power-loss recovery",
+    DE: "Keine Wiederaufnahme nach Stromausfall"
+  },
+  "Machine ouverte sans enceinte (caisson nécessaire pour ABS/matériaux techniques)": {
+    EN: "Open frame machine without enclosure (external enclosure required for ABS/technical filaments)",
+    DE: "Offenes Rahmengerät ohne Gehäuse (externes Gehäuse für ABS/technische Filamente erforderlich)"
+  },
+  "Rapport volume / vitesse / prix remarquable : 300×300×350 mm à 219 € seulement": {
+    EN: "Remarkable volume / speed / price ratio: 300×300×350 mm for only €219",
+    DE: "Bemerkenswertes Volumen / Geschwindigkeit / Preis-Verhältnis: 300×300×350 mm für nur 219 €"
+  },
+  "Vitesse de pointe jusqu'à 600 mm/s et accélération 12 000 mm/s² avec Input Shaping": {
+    EN: "Top speed up to 600 mm/s and 12,000 mm/s² acceleration with Input Shaping",
+    DE: "Spitzengeschwindigkeit bis zu 600 mm/s und 12.000 mm/s² Beschleunigung mit Input Shaping"
+  },
+  "Large compatibilité filaments techniques (PLA, PETG, TPU, ASA, PC, CF composites)": {
+    EN: "Broad technical filament compatibility (PLA, PETG, TPU, ASA, PC, CF composites)",
+    DE: "Breite Kompatibilität mit technischen Filamenten (PLA, PETG, TPU, ASA, PC, CF-Verbundwerkstoffe)"
+  },
+  "Mise à niveau automatique par capteur inductif et reprise après coupure de courant": {
+    EN: "Automatic inductive sensor bed leveling and power-loss recovery",
+    DE: "Automatische Induktivsensor-Bettnivellierung und Wiederaufnahme nach Stromausfall"
+  },
+  "Cinématique cartésienne (inertie du lit mobile 300 mm à haute vitesse)": {
+    EN: "Cartesian kinematics (inertia of 300 mm moving bed at high speeds)",
+    DE: "Kartesische Kinematik (Trägheit des beweglichen 300-mm-Betts bei hohen Geschwindigkeiten)"
+  },
+  "Machine ouverte non fermée (caisson externe requis pour ASA/PC)": {
+    EN: "Open-frame structure (external enclosure required for ASA/PC)",
+    DE: "Offene Rahmenstruktur (externes Gehäuse für ASA/PC erforderlich)"
+  },
+  "Rapport qualité/prix exceptionnel à 219 € avec Klipper natif": {
+    EN: "Exceptional price-performance ratio at €219 with native Klipper",
+    DE: "Außergewöhnliches Preis-Leistungs-Verhältnis für 219 € mit nativem Klipper"
+  },
+  "Extrudeur planétaire tout métal éprouvé, excellent pour le TPU et les flexibles": {
+    EN: "Proven all-metal planetary extruder, excellent for TPU and flexible filaments",
+    DE: "Bewährter Ganzmetall-Planetenextruder, hervorragend für TPU und flexible Filamente"
+  },
+  "Double axe Z synchronisé avec tiges linéaires rigides": {
+    EN: "Synchronized dual Z-axis with rigid linear rods",
+    DE: "Synchronisierte duale Z-Achse mit starren Linearstangen"
+  },
+  "Compatible système multicolore ACE": {
+    EN: "Compatible with ACE multicolor system",
+    DE: "Kompatibel mit dem ACE-Mehrfarbsystem"
+  },
+  "Machine ouverte non adaptée aux matériaux techniques sans enceinte": {
+    EN: "Open frame machine not suitable for technical materials without an enclosure",
+    DE: "Offene Maschine ohne Gehäuse nicht für technische Materialien geeignet"
+  },
+  "Volume standard 220×220×250 mm": {
+    EN: "Standard 220×220×250 mm volume",
+    DE: "Standardvolumen 220×220×250 mm"
+  },
+  "Vitesse maximale fulgurante de 1 200 mm/s et accélération record de 40 000 mm/s²": {
+    EN: "Blazing top speed of 1,200 mm/s and record 40,000 mm/s² acceleration",
+    DE: "Blitzschnelle Spitzengeschwindigkeit von 1.200 mm/s und Rekordbeschleunigung von 40.000 mm/s²"
+  },
+  "Buses laiton et acier trempé ≤350 °C incluses (compatible PETG-CF, PA, PC)": {
+    EN: "Brass and hardened steel nozzles ≤350 °C included (compatible with PETG-CF, PA, PC)",
+    DE: "Messing- und gehärtete Stahldüsen ≤350 °C enthalten (kompatibel mit PETG-CF, PA, PC)"
+  },
+  "Double nivellement automatique précis : capteur inductif et capteur de force": {
+    EN: "Precise dual auto-leveling: inductive probe and force loadcell sensor",
+    DE: "Präzise duale automatische Nivellierung: Induktivsonde und Kraft-/Wägezellensensor"
+  },
+  "Plaque chauffante en céramique jusqu'à 120 °C et débit maximal colossal ≤50 mm³/s": {
+    EN: "Ceramic heating plate up to 120 °C and colossal max flow rate ≤50 mm³/s",
+    DE: "Keramik-Heizplatte bis 120 °C und kolossaler maximaler Durchfluss ≤50 mm³/s"
+  },
+  "Caméra HD intégrée incluse, processeur 64 bits H616 et intégration native OrcaSlicer": {
+    EN: "Built-in HD camera included, 64-bit H616 processor and native OrcaSlicer integration",
+    DE: "Integrierte HD-Kamera enthalten, 64-Bit H616 Prozessor und native OrcaSlicer-Integration"
+  },
+  "Volume de construction compact de 152,4 × 152,4 × 152,5 mm³": {
+    EN: "Compact build volume of 152.4 × 152.4 × 152.5 mm³",
+    DE: "Kompaktes Bauvolumen von 152,4 × 152,4 × 152,5 mm³"
+  },
+  "Connectivité Wi-Fi 2,4 GHz (WPA2 uniquement, WPA3 non pris en charge)": {
+    EN: "Wi-Fi 2.4 GHz connectivity (WPA2 only, WPA3 not supported)",
+    DE: "WLAN 2,4 GHz Konnektivität (nur WPA2, WPA3 nicht unterstützt)"
+  },
+  "Wi-Fi 2,4 GHz uniquement (WPA2 uniquement, WPA3 non pris en charge)": {
+    EN: "Wi-Fi 2.4 GHz only (WPA2 only, WPA3 not supported)",
+    DE: "Nur 2,4-GHz-WLAN (nur WPA2, WPA3 nicht unterstützt)"
+  },
+  "Barre de ventilation auxiliaire ultra-puissante pour ponts et surplombs impeccables": {
+    EN: "Ultra-powerful auxiliary fan bar for flawless bridges and overhangs",
+    DE: "Ultra-leistungsstarker Zusatzlüfterbalken für makellose Brücken und Überhänge"
+  },
+  "Grand volume 300×300×350 mm avec tirants de renfort de série": {
+    EN: "Large 300×300×350 mm build volume with factory reinforcing tie-rods",
+    DE: "Großes Bauvolumen 300×300×350 mm mit serienmäßigen Verstärkungsstangen"
+  },
+  "Écran tactile KlipperScreen 5 pouces très ergonomique": {
+    EN: "Very ergonomic 5-inch KlipperScreen touchscreen",
+    DE: "Sehr ergonomischer 5-Zoll-KlipperScreen-Touchscreen"
+  },
+  "Excellent rapport dimensions / vitesse / prix sous la barre des 300 €": {
+    EN: "Excellent size / speed / price ratio under the €300 mark",
+    DE: "Hervorragendes Verhältnis von Abmessungen / Geschwindigkeit / Preis unter 300 €"
+  },
+  "Ventilation auxiliaire bruyante à 100% de puissance": {
+    EN: "Auxiliary fan noisy at 100% power",
+    DE: "Zusatzlüftung bei 100 % Leistung laut"
+  },
+  "Machine ouverte nécessitant un caisson externe pour l'ABS/ASA": {
+    EN: "Open frame machine requiring external enclosure for ABS/ASA",
+    DE: "Offene Maschine erfordert externes Gehäuse für ABS/ASA"
+  },
+  "Véritable architecture IDEX 2 têtes sans gaspillage de filament ni tour de purge": {
+    EN: "Genuine dual-head IDEX architecture without filament waste or purge tower",
+    DE: "Echte 2-Kopf-IDEX-Architektur ohne Filamentverschwendung oder Spülturm"
+  },
+  "Modes Duplication et Miroir doublant la productivité d'impression": {
+    EN: "Duplication and Mirror modes doubling print productivity",
+    DE: "Duplikations- und Spiegelmodi verdoppeln die Druckproduktivität"
+  },
+  "Idéal pour supports solubles (PVA) et impressions techniques bi-matières (PLA+TPU)": {
+    EN: "Ideal for soluble supports (PVA) and dual-material technical prints (PLA+TPU)",
+    DE: "Ideal für lösliche Stützen (PVA) und technische Zweimaterialdrucke (PLA+TPU)"
+  },
+  "Grand volume utile de 300×300×400 mm (ou 2× 150×300×400 mm en mode duplication)": {
+    EN: "Large build volume of 300×300×400 mm (or 2× 150×300×400 mm in duplication mode)",
+    DE: "Großes Bauvolumen von 300×300×400 mm (oder 2× 150×300×400 mm im Duplikationsmodus)"
+  },
+  "Vitesse d'impression plus lente que les machines CoreXY récentes (max 150 mm/s)": {
+    EN: "Slower print speed compared to modern CoreXY machines (max 150 mm/s)",
+    DE: "Langsamere Druckgeschwindigkeit im Vergleich zu modernen CoreXY-Maschinen (max. 150 mm/s)"
+  },
+  "Calibration mécanique précise des deux têtes requise au départ": {
+    EN: "Precise mechanical calibration of both toolheads required initially",
+    DE: "Präzise mechanische Kalibrierung beider Köpfe anfänglich erforderlich"
+  },
+  "Architecture Voron 2.4 CoreXY open-source prête à l’emploi, nivellement quadri-moteurs QGL en temps réel, Klipper natif avec Fluidd/Mainsail, vitesse record jusqu’à 700 mm/s et débit volumétrique de 40 mm³/s": {
+    EN: "Ready-to-use open-source Voron 2.4 CoreXY architecture, real-time quad-motor QGL leveling, native Klipper with Fluidd/Mainsail, record speed up to 700 mm/s and 40 mm³/s volumetric flow",
+    DE: "Sofort einsatzbereite Open-Source Voron 2.4 CoreXY Architektur, Echtzeit-Vier-Motoren-QGL-Nivellierung, natives Klipper mit Fluidd/Mainsail, Rekordgeschwindigkeit bis 700 mm/s und 40 mm³/s Durchfluss"
+  },
+  "Format géant 450×450×450 mm sur cinématique Voron 2.4 CoreXY, nivellement automatique quadri-axes QGL garantissant la planéité sur 45 cm, Klipper déverrouillé et hotend High-Flow 45 mm³/s": {
+    EN: "Giant 450×450×450 mm format on Voron 2.4 CoreXY kinematics, quad-axis QGL auto-leveling ensuring flatness across 45 cm, unlocked Klipper and 45 mm³/s High-Flow hotend",
+    DE: "Riesiges 450×450×450 mm Format auf Voron 2.4 CoreXY-Kinematik, Vier-Achsen-QGL-Autonivellierung für perfekte Ebenheit über 45 cm, freies Klipper und 45 mm³/s High-Flow-Hotend"
+  },
+  "Évolution ACE intégrant Klipper à 500 mm/s, support du boîtier 4 couleurs ACE, extrudeur planétaire tout métal réputé dérivé du design Prusa MK3S mais renforcé pour la haute vitesse, lit PEI 300mm chauffant jusqu'à 110°C": {
+    EN: "ACE evolution featuring 500 mm/s Klipper, ACE 4-color hub support, acclaimed all-metal planetary extruder derived from Prusa MK3S design upgraded for high speed, 300mm PEI bed heating up to 110°C",
+    DE: "ACE-Evolution mit Klipper bei 500 mm/s, ACE 4-Farben-Box-Unterstützung, bewährter Ganzmetall-Planetenextruder basierend auf Prusa MK3S für High-Speed verstärkt, 300mm PEI-Bett bis 110°C"
+  },
+  "Système Klipper haute vitesse pré-flashé (500 mm/s), compatibilité multicolore ACE, structure inspirée de la référence Prusa MK3S mais modernisée avec Klipper et buse tout métal 300°C à prix ultra-accessible": {
+    EN: "Pre-flashed high-speed Klipper system (500 mm/s), ACE multicolor compatibility, structure inspired by the benchmark Prusa MK3S modernized with Klipper and 300°C all-metal nozzle at an ultra-accessible price",
+    DE: "Vorinstalliertes High-Speed-Klipper-System (500 mm/s), ACE-Mehrfarbenkompatibilität, an die Referenz Prusa MK3S angelehnte Struktur, modernisiert mit Klipper und 300°C Ganzmetalldüse zum Einstiegspreis"
+  },
+  "Format mini CoreXY inspiré de Voron V0.2 prêt à l’emploi sans assemblage complexe, Klipper complet, accélérations fulgurantes à 20 000 mm/s², compacité idéale pour bureau": {
+    EN: "Mini CoreXY format inspired by Voron V0.2 ready out of the box without complex assembly, full Klipper, blistering 20,000 mm/s² accelerations, ideal desktop footprint",
+    DE: "Mini-CoreXY-Format inspiriert von Voron V0.2 sofort einsatzbereit ohne aufwendigen Zusammenbau, vollständiges Klipper, rasante 20.000 mm/s² Beschleunigung, ideal für den Schreibtisch"
+  },
+  "Barre de ventilation auxiliaire arrière grand débit pour refroidissement instantané des ponts à 500 mm/s, Klipper natif avec KlipperScreen 5\", tirants stabilisateurs pour éliminer les vibrations Z sur grand volume 300 mm": {
+    EN: "Rear high-flow auxiliary fan bar for instant bridge cooling at 500 mm/s, native Klipper with 5\" KlipperScreen, stabilizing tie-rods to eliminate Z vibrations on large 300 mm volume",
+    DE: "Leistungsstarke hintere Zusatzlüfterleiste zur sofortigen Brückenkühlung bei 500 mm/s, natives Klipper mit 5\" KlipperScreen, Stabilisierungsstangen zur Vermeidung von Z-Vibrationen bei 300 mm"
+  },
+  "Technologie IDEX à 2 têtes indépendantes : 4 modes d’impression (Double matériau soluble PVA, Bicolore sans déchet de purge, Mode Miroir synchrone et Mode Duplication double rendement)": {
+    EN: "Independent dual extruder IDEX technology: 4 printing modes (Soluble dual-material PVA, waste-free two-color, synchronous Mirror mode, and double-yield Duplication mode)",
+    DE: "Unabhängige Dual-Extruder-IDEX-Technologie: 4 Druckmodi (lösliches Zweimaterial PVA, abfallfreier Zweifarbdruck, synchroner Spiegelmodus und Duplikationsmodus mit doppelter Produktivität)"
+  },
+  "Quad Gantry Leveling (QGL 4 moteurs Z indépendants)": {
+    EN: "Quad Gantry Leveling (QGL 4 independent Z steppers)",
+    DE: "Quad Gantry Leveling (QGL 4 unabhängige Z-Schrittmotoren)"
+  },
+  "Capteur inductif de nivellement automatique du plateau": {
+    EN: "Inductive automatic bed leveling sensor",
+    DE: "Induktiver automatischer Druckbett-Nivelliersensor"
+  },
+  "Capteur inductif haute précision multi-zones": {
+    EN: "Multi-zone high-precision inductive sensor",
+    DE: "Hochpräziser Mehrzonen-Induktivsensor"
+  },
+  "Capteur inductif de nivellement automatique 25 points": {
+    EN: "25-point automatic inductive leveling sensor",
+    DE: "Automatischer 25-Punkte-Induktiv-Nivelliersensor"
+  },
+  "Accéléromètre ADXL345 pour compensation de résonance": {
+    EN: "ADXL345 accelerometer for resonance compensation",
+    DE: "ADXL345-Beschleunigungsmesser zur Resonanzkompensation"
+  },
+  "Barre de ventilation auxiliaire haute vitesse intégrée": {
+    EN: "Integrated high-speed auxiliary cooling fan bar",
+    DE: "Integrierte High-Speed-Zusatzlüfterleiste"
+  },
+  "Auto-nivellement BLTouch haute précision": {
+    EN: "High-precision BLTouch auto-leveling",
+    DE: "Hochpräzise BLTouch-Autonivellierung"
+  },
+  "Double capteur de fin de filament indépendant": {
+    EN: "Dual independent filament runout sensors",
+    DE: "Duale unabhängige Filament-Endsensoren"
+  },
+  "Plaques de raclage de buse anti-bave pour têtes au repos": {
+    EN: "Anti-ooze nozzle wiper blades for idle toolheads",
+    DE: "Düsenabstreifer gegen Auslaufen für ruhende Druckköpfe"
+  },
+  "Double alimentation 800W (lit AC silicone grande puissance + contrôleur DC)": {
+    EN: "Dual 800W power supply (high-power silicone AC bed + DC controller)",
+    DE: "Duale 800W-Stromversorgung (Hochleistungs-Silikon-AC-Bett + DC-Controller)"
+  },
+  "MeanWell 600W haute puissance (lit AC 230V/110V silicone rapide indépendant)": {
+    EN: "MeanWell 600W high-power (independent fast silicone 230V/110V AC bed)",
+    DE: "MeanWell 600W Hochleistung (unabhängiges schnelles 230V/110V Silikon-AC-Bett)"
+  },
 };
 
 /**
@@ -840,6 +1272,9 @@ export function translateSpecValue(field: string, value: any, lang: Language): s
  */
 export function translateBedLeveling(brand: string, lang: Language): string {
   if (lang === 'FR') {
+    if (brand === 'Comgrow') return 'Mise à niveau automatique par capteur inductif haute précision sous Klipper';
+    if (brand === 'Sovol') return 'Nivellement automatique Quad Gantry Leveling (QGL 4 moteurs Z indépendants sur SV08/SV08 Max), double capteur inductif + capteur de force (Sovol Zero) ou capteur inductif 25 points avec Z-offset automatique sous Klipper';
+    if (brand === 'Prusa') return 'Capteur de force Loadcell (zéro réglage Z requis, première couche automatique buse-plateau) ou sonde SuperPINDA (MINI+)';
     if (brand === 'Qidi Tech') return 'Auto-nivellement double capteur entièrement automatique sans feuille (Jauge de contrainte / capteur inductif & compensation Z dynamique Klipper)';
     if (brand === 'Flashforge') return 'Nivellement entièrement automatique sans feuille (Capteurs de pression/jauge & compensation Z automatique)';
     if (brand === 'Snapmaker') return 'Nivellement automatique par maillage (Mesh Bed Leveling) avec calibration d’offset automatique par coordonnées et compensation PA';
@@ -851,6 +1286,9 @@ export function translateBedLeveling(brand: string, lang: Language): string {
   }
 
   if (lang === 'EN') {
+    if (brand === 'Comgrow') return 'High-precision inductive sensor auto-bed leveling under Klipper';
+    if (brand === 'Sovol') return 'Quad Gantry Leveling (QGL with 4 independent Z motors on SV08/SV08 Max), dual inductive + force sensors (Sovol Zero) or 25-point inductive probe with auto Z-offset under Klipper';
+    if (brand === 'Prusa') return 'Loadcell strain-gauge sensor (zero manual Z-offset calibration, automatic nozzle-bed probing) or SuperPINDA probe (MINI+)';
     if (brand === 'Qidi Tech') return 'Hands-free dual-sensor full auto-leveling (Strain gauge / inductive sensor & dynamic Klipper Z-offset compensation without paper)';
     if (brand === 'Flashforge') return 'Hands-free fully automatic leveling (Pressure sensors / strain gauge & auto Z-offset without paper)';
     if (brand === 'Snapmaker') return 'Mesh Bed Leveling with automatic coordinate toolhead offset calibration and PA flow compensation';
@@ -862,6 +1300,9 @@ export function translateBedLeveling(brand: string, lang: Language): string {
   }
 
   if (lang === 'DE') {
+    if (brand === 'Comgrow') return 'Hochpräzise induktive Sensor-Bettnivellierung unter Klipper';
+    if (brand === 'Sovol') return 'Quad Gantry Leveling (QGL mit 4 unabhängigen Z-Motoren bei SV08/SV08 Max), dualer Induktiv- + Kraftsensor (Sovol Zero) oder hochpräzise 25-Punkte-Induktivsonde mit automatischem Z-Offset unter Klipper';
+    if (brand === 'Prusa') return 'Loadcell-Wägezellensensor (vollautomatisch ohne manuelle Z-Offset-Einstellung, direkte Düsen-Bett-Abtastung) oder SuperPINDA-Sonde (MINI+)';
     if (brand === 'Qidi Tech') return 'Vollautomatische Doppelsensor-Nivellierung (Dehnungsmessstreifen / induktiver Sensor & dynamischer Klipper Z-Offset ohne Papier)';
     if (brand === 'Flashforge') return 'Vollautomatisches Freihand-Nivellieren (Drucksensoren / Dehnungsmessstreifen & automatischer Z-Offset)';
     if (brand === 'Snapmaker') return 'Automatisches Mesh-Bett-Nivellieren mit Koordinaten-Offset-Kalibrierung und PA-Durchflusskompensation';
@@ -880,6 +1321,9 @@ export function translateBedLeveling(brand: string, lang: Language): string {
  */
 export function translatePrintSurface(brand: string, lang: Language): string {
   if (lang === 'FR') {
+    if (brand === 'Comgrow') return 'Plaque flexible en acier à ressort magnétique avec revêtement PEI texturé haute adhérence';
+    if (brand === 'Sovol') return 'Plaque flexible en acier à ressort magnétique avec revêtement PEI texturé double face (haute adhérence, détachement facile après refroidissement)';
+    if (brand === 'Prusa') return 'Plaques amovibles en acier ressort magnétique double face (PEI poudré texturé, PEI lisse, Satin ou PA Nylon)';
     if (brand === 'Qidi Tech') return 'Plaque flexible magnétique en acier ressort avec revêtement HF PEI texturé double face (haute adhérence)';
     if (brand === 'Flashforge') return 'Plaque flexible en acier ressort magnétique amovible avec revêtement PEI texturé';
     if (brand === 'Snapmaker') return 'Plaque flexible magnétique en acier ressort avec revêtement PEI texturé double face';
@@ -891,6 +1335,9 @@ export function translatePrintSurface(brand: string, lang: Language): string {
   }
 
   if (lang === 'EN') {
+    if (brand === 'Comgrow') return 'Flexible magnetic spring steel plate with high-adhesion textured PEI coating';
+    if (brand === 'Sovol') return 'Flexible magnetic spring steel plate with double-sided textured PEI coating (high adhesion, easy flex release)';
+    if (brand === 'Prusa') return 'Removable double-sided magnetic spring steel sheets (Textured powder-coated PEI, Smooth PEI, Satin or PA Nylon)';
     if (brand === 'Qidi Tech') return 'Flexible magnetic spring steel plate with double-sided textured HF PEI coating (high adhesion)';
     if (brand === 'Flashforge') return 'Removable flexible magnetic spring steel sheet with textured PEI coating';
     if (brand === 'Snapmaker') return 'Flexible magnetic spring steel sheet with dual-sided textured PEI coating';
@@ -902,6 +1349,9 @@ export function translatePrintSurface(brand: string, lang: Language): string {
   }
 
   if (lang === 'DE') {
+    if (brand === 'Comgrow') return 'Flexibles magnetisches Federstahlblech mit hochhaftender strukturierter PEI-Beschichtung';
+    if (brand === 'Sovol') return 'Flexibles magnetisches Federstahlblech mit beidseitig strukturierter PEI-Beschichtung (hohe Haftung, leichtes Ablösen)';
+    if (brand === 'Prusa') return 'Abnehmbare doppelseitige magnetische Federstahlbleche (pulverbeschichtetes PEI, glattes PEI, Satin oder PA Nylon)';
     if (brand === 'Qidi Tech') return 'Flexibles magnetisches Federstahlblech mit doppelseitiger strukturierter HF-PEI-Beschichtung';
     if (brand === 'Flashforge') return 'Abnehmbares flexibles magnetisches Federstahlblech mit strukturierter PEI-Beschichtung';
     if (brand === 'Snapmaker') return 'Flexibles magnetisches Federstahlblech mit beidseitig strukturierter PEI-Beschichtung';
@@ -920,6 +1370,9 @@ export function translatePrintSurface(brand: string, lang: Language): string {
  */
 export function translateConnectivity(brand: string, lang: Language): string {
   if (lang === 'FR') {
+    if (brand === 'Comgrow') return 'Wi-Fi, Port clé USB & Interface Web Klipper';
+    if (brand === 'Sovol') return 'Wi-Fi haute vitesse, Port Ethernet RJ45, Ports USB multiples, Interface Web Klipper native (Fluidd / Mainsail)';
+    if (brand === 'Prusa') return 'Wi-Fi natif, Port Ethernet RJ45, Port USB, Prusa Connect (cloud sécurisé) & PrusaLink (interface locale)';
     if (brand === 'Qidi Tech') return 'Wi-Fi double bande (2.4 GHz / 5 GHz), Port Ethernet RJ45, Port USB, Interface Web Klipper & QIDI Link App';
     if (brand === 'Flashforge') return 'Wi-Fi (2.4 GHz / 5 GHz double bande selon modèle), Port Ethernet RJ45, Port USB, FlashCloud';
     if (brand === 'Snapmaker') return 'Wi-Fi (2.4 GHz IEEE 802.11b/g/n), Câble USB, Clé USB, Snapmaker App & Luban';
@@ -931,6 +1384,9 @@ export function translateConnectivity(brand: string, lang: Language): string {
   }
 
   if (lang === 'EN') {
+    if (brand === 'Comgrow') return 'Wi-Fi, USB Flash Drive Port & Klipper Web Interface';
+    if (brand === 'Sovol') return 'High-speed Wi-Fi, RJ45 Ethernet Port, multiple USB Ports, native Klipper Web Interface (Fluidd / Mainsail)';
+    if (brand === 'Prusa') return 'Native Wi-Fi, RJ45 Ethernet Port, USB Port, Prusa Connect (secure cloud) & PrusaLink (local web interface)';
     if (brand === 'Qidi Tech') return 'Dual-band Wi-Fi (2.4 GHz / 5 GHz), RJ45 Ethernet Port, USB Port, Klipper Web Interface & QIDI Link App';
     if (brand === 'Flashforge') return 'Wi-Fi (2.4 GHz / 5 GHz dual-band depending on model), RJ45 Ethernet Port, USB Port, FlashCloud';
     if (brand === 'Snapmaker') return 'Wi-Fi (2.4 GHz IEEE 802.11b/g/n), USB Cable, USB Flash Drive, Snapmaker App & Luban';
@@ -942,6 +1398,9 @@ export function translateConnectivity(brand: string, lang: Language): string {
   }
 
   if (lang === 'DE') {
+    if (brand === 'Comgrow') return 'WLAN, USB-Flash-Laufwerk-Port & Klipper Web-Interface';
+    if (brand === 'Sovol') return 'Hochgeschwindigkeits-WLAN, RJ45-Ethernet-Port, mehrere USB-Ports, natives Klipper Web-Interface (Fluidd / Mainsail)';
+    if (brand === 'Prusa') return 'Natives WLAN, RJ45-Ethernet-Port, USB-Port, Prusa Connect (sichere Cloud) & PrusaLink (lokales Web-Interface)';
     if (brand === 'Qidi Tech') return 'Dualband-WLAN (2.4 GHz / 5 GHz), RJ45-Ethernet-Port, USB-Port, Klipper Web-Interface & QIDI Link App';
     if (brand === 'Flashforge') return 'WLAN (2.4 GHz / 5 GHz Dualband je nach Modell), RJ45-Ethernet-Port, USB-Port, FlashCloud';
     if (brand === 'Snapmaker') return 'WLAN (2.4 GHz IEEE 802.11b/g/n), USB-Kabel, USB-Flash-Laufwerk, Snapmaker App & Luban';
@@ -960,6 +1419,9 @@ export function translateConnectivity(brand: string, lang: Language): string {
  */
 export function translateSlicers(brand: string, lang: Language): string {
   if (lang === 'FR') {
+    if (brand === 'Comgrow') return 'OrcaSlicer, Cura, PrusaSlicer (G-code standard Klipper)';
+    if (brand === 'Sovol') return 'OrcaSlicer (profils officiels Klipper), Sovol Slicer, PrusaSlicer, Cura (G-code Klipper standard déverrouillé)';
+    if (brand === 'Prusa') return 'PrusaSlicer (natif avec profils officiels certifiés), OrcaSlicer, Cura, Simplify3D';
     if (brand === 'Qidi Tech') return 'QIDISlicer, OrcaSlicer, PrusaSlicer, Cura (G-code standard Klipper)';
     if (brand === 'Flashforge') return 'FlashPrint 5, Orca-Flashforge, OrcaSlicer';
     if (brand === 'Snapmaker') return 'Snapmaker Orca, OrcaSlicer, Snapmaker Luban';
@@ -971,6 +1433,9 @@ export function translateSlicers(brand: string, lang: Language): string {
   }
 
   if (lang === 'EN') {
+    if (brand === 'Comgrow') return 'OrcaSlicer, Cura, PrusaSlicer (Standard Klipper G-code)';
+    if (brand === 'Sovol') return 'OrcaSlicer (official Klipper profiles), Sovol Slicer, PrusaSlicer, Cura (Standard open Klipper G-code)';
+    if (brand === 'Prusa') return 'PrusaSlicer (native with certified official profiles), OrcaSlicer, Cura, Simplify3D';
     if (brand === 'Qidi Tech') return 'QIDISlicer, OrcaSlicer, PrusaSlicer, Cura (Standard Klipper G-code)';
     if (brand === 'Flashforge') return 'FlashPrint 5, Orca-Flashforge, OrcaSlicer';
     if (brand === 'Snapmaker') return 'Snapmaker Orca, OrcaSlicer, Snapmaker Luban';
@@ -982,6 +1447,9 @@ export function translateSlicers(brand: string, lang: Language): string {
   }
 
   if (lang === 'DE') {
+    if (brand === 'Comgrow') return 'OrcaSlicer, Cura, PrusaSlicer (Standard-Klipper-G-Code)';
+    if (brand === 'Sovol') return 'OrcaSlicer (offizielle Klipper-Profile), Sovol Slicer, PrusaSlicer, Cura (Standardmäßiger offener Klipper-G-Code)';
+    if (brand === 'Prusa') return 'PrusaSlicer (nativ mit zertifizierten offiziellen Profilen), OrcaSlicer, Cura, Simplify3D';
     if (brand === 'Qidi Tech') return 'QIDISlicer, OrcaSlicer, PrusaSlicer, Cura (Standard-Klipper-G-Code)';
     if (brand === 'Flashforge') return 'FlashPrint 5, Orca-Flashforge, OrcaSlicer';
     if (brand === 'Snapmaker') return 'Snapmaker Orca, OrcaSlicer, Snapmaker Luban';
@@ -1018,6 +1486,9 @@ export function translateChamberHeating(value: string | undefined, enclosed: boo
         .replace(/Chambre activement chauffée jusqu’à 65 °C/gi, 'Actively heated chamber up to 65 °C')
         .replace(/Chambre activement chauffée jusqu’à 60 °C/gi, 'Actively heated chamber up to 60 °C')
         .replace(/Chambre activement chauffée/gi, 'Actively heated chamber')
+        .replace(/Plaque chauffante en céramique à montée rapide \(jusqu’à 120 °C\)/gi, 'Fast-heating ceramic hotbed plate (up to 120 °C)')
+        .replace(/Plaque chauffante en céramique à montée rapide \(hotend ≤ 300 °C\)/gi, 'Fast-heating ceramic hotbed plate (hotend ≤ 300 °C)')
+        .replace(/Pas de caisson chauffé \(Machine ouverte\)/gi, 'No heated chamber (Open frame machine)')
         .replace(/Chauffage passif régulé avec double circulation/gi, 'Passive regulated heating with dual circulation')
         .replace(/Chauffage passif régulé/gi, 'Passive regulated heating')
         .replace(/Régulée/gi, 'Regulated')
@@ -1040,6 +1511,9 @@ export function translateChamberHeating(value: string | undefined, enclosed: boo
         .replace(/Chambre activement chauffée jusqu’à 65 °C/gi, 'Aktiv beheizter Bauraum bis 65 °C')
         .replace(/Chambre activement chauffée jusqu’à 60 °C/gi, 'Aktiv beheizter Bauraum bis 60 °C')
         .replace(/Chambre activement chauffée/gi, 'Aktiv beheizter Bauraum')
+        .replace(/Plaque chauffante en céramique à montée rapide \(jusqu’à 120 °C\)/gi, 'Schnell aufheizende Keramik-Heizbettplatte (bis zu 120 °C)')
+        .replace(/Plaque chauffante en céramique à montée rapide \(hotend ≤ 300 °C\)/gi, 'Schnell aufheizende Keramik-Heizbettplatte (Hotend ≤ 300 °C)')
+        .replace(/Pas de caisson chauffé \(Machine ouverte\)/gi, 'Kein beheizter Bauraum (Offenes Rahmengerät)')
         .replace(/Chauffage passif régulé avec double circulation/gi, 'Passive geregelte Beheizung mit doppelter Zirkulation')
         .replace(/Chauffage passif régulé/gi, 'Passive geregelte Beheizung')
         .replace(/Régulée/gi, 'Geregelt')
@@ -1331,6 +1805,22 @@ export function translateExtruder(val: string | undefined, lang: Language): stri
   if (!val || lang === 'FR') return val || '';
   if (lang === 'EN') {
     return val
+      .replace(/Direct Drive à double engrenage en acier trempé avec réduction planétaire haute force d\'extrusion/gi, 'Hardened steel dual-drive Direct Drive with high-torque planetary reduction')
+      .replace(/Extrudeuse Direct Drive à engrenages planétaires haute motricité/gi, 'High-traction planetary gear Direct Drive extruder')
+      .replace(/Engrenage planétaire double, rapport de réduction 1:7,5/gi, 'Dual planetary gear, 1:7.5 reduction ratio')
+      .replace(/Direct Drive tout métal haute motricité avec Input Shaping/gi, 'All-metal high-traction Direct Drive with Input Shaping')
+      .replace(/Direct Drive à double engrenage en acier trempé usiné CNC haute adhérence/gi, 'CNC-machined hardened steel dual-drive Direct Drive with high traction')
+      .replace(/Direct Drive à double engrenage planétaire tout métal \(rapport 1:5.22\)/gi, 'All-metal planetary dual-gear Direct Drive (1:5.22 ratio)')
+      .replace(/Direct Drive ultra-léger à double entraînement haute précision/gi, 'Ultra-lightweight high-precision dual-drive Direct Drive')
+      .replace(/Direct Drive tout métal à double engrenage avec réducteur planétaire/gi, 'All-metal dual-gear Direct Drive with planetary reducer')
+      .replace(/Double extrudeur indépendant IDEX Direct Drive à double engrenage/gi, 'Independent dual extruder IDEX dual-gear Direct Drive')
+      .replace(/Nextruder Direct Drive à engrenages planétaires \(rapport 1:10\) avec Loadcell/gi, 'Nextruder Direct Drive with planetary gearbox (1:10 ratio) and Loadcell')
+      .replace(/Nextruder Direct Drive compact avec capteur Loadcell & refroidissement 360°/gi, 'Compact Nextruder Direct Drive with Loadcell sensor & 360° cooling')
+      .replace(/Nextruder Direct Drive compact avec buse High-Flow tout métal et Loadcell/gi, 'Compact Nextruder Direct Drive with all-metal High-Flow nozzle and Loadcell')
+      .replace(/Nextruder modulaire avec engrenages planétaires et capteur Loadcell par tête/gi, 'Modular Nextruder with planetary gears and Loadcell sensor per toolhead')
+      .replace(/Engrenages Bondtech en acier trempé double entraînement 1:1/gi, 'Hardened steel Bondtech dual-drive gears 1:1')
+      .replace(/Direct Drive all-metal haute température avec double entraînement haute précision refroidi par liquide/gi, 'All-metal high-temperature Direct Drive with liquid-cooled dual-drive precision gears')
+      .replace(/Bowden avec réducteur 3:1/gi, 'Bowden with 3:1 gearing')
       .replace(/4 têtes d’outils indépendantes incluses \(4 Toolheads Included\)/gi, '4 independent toolheads included (Quad Toolheads)')
       .replace(/4 têtes d’outils indépendantes \(Quad Toolheads\) Direct Drive haute précision/gi, '4 independent toolheads (Quad Toolheads) high-precision Direct Drive')
       .replace(/Double extrudeur indépendant IDEX Direct Drive haute température avec bascule rapide/gi, 'Independent Dual Extruder IDEX high-temperature Direct Drive with fast switching')
@@ -1341,6 +1831,22 @@ export function translateExtruder(val: string | undefined, lang: Language): stri
   }
   if (lang === 'DE') {
     return val
+      .replace(/Direct Drive à double engrenage en acier trempé avec réduction planétaire haute force d\'extrusion/gi, 'Gehärteter Stahl-Doppelantrieb Direct Drive mit drehmomentstarkem Planetengetriebe')
+      .replace(/Extrudeuse Direct Drive à engrenages planétaires haute motricité/gi, 'Direct-Drive-Extruder mit Planetengetriebe und hoher Antriebskraft')
+      .replace(/Engrenage planétaire double, rapport de réduction 1:7,5/gi, 'Duales Planetengetriebe, 1:7,5 Untersetzungsverhältnis')
+      .replace(/Direct Drive tout métal haute motricité avec Input Shaping/gi, 'Ganzmetall-Direct-Drive mit hoher Traktion und Input Shaping')
+      .replace(/Direct Drive à double engrenage en acier trempé usiné CNC haute adhérence/gi, 'CNC-gefräster gehärteter Stahl-Doppelantrieb Direct Drive mit hoher Traktion')
+      .replace(/Direct Drive à double engrenage planétaire tout métal \(rapport 1:5.22\)/gi, 'Ganzmetall-Planeten-Doppelgetriebe Direct Drive (1:5.22 Übersetzung)')
+      .replace(/Direct Drive ultra-léger à double entraînement haute précision/gi, 'Ultraleichter hochpräziser Doppelantrieb Direct Drive')
+      .replace(/Direct Drive tout métal à double engrenage avec réducteur planétaire/gi, 'Ganzmetall-Doppelzahnrad Direct Drive mit Planetenuntersetzung')
+      .replace(/Double extrudeur indépendant IDEX Direct Drive à double engrenage/gi, 'Unabhängiger Doppelextruder IDEX Doppelzahnrad Direct Drive')
+      .replace(/Nextruder Direct Drive à engrenages planétaires \(rapport 1:10\) avec Loadcell/gi, 'Nextruder Direct Drive mit Planetengetriebe (1:10 Übersetzung) und Loadcell')
+      .replace(/Nextruder Direct Drive compact avec capteur Loadcell & refroidissement 360°/gi, 'Kompakter Nextruder Direct Drive mit Loadcell-Sensor & 360°-Kühlung')
+      .replace(/Nextruder Direct Drive compact avec buse High-Flow tout métal et Loadcell/gi, 'Kompakter Nextruder Direct Drive mit Ganzmetall-High-Flow-Düse und Loadcell')
+      .replace(/Nextruder modulaire avec engrenages planétaires et capteur Loadcell par tête/gi, 'Modularer Nextruder mit Planetengetriebe und Loadcell-Sensor pro Kopf')
+      .replace(/Engrenages Bondtech en acier trempé double entraînement 1:1/gi, 'Gehärtete Bondtech-Doppelantriebszahnräder 1:1')
+      .replace(/Direct Drive all-metal haute température avec double entraînement haute précision refroidi par liquide/gi, 'Ganzmetall-Hochtemperatur-Direct-Drive mit flüssigkeitsgekühltem Doppelantrieb')
+      .replace(/Bowden avec réducteur 3:1/gi, 'Bowden mit 3:1 Getriebe')
       .replace(/4 têtes d’outils indépendantes incluses \(4 Toolheads Included\)/gi, '4 unabhängige Werkzeugköpfe enthalten (Quad Toolheads)')
       .replace(/4 têtes d’outils indépendantes \(Quad Toolheads\) Direct Drive haute précision/gi, '4 unabhängige Werkzeugköpfe (Quad Toolheads) hochpräziser Direct Drive')
       .replace(/Double extrudeur indépendant IDEX Direct Drive haute température avec bascule rapide/gi, 'Unabhängiger Doppelextruder IDEX Hochtemperatur Direct Drive mit Schnellwechsel')
@@ -1359,6 +1865,14 @@ export function translateNozzleType(val: string | undefined, lang: Language): st
   if (!val || lang === 'FR') return val || '';
   if (lang === 'EN') {
     return val
+      .replace(/Nextruder High-Flow CHT \(0.4 mm standard en laiton, buse démontage rapide\)/gi, 'Nextruder High-Flow CHT (0.4 mm standard brass, quick-swap nozzle)')
+      .replace(/Nextruder High-Flow CHT \(0.4 mm standard en laiton, démontage rapide\)/gi, 'Nextruder High-Flow CHT (0.4 mm standard brass, quick-swap)')
+      .replace(/Nextruder High-Flow buse tout métal à changement rapide/gi, 'Nextruder High-Flow quick-swap all-metal nozzle')
+      .replace(/Nextruder High-Flow buse tout métal/gi, 'Nextruder High-Flow all-metal nozzle')
+      .replace(/Nextruder buse spécifique grand débit \(options 0.4 \/ 0.6 mm\)/gi, 'Nextruder high-flow nozzle (0.4 / 0.6 mm options)')
+      .replace(/Nextruder buse spécifique grand débit \(0.6 mm standard, options 0.4 mm\)/gi, 'Nextruder high-flow nozzle (0.6 mm standard, 0.4 mm options)')
+      .replace(/Acier trempé et carbure haute résistance 500 °C/gi, 'Hardened steel and carbide heavy-duty 500 °C')
+      .replace(/Acier trempé et carbure haute résistance jusqu'à 500 °C/gi, 'Hardened steel and carbide heavy-duty up to 500 °C')
       .replace(/Buse amovible démontage rapide/gi, 'Quick-swap detachable nozzle')
       .replace(/Buse démontage rapide Laiton/gi, 'Quick-swap Brass nozzle')
       .replace(/Buse démontage rapide/gi, 'Quick-swap nozzle')
@@ -1367,15 +1881,26 @@ export function translateNozzleType(val: string | undefined, lang: Language): st
       .replace(/Acier Inoxydable/gi, 'Stainless Steel')
       .replace(/Acier Trempé/gi, 'Hardened Steel')
       .replace(/Acier trempé/gi, 'Hardened Steel')
+      .replace(/Laiton V6 standard 0.4 mm/gi, 'Standard V6 Brass 0.4 mm')
       .replace(/Laiton/gi, 'Brass')
       .replace(/option Acier Trempé pour composites/gi, 'optional Hardened Steel for composites')
       .replace(/et Acier trempé/gi, 'and Hardened Steel')
       .replace(/et Acier Trempé/gi, 'and Hardened Steel')
+      .replace(/inclus/gi, 'included')
+      .replace(/Option\s*:/gi, 'Optional:')
       .replace(/options/gi, 'options')
       .replace(/standard/gi, 'standard');
   }
   if (lang === 'DE') {
     return val
+      .replace(/Nextruder High-Flow CHT \(0.4 mm standard en laiton, buse démontage rapide\)/gi, 'Nextruder High-Flow CHT (0.4 mm Standard-Messing, Schnellwechseldüse)')
+      .replace(/Nextruder High-Flow CHT \(0.4 mm standard en laiton, démontage rapide\)/gi, 'Nextruder High-Flow CHT (0.4 mm Standard-Messing, Schnellwechsel)')
+      .replace(/Nextruder High-Flow buse tout métal à changement rapide/gi, 'Nextruder High-Flow schnellwechselbare Vollmetalldüse')
+      .replace(/Nextruder High-Flow buse tout métal/gi, 'Nextruder High-Flow Vollmetalldüse')
+      .replace(/Nextruder buse spécifique grand débit \(options 0.4 \/ 0.6 mm\)/gi, 'Nextruder High-Flow Spezialdüse (0.4 / 0.6 mm Optionen)')
+      .replace(/Nextruder buse spécifique grand débit \(0.6 mm standard, options 0.4 mm\)/gi, 'Nextruder High-Flow Spezialdüse (0.6 mm Standard, 0.4 mm Optionen)')
+      .replace(/Acier trempé et carbure haute résistance 500 °C/gi, 'Gehärteter Stahl und Karbid bis 500 °C')
+      .replace(/Acier trempé et carbure haute résistance jusqu'à 500 °C/gi, 'Gehärteter Stahl und Karbid bis 500 °C')
       .replace(/Buse amovible démontage rapide/gi, 'Schnellwechselbare abnehmbare Düse')
       .replace(/Buse démontage rapide Laiton/gi, 'Schnellwechselbare Messingdüse')
       .replace(/Buse démontage rapide/gi, 'Schnellwechselbare Düse')
@@ -1384,10 +1909,13 @@ export function translateNozzleType(val: string | undefined, lang: Language): st
       .replace(/Acier Inoxydable/gi, 'Edelstahl')
       .replace(/Acier Trempé/gi, 'Gehärteter Stahl')
       .replace(/Acier trempé/gi, 'Gehärteter Stahl')
+      .replace(/Laiton V6 standard 0.4 mm/gi, 'Standard V6 Messing 0.4 mm')
       .replace(/Laiton/gi, 'Messing')
       .replace(/option Acier Trempé pour composites/gi, 'optional gehärteter Stahl für Verbundwerkstoffe')
       .replace(/et Acier trempé/gi, 'und gehärteter Stahl')
       .replace(/et Acier Trempé/gi, 'und gehärteter Stahl')
+      .replace(/inclus/gi, 'enthalten')
+      .replace(/Option\s*:/gi, 'Optional:')
       .replace(/options/gi, 'Optionen')
       .replace(/standard/gi, 'Standard');
   }
@@ -1401,6 +1929,24 @@ export function translateChassis(val: string | undefined, lang: Language): strin
   if (!val || lang === 'FR') return val || '';
   if (lang === 'EN') {
     return val
+      .replace(/Châssis ouvert tout aluminium rigide extrudé 2020\/2040 inspiré Voron 2\.4, rails linéaires métalliques sur X, Y et 4 axes Z/gi, 'Open rigid extruded 2020/2040 aluminum frame inspired by Voron 2.4, metal linear rails on X, Y and 4 Z-axes')
+      .replace(/Châssis profilés aluminium renforcés 3030 avec renforts d\'angle triangulaires, rails linéaires industriels sur tous les axes/gi, 'Reinforced 3030 aluminum profile chassis with triangular corner braces, industrial linear rails on all axes')
+      .replace(/Châssis aluminium rigide tout métal, guidage sur tiges linéaires précises et doubles vis Z synchronisées avec courroie/gi, 'Rigid all-metal aluminum chassis, guided on precision linear rods and belt-synchronized dual Z-leadscrews')
+      .replace(/Châssis entièrement métallique, axes X, Y et double axe Z sur tiges linéaires en acier rectifié avec roulements à billes/gi, 'Full-metal chassis, X, Y and dual Z-axes on ground steel linear rods with ball bearings')
+      .replace(/Châssis tout métal robuste, guidage sur tiges linéaires précises et doubles vis Z synchronisées avec courroie/gi, 'Robust all-metal chassis, precision linear rod guidance and belt-synchronized dual Z-leadscrews')
+      .replace(/Châssis rigide tout aluminium profilés renforcés et double axe Z synchronisé/gi, 'Rigid all-aluminum chassis with reinforced extrusions and synchronized dual Z-axis')
+      .replace(/Châssis cubique rigide aluminium extrudé usiné CNC, rails linéaires MGN métalliques sur tous les axes/gi, 'Rigid cubic CNC-machined extruded aluminum chassis, metallic MGN linear rails on all axes')
+      .replace(/Châssis haute rigidité tout aluminium, cinématique CoreXY ultra-rapide 1 200 mm\/s/gi, 'High-rigidity all-aluminum chassis, ultra-fast 1,200 mm/s CoreXY kinematics')
+      .replace(/Châssis aluminium renforcé avec tirants de stabilisation triangulaires et double axe Z synchronisé/gi, 'Reinforced aluminum chassis with triangular stabilizing tie-rods and synchronized dual Z-axis')
+      .replace(/Châssis aluminium robuste grande hauteur avec double axe Z et rails de guidage indépendants X1 \/ X2/gi, 'Sturdy tall aluminum chassis with dual Z-axis and independent X1 / X2 guide rails')
+      .replace(/Châssis collector en bois de chêne massif taillé et profilés aluminium/gi, 'Collector solid oak wood frame and aluminum extrusions')
+      .replace(/Châssis rigide en fonte d'aluminium et profilés usinés/gi, 'Rigid die-cast aluminum frame and machined extrusions')
+      .replace(/Châssis rigide en fonte d\'aluminium et profilés aluminium usinés/gi, 'Rigid die-cast aluminum frame and machined extrusions')
+      .replace(/Bras cantilever compact en profilés aluminium et pièces injectées/gi, 'Compact cantilever arm with aluminum extrusions and injection-molded parts')
+      .replace(/Structure Delta fermée industrielle isolée thermiquement/gi, 'Thermally insulated industrial enclosed Delta structure')
+      .replace(/Exosquelette tout acier entièrement fermé avec isolation et portes transparentes/gi, 'Fully enclosed all-steel exoskeleton with thermal insulation and clear doors')
+      .replace(/Exosquelette acier industriel lourd et rigide, entièrement fermé/gi, 'Heavy-duty industrial rigid steel exoskeleton, fully enclosed')
+      .replace(/Châssis modulaire robuste tout aluminium usiné et profilés acier/gi, 'Robust modular chassis in machined aluminum and steel extrusions')
       .replace(/Structure métallique rigide avec modules linéaires haute précision et contrôleur intégré/gi, 'Rigid metal frame with high-precision linear modules and integrated controller')
       .replace(/Structure monobloc moulée sous pression avec barres aluminium et rails linéaires CNC/gi, 'One-piece die-cast body with aluminum bars and CNC linear rails')
       .replace(/Châssis modulaire tout métal haute rigidité avec modules linéaires acier et caisson de protection laser sécurisé/gi, 'High-rigidity all-metal modular chassis with steel linear modules and laser-safe enclosure')
@@ -1409,6 +1955,24 @@ export function translateChassis(val: string | undefined, lang: Language): strin
   }
   if (lang === 'DE') {
     return val
+      .replace(/Châssis ouvert tout aluminium rigide extrudé 2020\/2040 inspiré Voron 2\.4, rails linéaires métalliques sur X, Y et 4 axes Z/gi, 'Offener steifer 2020/2040-Aluminium-Strangpressrahmen inspiriert von Voron 2.4, Metall-Linearschienen auf X, Y und 4 Z-Achsen')
+      .replace(/Châssis profilés aluminium renforcés 3030 avec renforts d\'angle triangulaires, rails linéaires industriels sur tous les axes/gi, 'Verstärktes 3030-Aluminiumprofil-Chassis mit dreieckigen Eckversteifungen, industrielle Linearschienen auf allen Achsen')
+      .replace(/Châssis aluminium rigide tout métal, guidage sur tiges linéaires précises et doubles vis Z synchronisées avec courroie/gi, 'Starres Vollmetall-Aluminiumchassis, Führung auf präzisen Linearstangen und riemensynchronisierte duale Z-Spindeln')
+      .replace(/Châssis entièrement métallique, axes X, Y et double axe Z sur tiges linéaires en acier rectifié avec roulements à billes/gi, 'Vollmetall-Chassis, X-, Y- und duale Z-Achsen auf geschliffenen Stahl-Linearstangen mit Kugellagern')
+      .replace(/Châssis tout métal robuste, guidage sur tiges linéaires précises et doubles vis Z synchronisées avec courroie/gi, 'Robustes Vollmetall-Chassis, präzise Linearstangenführung und riemensynchronisierte duale Z-Spindeln')
+      .replace(/Châssis rigide tout aluminium profilés renforcés et double axe Z synchronisé/gi, 'Starres Vollaluminium-Chassis mit verstärkten Profilen und synchronisierter dualer Z-Achse')
+      .replace(/Châssis cubique rigide aluminium extrudé usiné CNC, rails linéaires MGN métalliques sur tous les axes/gi, 'Steifes kubisches CNC-gefrästes Strangpress-Aluminiumchassis, metallische MGN-Linearschienen auf allen Achsen')
+      .replace(/Châssis haute rigidité tout aluminium, cinématique CoreXY ultra-rapide 1 200 mm\/s/gi, 'Hochsteifes Vollaluminium-Chassis, ultraschnelle 1.200 mm/s CoreXY-Kinematik')
+      .replace(/Châssis aluminium renforcé avec tirants de stabilisation triangulaires et double axe Z synchronisé/gi, 'Verstärktes Aluminiumchassis mit dreieckigen Stabilisierungsstangen und synchronisierter dualer Z-Achse')
+      .replace(/Châssis aluminium robuste grande hauteur avec double axe Z et rails de guidage indépendants X1 \/ X2/gi, 'Robustes hohes Aluminiumchassis mit dualer Z-Achse und unabhängigen X1 / X2-Führungsschienen')
+      .replace(/Châssis collector en bois de chêne massif taillé et profilés aluminium/gi, 'Sammler-Chassis aus massivem Eichenholz und Aluminiumprofilen')
+      .replace(/Châssis rigide en fonte d'aluminium et profilés usinés/gi, 'Starrer Aluminium-Druckgussrahmen und gefräste Profile')
+      .replace(/Châssis rigide en fonte d\'aluminium et profilés aluminium usinés/gi, 'Starrer Aluminium-Druckgussrahmen und gefräste Profile')
+      .replace(/Bras cantilever compact en profilés aluminium et pièces injectées/gi, 'Kompakter Cantilever-Arm aus Aluminiumprofilen und Spritzgussteilen')
+      .replace(/Structure Delta fermée industrielle isolée thermiquement/gi, 'Thermisch isolierte industrielle geschlossene Delta-Struktur')
+      .replace(/Exosquelette tout acier entièrement fermé avec isolation et portes transparentes/gi, 'Vollständig geschlossenes Ganzstahl-Exoskelett mit Isolierung und klaren Türen')
+      .replace(/Exosquelette acier industriel lourd et rigide, entièrement fermé/gi, 'Schweres industrielles steifes Stahl-Exoskelett, komplett geschlossen')
+      .replace(/Châssis modulaire robuste tout aluminium usiné et profilés acier/gi, 'Robustes modulares Chassis aus gefrästem Aluminium und Stahlprofilen')
       .replace(/Structure métallique rigide avec modules linéaires haute précision et contrôleur intégré/gi, 'Starre Metallstruktur mit hochpräzisen Linearmodulen und integriertem Controller')
       .replace(/Structure monobloc moulée sous pression avec barres aluminium et rails linéaires CNC/gi, 'Einteiliger Druckgusskörper mit Aluminiumstangen und CNC-Linearschienen')
       .replace(/Châssis modulaire tout métal haute rigidité avec modules linéaires acier et caisson de protection laser sécurisé/gi, 'Hochsteifes modulares Vollmetallchassis mit Stahl-Linearmodulen und lasersicherem Gehäuse')
