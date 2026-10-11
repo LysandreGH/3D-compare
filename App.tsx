@@ -104,10 +104,12 @@ const StarRating = ({ rating, interactive = false, onRate }: { rating: number, i
 
 const HomePage = ({ 
   t, 
+  lang = 'FR',
   onRate,
   onSelectBrand
 }: { 
   t: TranslationStrings, 
+  lang?: Language,
   onRate: (r: number, txt: string) => void,
   onSelectBrand?: (brand: string) => void
 }) => {
@@ -446,7 +448,68 @@ const HomePage = ({
         </div>
       </div>
 
-      {/* Protected Admin Panel Area */}
+      {/* Encadrés Juridiques & Transparence (3 & 4) - Placés sous IA & Moteur de Recherche */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {/* Encadré 3: Exactitude des Données & Avertissement Prix / Disponibilité */}
+        <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col justify-between space-y-4 text-left transition-all hover:shadow-2xl hover:border-blue-500/30">
+          <div className="space-y-3.5">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/25 rounded-2xl text-blue-600 dark:text-blue-400 shrink-0">
+                <ShieldCheck size={26} />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/50 dark:border-blue-900/50">
+                  {lang === 'FR' ? 'Encadré 3 • Données & Prix' : lang === 'DE' ? 'Kasten 3 • Daten & Preise' : 'Box 3 • Data & Pricing'}
+                </span>
+                <h3 className="text-lg font-black text-gray-900 dark:text-white leading-snug">
+                  {lang === 'FR' ? 'Exactitude des Spécifications, Prix & Disponibilité' : lang === 'DE' ? 'Genauigkeit der Daten & Preiswarnung' : 'Data Accuracy & Price Disclaimer'}
+                </h3>
+              </div>
+            </div>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+              {lang === 'FR' 
+                ? "Les caractéristiques techniques (vitesses d'impression, volumes, températures, composants) et les prix affichés sur ce comparateur sont collectés à titre indicatif et informatif d'après les documentations des constructeurs et revendeurs. Bien que nous nous efforcions de maintenir les informations à jour, des variations, promotions temporaires ou ruptures de stock peuvent survenir. L'utilisateur est invité à vérifier les spécifications et le tarif final directement sur la boutique partenaire avant tout achat. L'éditeur du site ne saurait être tenu responsable des éventuelles erreurs ou de l'inadéquation d'un produit avec les besoins de l'acheteur."
+                : lang === 'DE'
+                ? "Die auf diesem Vergleichsportal angezeigten technischen Spezifikationen (Druckgeschwindigkeiten, Bauvolumen, Temperaturen, Komponenten) und Preise dienen ausschließlich Informationszwecken basierend auf Herstellerdokumentationen. Trotz sorgfältiger Pflege können Abweichungen, temporäre Rabatte oder Lageränderungen auftreten. Bitte überprüfen Sie alle Daten und den Endpreis vor jedem Kauf direkt im Partnershop."
+                : "The technical specifications (printing speeds, build volume, temperatures, components) and prices displayed on this comparator are collected for informational purposes based on manufacturer and retailer documentations. While we strive for accuracy, discrepancies, temporary deals, or stock variations may occur. Please verify final specifications and pricing directly on the retailer store before purchase."}
+            </p>
+          </div>
+          <div className="pt-3 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-gray-400 font-medium">
+            <span>{lang === 'FR' ? 'Clause de non-responsabilité' : lang === 'DE' ? 'Haftungsausschluss' : 'Disclaimer notice'}</span>
+            <span className="font-bold text-blue-600 dark:text-blue-400">3D Expert Compare</span>
+          </div>
+        </div>
+
+        {/* Encadré 4: Propriété Intellectuelle & Marques Citées */}
+        <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-zinc-800 flex flex-col justify-between space-y-4 text-left transition-all hover:shadow-2xl hover:border-purple-500/30">
+          <div className="space-y-3.5">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-purple-50 dark:bg-purple-900/25 rounded-2xl text-purple-600 dark:text-purple-400 shrink-0">
+                <Sparkles size={26} />
+              </div>
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 px-2 py-0.5 rounded-md border border-purple-200/50 dark:border-purple-900/50">
+                  {lang === 'FR' ? 'Encadré 4 • Propriété Intellectuelle' : lang === 'DE' ? 'Kasten 4 • Geistiges Eigentum' : 'Box 4 • Intellectual Property'}
+                </span>
+                <h3 className="text-lg font-black text-gray-900 dark:text-white leading-snug">
+                  {lang === 'FR' ? 'Propriété Intellectuelle & Marques Citées' : lang === 'DE' ? 'Geistiges Eigentum & Genannte Marken' : 'Intellectual Property & Trademarks'}
+                </h3>
+              </div>
+            </div>
+            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-normal">
+              {lang === 'FR'
+                ? "Les marques, logos, dénominations commerciales et visuels des imprimantes 3D (notamment Creality, Bambu Lab, Anycubic, Sovol, Comgrow, Elegoo, Prusa, etc.) appartiennent exclusivement à leurs propriétaires et fabricants respectifs. Leur citation et représentation sur ce comparateur interviennent uniquement à des fins d'identification, d'illustration comparative et d'information du public, sans aucune affiliation officielle, parrainage ni approbation directe de la part de ces constructeurs."
+                : lang === 'DE'
+                ? "Alle auf dieser Website genannten Marken, Logos, Handelsnamen und Produktabbildungen (u.a. Creality, Bambu Lab, Anycubic, Sovol, Comgrow, Elegoo, Prusa) gehören ausschließlich ihren jeweiligen Herstellern. Ihre Nennung erfolgt ausschließlich zu Zwecken der Identifikation, des Vergleichs und der Information ohne offizielle Partnerschaft oder Billigung."
+                : "All trademarks, logos, brand names, and product images (including Creality, Bambu Lab, Anycubic, Sovol, Comgrow, Elegoo, Prusa, etc.) belong exclusively to their respective owners. Their mention and display on this comparator is solely for identification, comparative illustration, and public information purposes, with no official affiliation or endorsement."}
+            </p>
+          </div>
+          <div className="pt-3 border-t border-gray-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-gray-400 font-medium">
+            <span>{lang === 'FR' ? 'Usage loyal et informatif' : lang === 'DE' ? 'Informativer Zweck' : 'Fair use for reference'}</span>
+            <span className="font-bold text-purple-600 dark:text-purple-400">© Tous droits réservés</span>
+          </div>
+        </div>
+      </div>
       <div className="pt-6 text-center border-t border-gray-100 dark:border-zinc-800">
         <button 
           onClick={() => setShowAdmin(!showAdmin)}
@@ -2290,6 +2353,7 @@ export default function App() {
           {page === 'home' && (
             <HomePage 
               t={t} 
+              lang={lang}
               onRate={(r, f) => console.log('Feedback:', r, f)} 
               onSelectBrand={(brand) => {
                 setSelectedBrandFilter(brand);
