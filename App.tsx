@@ -327,58 +327,63 @@ const HomePage = ({
         </div>
       </div>
 
-      {/* ENCADRÉ : Événements & Bons Plans du Moment */}
-      <div className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-red-500/10 border-2 border-amber-300 dark:border-amber-700/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-200/50 dark:border-amber-800/40 pb-4">
+      {/* ENCADRÉ : Événement Black Friday — Grosses Promos */}
+      <div className="bg-gradient-to-r from-red-500/10 via-amber-500/10 to-zinc-900/5 dark:from-red-600/15 dark:via-amber-500/10 dark:to-zinc-900/80 border-2 border-red-400/70 dark:border-red-600/60 p-5 md:p-8 rounded-3xl shadow-md space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-red-200/70 dark:border-red-900/50 pb-4">
           <div className="flex items-center gap-3.5">
-            <div className="p-3 bg-gradient-to-br from-amber-500 to-orange-500 text-white rounded-2xl shadow-md shrink-0">
-              <Sparkles size={24} />
+            <div className="p-3 bg-gradient-to-br from-zinc-900 via-red-600 to-amber-500 text-white rounded-2xl shadow-md shrink-0">
+              <Tag size={24} />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest bg-amber-500 text-white px-2.5 py-0.5 rounded-full">{t.homeBoxes?.eventsBadge || "En ce moment"}</span>
-                <p className="text-xs text-amber-600 dark:text-amber-400 font-extrabold uppercase tracking-widest">{t.homeBoxes?.eventsTag || "Offres & Promos Spéciales"}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-widest bg-zinc-900 dark:bg-red-600 text-amber-400 dark:text-white px-2.5 py-0.5 rounded-full">{t.homeBoxes?.eventsBadge || "Black Friday"}</span>
+                <p className="text-xs text-red-600 dark:text-red-400 font-extrabold uppercase tracking-widest">{t.homeBoxes?.eventsTag || "Grosse Promo • Édition Limitée"}</p>
               </div>
-              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">{t.homeBoxes?.eventsTitle || "Événements & Réductions Constructeurs"}</h2>
+              <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">{t.homeBoxes?.eventsTitle || "Événement Black Friday — Grosses Promos 3D"}</h2>
             </div>
           </div>
-          <span className="text-xs font-black bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-3.5 py-1.5 rounded-xl border border-amber-300 dark:border-amber-700 flex items-center gap-1.5 self-start sm:self-auto">
-            <Flame size={14} className="text-amber-600 fill-amber-600" />
-            {t.homeBoxes?.eventsDeals || "Bons Plans Actuels"}
+          <span className="text-xs font-black bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-300 px-3.5 py-1.5 rounded-xl border border-red-300 dark:border-red-700 flex items-center gap-1.5 self-start sm:self-auto">
+            <Flame size={14} className="text-red-600 dark:text-red-400 fill-red-600 dark:fill-red-400" />
+            {t.homeBoxes?.eventsDeals || "Jusqu'à -65%"}
           </span>
         </div>
 
         <div>
-          {/* Creality Autumn Deals Event Card */}
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-7 border border-amber-200 dark:border-amber-900/50 shadow-sm flex flex-col justify-between space-y-5 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg">
+          {/* Black Friday Mega Deals Card */}
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl p-5 md:p-7 border border-red-200 dark:border-red-900/50 shadow-sm flex flex-col justify-between space-y-5 hover:border-red-400 dark:hover:border-red-500 transition-all hover:shadow-lg">
             <div className="space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[11px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/70 text-amber-800 dark:text-amber-300 px-3 py-1 rounded-lg border border-amber-200 dark:border-amber-800">
-                  {t.homeBoxes?.crealityTag || "🍁 CREALITY • OFFRES D'AUTOMNE"}
+                <span className="text-[11px] font-black uppercase tracking-wider bg-zinc-900 dark:bg-zinc-800 text-amber-400 px-3 py-1 rounded-lg border border-zinc-700">
+                  {t.homeBoxes?.blackFridayTag || "🏷️ BLACK FRIDAY • GROSSES PROMOS"}
                 </span>
-                <span className="text-xs font-black text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-800/60">
-                  {t.homeBoxes?.crealityDiscount || "Jusqu'à -50%"}
+                <span className="text-xs font-black text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/50 px-3 py-1 rounded-full border border-red-200 dark:border-red-800/70">
+                  {t.homeBoxes?.blackFridayDiscount || "Jusqu'à -65% + Packs"}
                 </span>
               </div>
               <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white flex items-center gap-2">
-                {t.homeBoxes?.crealityTitle || "Offres d'Automne Creality 🍂"}
+                {t.homeBoxes?.blackFridayTitle || "Black Friday Impression 3D : Grosses Promos ! 🔥"}
               </h3>
               <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-medium">
-                {t.homeBoxes?.crealityDesc}
+                {t.homeBoxes?.blackFridayDesc}
               </p>
               <div className="flex flex-wrap gap-2 pt-1">
-                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K2 Plus Combo</span>
-                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K2 Pro</span>
-                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">K1C</span>
-                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">Ender-3 V3 Series</span>
-                <span className="text-[11px] font-bold bg-amber-50 dark:bg-zinc-800 text-amber-800 dark:text-amber-300 px-2.5 py-1 rounded-lg border border-amber-200/60 dark:border-zinc-700">Bundles Filaments Hyper PLA</span>
+                {['Bambu Lab', 'Creality', 'Anycubic', 'Elegoo', 'Sovol', 'Qidi Tech'].map((brandName) => (
+                  <button
+                    key={brandName}
+                    type="button"
+                    onClick={() => onSelectBrand?.(brandName)}
+                    className="text-[11px] font-bold bg-red-50 dark:bg-zinc-800 text-red-700 dark:text-amber-300 hover:bg-red-100 dark:hover:bg-zinc-700 px-2.5 py-1 rounded-lg border border-red-200/70 dark:border-zinc-700 transition-colors cursor-pointer"
+                  >
+                    {brandName}
+                  </button>
+                ))}
               </div>
             </div>
             <button 
-              onClick={() => onSelectBrand?.('Creality')}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 hover:from-amber-700 hover:via-orange-700 hover:to-red-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
+              onClick={() => onSelectBrand?.('')}
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-zinc-900 via-red-600 to-amber-600 hover:from-black hover:via-red-700 hover:to-amber-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer"
             >
-              <span>{t.homeBoxes?.crealityBtn || "Voir les imprimantes Creality en promo"}</span>
+              <span>{t.homeBoxes?.blackFridayBtn || "Découvrir toutes les imprimantes en promo"}</span>
               <ArrowRight size={14} />
             </button>
           </div>
