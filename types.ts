@@ -115,11 +115,11 @@ export interface TranslationStrings {
     eventsTag: string;
     eventsTitle: string;
     eventsDeals: string;
-    crealityTag?: string;
-    crealityDiscount?: string;
-    crealityTitle?: string;
-    crealityDesc?: string;
-    crealityBtn?: string;
+    blackFridayTag?: string;
+    blackFridayDiscount?: string;
+    blackFridayTitle?: string;
+    blackFridayDesc?: string;
+    blackFridayBtn?: string;
     anycubicTag?: string;
     anycubicDiscount?: string;
     anycubicTitle?: string;
